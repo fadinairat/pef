@@ -1,0 +1,239 @@
+﻿@using PEF.Models
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<div class="container">
+    @{
+        var controller = ViewContext.RouteData.Values["Controller"];
+        var action = ViewContext.RouteData.Values["Action"];
+
+        if (String.Equals(action, "Index") && String.Equals(controller, "Home"))
+        {
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-8">
+                    <div id="newsletter_card" class="card">
+                        <div class="card-body text-center">
+                            <h2 class="card-title mb-4">إشترك في النشرة الإخبارية</h2>
+
+                            <div class="row justify-content-center">
+                                <div class="col-12 col-md-8">
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" placeholder="أدخل بريدك الإلكتروني" aria-label="Recipient's email" aria-describedby="basic-addon2">
+                                        <div class="input-group-append">
+                                            <button class="btn" type="button">إشترك</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+
+
+
+    <div class="row">
+		<div class="col-12 text-center mt-2 mb-5"><h4>عدد الزيارات: @(ViewBag.Visits != null ? ViewBag.Visits : "")</h4></div>
+        <div class="col-12 col-md-3 text-center mb-4">
+            <img src="~/res/images/footer-logo.png" class="footer-logo" alt="The Palestinian Employment Fund">
+            <p>
+				@{
+					if (ViewBag.FooterDesc != null)
+					{
+						<span>@Html.Raw(ViewBag.FooterDesc.Summary)</span>
+					}
+				}
+            </p>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <div class="row">
+				@if (ViewBag.ParentMenus != null)
+				{
+					foreach (Menu item in ViewBag.ParentMenus)
+					{
+						string dropdown = "";
+						//string menuLink = "<h5>" + item.Name + "</h5>";
+						if (ViewBag.SubMenus != null)
+						{
+							foreach (Menu sub in ViewBag.SubMenus)
+							{
+								if (sub.ParentId == item.Id)
+								{
+									//if (dropdown == "") dropdown = "<ul class=\"dropdown-menu\" aria-labelledby=\"navbarDropdown\" >";
+									//dropdown += "<li><a class=\"dropdown-item\" target=\""+sub.Target+"\" href=\""+sub.Link+"\">"+sub.Name+"</a></li>";
+									dropdown += "<li class='mb-2'><a href=\"" + sub.Link + "\" target=\"" + sub.Target + "\" class=\"\" ><span>" + sub.Name + "</span></a></li>";
+
+								}
+							}
+						}
+						<div class="col-6 col-lg-6 mb-3">
+							<h4 class="foot_title text-white">@Html.Raw(item.Name)</h4>
+							<hr class="line1">
+							<div class="">
+								<ul class="foot-list">
+								@Html.Raw(dropdown)
+							</ul>
+							</div>
+						</div>
+					}
+				}
+                @*<div class="col-6 col-lg-6 mb-3">
+                    <h4 class="foot_title text-white">التصنيفات </h4>
+                    <hr class="line1">
+                    <div class="">
+                        <ul class="foot-list">
+                            <li class="mb-2"><a href="#"> <i class="fa-solid fa-chevron-left"></i> <span>تصفح فرص التشغيل</span></a></li>
+                            <li class="mb-2"><a href="#"> <i class="fa-solid fa-chevron-left"></i> <span>المشاريع</span></a></li>
+                            <li class="mb-2"><a href="#"> <i class="fa-solid fa-chevron-left"></i> <span>التشغيل الذاتي</span></a></li>
+                            <li class="mb-2"><a href="#"> <i class="fa-solid fa-chevron-left"></i> <span>صندوق الشكاوي</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-6 col-lg-6 mb-3">
+                    <h4 class="foot_title text-white">روابط ذات صلة </h4>
+                    <hr class="line1">
+                    <div class="">
+                        <ul class="foot-list">
+
+                            <li class="mb-2"><a href="#"> <i class="fa-solid fa-chevron-left"></i> <span>رابط 1</span></a></li>
+                            <li class="mb-2"><a href="#"> <i class="fa-solid fa-chevron-left"></i> <span>رابط 2</span></a></li>
+                        </ul>
+                    </div>
+                </div>*@
+            </div>
+        </div>
+
+        <div class="col-12 col-md-3 text-right">
+            <h4 class="foot_title text-white">إتصل بنا</h4>
+            <hr class="line1">
+			@{
+				if (ViewBag.FooterContact != null)
+				{
+					<span>@Html.Raw(ViewBag.FooterContact.Body)</span>
+				}
+			}
+            @*<h6>رام الله</h6>
+            <p class="para">هاتف:02-2412550</p>
+            <p class="para">بريد إلكتروني:info@pfesp.ps</p>
+            <p class="para">
+                العنوان الماصيون، شارع الجهاد، عمارة عادل
+                المصري، الطابق الرابع
+            </p>
+            <h6>غزة</h6>
+            <p class="para">هاتف:02-2412550</p>
+            <p class="para">بريد إلكتروني:info@pfesp.ps</p>
+            <p class="para">
+                العنوان: غزة – شارع الجلاء – عمارة الطموح (جوال)
+                – الطابق الخامس
+            </p>*@
+        </div>
+    </div>
+
+    <hr class="line1">
+
+    <button type="button" class="btn btn-floating btn-lg" id="btn-back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div class="row">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="" style="font-size: 14px;font-weight: 500;">جميع الحقوق محفوظه للبوابة الفلسطينية للتشغيل © @DateTime.Now.Year . | تصميم وتطوير شركة <a rel="noreferrer" title="انترتك" href="https://www.intertech.ps" style="color:#fff" target="_blank">Intertech</a></div>
+        </div>
+    </div>
+</div>
+
+@*<div class="container">
+<div class="d-flex justify-content-between flex-wrap">
+	<a id="logo" class="navbar-brand" asp-action="Index" asp-controller="Home"><img class="img-fluid logo" src="~/frontend/images/logo.png" /></a>
+	<div>
+		
+	</div>
+	
+	@if (!User.Identity.IsAuthenticated)
+	{
+		<a asp-action="Login" asp-controller="Home" class="btn mainBtn btn-lg py-2 px-5 rounded-0 align-self-center m-auto m-sm-0">تسجيل الدخول</a>
+	}
+</div>
+<div class="footer_det">
+	<div class="row">
+	@if(ViewBag.ParentMenus != null)
+	{
+		foreach(Menu item in ViewBag.ParentMenus)
+		{
+			string dropdown = "";
+			string menuLink = "<h5>"+item.Name+"</h5>";
+				if(ViewBag.SubMenus != null)
+				{
+					foreach(Menu sub in ViewBag.SubMenus)
+					{
+						if(sub.ParentId == item.Id)
+						{
+							//if (dropdown == "") dropdown = "<ul class=\"dropdown-menu\" aria-labelledby=\"navbarDropdown\" >";
+							//dropdown += "<li><a class=\"dropdown-item\" target=\""+sub.Target+"\" href=\""+sub.Link+"\">"+sub.Name+"</a></li>";
+							dropdown += "<li><a href=\""+sub.Link+"\" target=\""+sub.Target+"\" class=\"\" >"+sub.Name+"</a></li>";
+
+						}
+					}
+				}
+			<div class="col-md-3 col-6">
+				<div class="footer_menu">
+				<h5>@Html.Raw(item.Name)</h5>
+				</div>
+				<ul class="footer_menu_ul">
+					@Html.Raw(dropdown)
+				</ul>
+			</div>
+		}
+	}
+	<div class="col-md-3 col-6">
+	<div class="footer_menu ">
+		<h5>عناوين الاتصال</h5>
+		</div>
+	<ul>
+		<li>
+			<i class="fa-solid fa-location-dot"></i> <span>محافظة رام الله - الماصيون</span>
+		</li>
+		<li>
+			<i class="fa-solid fa-phone"></i> <span>+97022987662</span>
+		</li>
+		<li>
+			<i class="fa-solid fa-fax"></i> <span>+9702297449</span>
+		</li>
+		<li>
+			<i class="fa-solid fa-at"></i> <span>info@mne.pna.ps</span>
+		</li>
+	</ul>
+	</div>
+	<div class="col-md-3 col-6">
+		<div class="footer_menu">
+		<h5>روابط هامة</h5>
+		</div>
+	<div>
+		<img src="~/frontend/images/supports.png" title="" class="img-fluid">
+	</div>
+	</div>
+				  
+				  
+	</div>
+</div>
+</div>
+<div class="footer-bottom">
+<div class="container">
+	<div class="d-flex justify-content-between">
+			<div class="footer_copyright open-accessibility-text " data-open-accessibility-text-original="12.8px" style="font-size: 12.8px;">
+			جميع الحقوق محفوظة. <span class="mainColor">وزارة الاقتصاد الوطني</span> &copy; 2022
+			</div>
+			<div class="footer_copyright align-self-start" data-open-accessibility-text-original="12.8px" style="font-size: 12.8px;">
+			
+			</div>
+	</div>
+</div>
+</div>*@

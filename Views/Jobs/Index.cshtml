@@ -1,0 +1,550 @@
+﻿@model PEF.Models.Jobs
+@using PEF.Models;
+@using System;
+@using System.Linq;
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["title"] = "قائمة فرص التشغيل";
+}
+<section class="ls-section">
+    <form asp-action="Index" asp-controller="Jobs" name="search_form" id="search_form" method="get" >
+    <div class="container">        
+        <div class="row mt-5 justify-content-center">
+            <div class="col-12 col-md-8">
+                
+                    <div class="row mb-4">
+                        <div class="col-12 col-md-3 mb-2">
+                            <select class="form-select" name="ResCountOption" id="ResCountOption" aria-label="Default select example">
+                                <option value=0 >افتراضي</option>
+                                <!option @(ViewBag.ResCountOption!=null && ViewBag.ResCountOption == 1 ? "SELECTED":"") value="1">10 لكل صفحة</!option>
+                                <!option @(ViewBag.ResCountOption!=null && ViewBag.ResCountOption == 2 ? "SELECTED":"") value="2">20 لكل صفحة</!option>
+                                <!option @(ViewBag.ResCountOption!=null && ViewBag.ResCountOption == 3 ? "SELECTED":"") value="3">30 لكل صفحة</!option>
+
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <select class="form-select" name="SortOption" id="SortOption" aria-label="Default select example">
+                                <!option value="">ترتيب حسب (افتراضي)</!option>
+                                <!option @(ViewBag.SortOption!=null && ViewBag.SortOption == 1 ? "SELECTED":"") value="1">الأقدم</!option>
+                                <!option @(ViewBag.SortOption!=null && ViewBag.SortOption == 2 ? "SELECTED":"") value="2">الأحدث</!option>
+                            </select>
+                        </div>
+                    </div>
+                
+
+                <div class="row" id="jobsListCont">
+                    @{
+                        if(ViewBag.Jobs != null)
+                        {
+                            foreach(Jobs job in ViewBag.Jobs)
+                            {
+                                <div class="job-block col-lg-12 col-md-12 col-sm-12">
+                                    <div class="inner-box">
+                                        <div class="content">
+                                            <span class="company-logo">
+                                                @{
+                                                    if (!String.IsNullOrEmpty(job.Employer?.Logo))
+                                                    {
+                                                        <img src="@Url.Content(job.Employer.Logo)" alt="@job.Employer.ArName" title="@job.Employer.ArName">
+                                                    }
+                                                    else
+                                                    {
+                                                        <img src="~/res/images/job.png" alt="@job.Employer?.ArName" title="@job.Employer.ArName">
+                                                    }
+                                                }
+                                            </span>
+
+                                            <h4 style="margin-bottom: 0px;"><a asp-action="Details" asp-controller="Jobs" asp-route-id="@job.Id">@job.ArName</a></h4>
+                                            <div class="font-4 text-secondary mb-3">@job.Employer.ArName</div>
+                                            <ul class="job-info">
+                                                @{
+                                                    string fromTimeStr = "";                                                    
+                                                    int days = 0;
+                                                    int mins = 0;
+                                                    int hours = 0;
+                                                    if(job.StartDate !=null){
+                                                        DateTime startDate = job.StartDate ?? DateTime.MinValue;//if job.StartDate is not null select it, else select the default value
+                                                        TimeSpan span = DateTime.Now.Subtract(startDate);
+                                                        days = span.Days;
+                                                        mins = span.Minutes;
+                                                        hours = span.Hours;
+                                                    }
+
+                                                    if(days >= 1)
+                                                    {
+                                                        if(days >= 30)
+                                                        {
+                                                            fromTimeStr = "قبل " + (Math.Floor((double)days/30)) + " شهر و " + (days%30) + " يوم";
+                                                        }
+                                                        else
+                                                        {
+                                                            fromTimeStr = "قبل " + days + " يوم";
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        if(hours >=1)
+                                                        {
+                                                            fromTimeStr = "قبل " + hours + " ساعة";
+                                                        }
+                                                        else
+                                                        {
+                                                            fromTimeStr = "قبل " + mins + " دقيقة";
+                                                        }
+                                                    }
+                                                    
+                                                    if (job.City != null)
+                                                    {
+                                                        <li><i class="fa-sharp fa-solid fa-location-dot"></i> @job.City?.ArName</li>
+                                                    }
+                                                }
+                                                <li><i class="fa-solid fa-clock"></i> تاريخ الاعلان: @job.StartDate?.ToString("yyyy/MM/dd")</li>
+                                                @{
+                                                    if(job.Salary !=null){
+                                                        <li><i class="fa-solid fa-money-bill"></i> @(job.Salary + " ") <span>@Html.Raw(job.Currency?.IconHtml)</span></li>
+                                                    }
+                                                }
+                                                @{
+                                                    if(job.ExpireDate != null)
+                                                    {
+                                                        <li><i class="fa-solid fa-clock"></i> نهاية الاعلان: @job.ExpireDate?.ToString("yyyy/MM/dd")</li>
+                                                    }
+                                                }
+                                                <li><i class="fa-solid fa-id-badge"></i> عدد الشواغر: @job.BeneficiaryCount</li>
+                                                    
+                                            </ul>
+
+                                            <ul class="job-other-info">
+                                                <li class="time">@(job.WorkNature == 0 ? "دوام جزئي" : "دوام كلي")</li>
+                                                <li class="privacy">
+                                                    @{
+                                                        <span>@job.Employer?.EmployerSector?.ArName</span>
+                                                        @*if(job.Employer.Sector == 1)
+                                                        {
+                                                            <span>قطاع خاص</span>
+                                                        }
+                                                        else if(job.Employer.Sector == 2)
+                                                        {
+                                                            <span>قطاع عام</span>
+                                                        }
+                                                        else if(job.Employer.Sector == 3)
+                                                        {
+                                                            <span>مؤسسات أهلية</span>
+                                                        }
+                                                        else if (job.Employer.Sector == 4)
+                                                        {
+                                                            <span>مؤسسات دولية</span>
+                                                        }
+                                                        else if (job.Employer.Sector == 5)
+                                                        {
+                                                            <span>الشركة العادية العامة</span>
+                                                        }
+                                                        else if (job.Employer.Sector == 6)
+                                                        {
+                                                            <span>الشركة العادية المحدودة</span>
+                                                        }
+                                                        else if (job.Employer.Sector == 7)
+                                                        {
+                                                            <span>الشركة ذات المسؤولية المحدودة</span>
+                                                        }
+                                                        else if (job.Employer.Sector == 8)
+                                                        {
+                                                            <span>الشركة المساهمة الخصوصية</span>
+                                                        }
+                                                        else if (job.Employer.Sector == 9)
+                                                        {
+                                                            <span>الشركة المساهمة العامة</span>
+                                                        }
+                                                        *@
+                                                    }
+                                                </li>
+                                                @*<li class="required">مستعجل</li>*@
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else if (!String.IsNullOrEmpty(ViewBag.Msg))
+                        {
+                            <div class="row justify-content-center"><div class="col-8 alert alert-danger text-center mt-5">@ViewBag.Msg</div></div>
+                        }                
+                    }
+
+                    
+                    @if (ViewBag.PagesCount != null && ViewBag.PagesCount > 0)
+                    {
+                        <div class="text-center d-flex justify-content-center">
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination">
+                                    <li class="page-item"><a class="page-link" asp-action="Index" asp-route-PageNumber="1">الأولى</a></li>
+                                    @for (int i = 1; i <= ViewBag.PagesCount; i++)
+                                    {
+                                        string activePage = "";
+                                        if (ViewBag.PageNumber != null && ViewBag.PageNumber == i) activePage = " active";
+                                        <li class="page-item @activePage"><a class="page-link" asp-action="Index" asp-route-PageNumber="@i" asp-route-keyword="@ViewBag.Keyword" asp-route-city="@ViewBag.City" asp-route-type="@ViewBag.Type" asp-route-SortOption="@ViewBag.SortOption"  asp-route-ResCountOption="@ViewBag.ResCountOption" asp-route-JFields="@ViewBag.Fields">@i</a></li>
+                                    }
+                                    <li class="page-item"><a class="page-link" asp-action="Index" asp-route-PageNumber="@ViewBag.PagesCount">الأخيرة</a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                    }
+                    
+                    @*<div class="job-block col-lg-12 col-md-12 col-sm-12">
+                        <div class="inner-box">
+                            <div class="content">
+                                <span class="company-logo">
+                                    <img src="~/res/images/test_img.png" alt="item brand">
+                                </span>
+
+                                <h4><a href="">عنوان الوظيفة</a></h4>
+
+                                <ul class="job-info">
+                                    <li><i class="fa-sharp fa-solid fa-location-dot"></i> القدس</li>
+                                    <li><i class="fa-solid fa-clock"></i> منذ 11 ساعة</li>
+                                    <li><i class="fa-solid fa-money-bill"></i> $35k - $45k</li>
+                                </ul>
+
+                                <ul class="job-other-info">
+                                    <li class="time">دوام جزئي</li>
+                                    <li class="privacy">خاص</li>
+                                    <li class="required">مستعجل</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>*@
+                </div>
+                
+            </div>
+
+            <div class="col-12 col-md-4">
+                <div class="card" id="leftside_card">
+                    <div class="card-body">
+                        <input type="hidden" name="Type" id="Type" value="@(ViewBag.Type!=null ? ViewBag.Type:"")" />
+                        <div class="filter-block">
+                            <h4>بحث بالإسم</h4>
+                            <div class="form-group mb-3">
+                                <input type="text" name="keyword" id="keyword" placeholder="اسم الوظيفة, اسم المشغل, اسم المشروع" value="@(ViewBag.Keyword!=null? ViewBag.Keyword: "")" >
+                                <span class="icon flaticon-search-3"></span>
+                            </div>
+                        </div>
+
+                        <div class="filter-block">
+                            <h4>المحافظة</h4>
+                            <div class="form-group mb-3">
+                                <select class="form-select" name="city" id="city" >
+                                    <option value="" >:: حدد المحافظة ::</option>
+                                    @{
+                                        List<City> cities = ViewBag.Cities;
+                                        foreach(City item in cities)
+                                        {
+                                            <!option value="@item.Id" @(ViewBag.City!=null && ViewBag.City == item.Id ? "SELECTED":"") >@item.ArName</!option>
+                                        }
+                                    }
+                                </select>
+                                @*<input type="text" name="listing-search" placeholder="المدينة" value="">*@
+                                <span class="icon flaticon-search-3"></span>
+                            </div>
+                        </div>
+
+                        <div class="switchbox-outer">
+                            <h4>مجال العمل</h4>
+                            <ul class="switchbox mt-2">
+                                    @{
+                                        List<LookupJobsFields> fields = ViewBag.JobFields;
+                                        foreach(LookupJobsFields field in fields)
+                                        {
+                                            string itemChecked = "";
+                                            if (ViewBag.Fields != "")
+                                            {
+                                                if (ViewBag.Fields != null)
+                                                {
+                                                    string[] Fields = ViewBag.Fields;
+                                                    for (int i = 0; i < Fields.Count(); i++)
+                                                    {
+                                                        if (int.Parse(Fields[i]) == field.Id) itemChecked = " checked='checked'";
+                                                    }
+                                                }
+                                                
+                                            }
+                                            <li>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input JField" type="checkbox" id="JField@field.Id" @itemChecked data-itemid="@field.Id" name="JFields[]" value="@field.Id" role="switch">
+                                                <label class="form-check-label" for="JField@field.Id">@field.ArName</label>
+                                            </div>
+                                        </li>
+                                    }
+                                }
+                                @*
+                                <li>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="full-time">
+                                        <label class="form-check-label" for="full-time">دوام كامل</label>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="part-time">
+                                        <label class="form-check-label" for="part-time">دوام جزئي</label>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="temporary">
+                                        <label class="form-check-label" for="temporary">مؤقت</label>
+                                    </div>
+                                </li>
+                                *@
+                            </ul>
+                        </div>
+
+                        <div class="switchbox-outer">
+                            <h4>طبيعة العمل</h4>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="workNature" value="-1">
+                                   <label class="form-check-label" for="flexRadioDefault1">
+                                        الجميع
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="workNature" value="1">
+                                   <label class="form-check-label" for="flexRadioDefault1">
+                                        دوام كامل
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="workNature" value="0">
+                                   <label class="form-check-label" for="flexRadioDefault1">
+                                        دوام جزئي
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="workNature" value="2">
+                                    <label class="form-check-label" for="flexRadioDefault1">
+                                        فرص التدريب على رأس العمل المدفوعة
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="workNature" value="3">
+                                   <label class="form-check-label" for="flexRadioDefault1">
+                                        فرص التدريب على رأس العمل غير المدفوعة
+                                    </label>
+                                </div>
+                               
+                        </div>
+                        @*
+                        <div class="switchbox-outer">
+                            <h4>مستوى الخبرة</h4>
+                            <ul class="switchbox mt-2">
+                                <li>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="fresh">
+                                        <label class="form-check-label" for="fresh">خريج جديد</label>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="one-year">
+                                        <label class="form-check-label" for="one-year">سنة</label>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="two-year">
+                                        <label class="form-check-label" for="two-year">سنتين</label>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="three-year">
+                                        <label class="form-check-label" for="three-year">3 سنين</label>
+                                    </div>
+                                </li>
+
+                                <li>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="four-year">
+                                        <label class="form-check-label" for="four-year">4 سنين</label>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        *@
+
+
+                       @* <div class="filter-block">
+                            <h4>المفاتيح</h4>
+                            <ul class="tags-style-one">
+                                <li class="">مفتاح1</li>
+                                <li class="">مفتاح2</li>
+                                <li class="active">مفتاح3</li>
+                                <li class="">مفتاح4</li>
+                                <li class="">مفتاح5</li>
+                                <li class="">مفتاح6</li>
+                            </ul>
+                        </div>*@
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </form>
+</section>
+@section Scripts{
+    <script type="text/javascript" >
+    $(document).ready(function(){
+        //$(document).on("change","#city",function (){
+        //     $("#search_form").submit();
+        //});
+        //$(document).on("change","#ResCountOption",function(){
+        //    $("#search_form").submit();
+        //});
+        //$(document).on("change", "#SortOption", function () {
+        //    $("#search_form").submit();
+        //});
+
+       $(document).on("click",".JField",function(){
+            reloadJobs();
+       });
+
+        $(document).on("change", "#city, #ResCountOption, #SortOption, input[name=workNature]", function () {
+            console.log("reloadJobs");
+           reloadJobs();
+       });
+       $(document).on("blur","#keyword",function(){
+                reloadJobs();
+       });
+    });
+
+    function reloadJobs(){
+        var fieldsList = "";
+        $(".JField").each(function () {
+            if ($(this).is(":checked")) {
+                var fieldId = $(this).data("itemid");
+                if (fieldsList == "") fieldsList = "&JFields=" + fieldId;
+                else fieldsList += "&JFields=" + fieldId;
+            }
+        });
+        var keyword = $("#keyword").val();
+        var city = $("#city").val();
+        var resCount = $("#ResCountOption").val();
+        var sortOption = $("#SortOption").val();
+        var type = $("#Type").val();
+        var workNature = $("input[name=workNature]:checked").val();
+        if(workNature == "2" || workNature == "3"){
+            if(workNature == "2") type = "PaidTraining";
+            else type = "NonPaidTraining";
+
+            workNature = "-1";
+            console.log(workNature);
+        }
+        var url = "@Url.Action("LoadJobs","Jobs")?keyword=" + keyword + "&city=" + city + fieldsList + "&ResCountOption=" + resCount + "&SortOption=" + sortOption +"&WorkNature="+workNature+"&Type="+type;
+
+        $.ajax({
+            url: url,
+            dataType: "json",
+            beforeSend: function () {
+                $("#jobsListCont").html('<div class="col-12 text-center" id="loader" style="padding-top:100px;" ><i class="fa-solid fa-spinner fa-spin fa-spin-reverse fa-lg fa-2xl"></i></div>');
+            },
+            success: function (data) {
+                var jobs = data.jobs;
+                var jobsHtml = "";
+                $("#loader").remove();
+                if(jobs.length >0){
+                    for (var i = 0; i < jobs.length; i++) {
+                        var startFormatted = "";
+                        var endFormatted = "";
+                        const options = { day: 'numeric', month: 'numeric', year: 'numeric' };
+                        if(jobs[i].startDate!=""){
+                            const startStr = jobs[i].startDate; // assume the date property is named 'date'
+                            const date1 = new Date(startStr); // create a new Date object
+                            startFormatted = date1.toLocaleDateString('en-GB', options);
+                        }
+                        if(jobs[i].expireDate!=""){
+                            const endStr = jobs[i].expireDate; // assume the date property is named 'date'
+                            const date2 = new Date(endStr); // create a new Date object
+                            endFormatted = date2.toLocaleDateString('en-GB', options);
+                        }
+                     
+
+                        var fromTimeStr = "";
+                        jobsHtml += '<div class="job-block col-lg-12 col-md-12 col-sm-12" >' +
+                            '<div class="inner-box" >' +
+                            '<div class="content" ><span class="company-logo" >';
+
+                        if (jobs[i].logo != null) {
+                            jobsHtml += '<img src="' + jobs[i].logo.replace("~/", "/") + '" alt = "' + jobs[i].arName + '" title = "' + jobs[i].arName + '" >';
+                        }
+                        else jobsHtml += '<img src="~/res/images/job.png" alt = "' + jobs[i].arName + '" title = "' + jobs[i].arName + '" >';
+
+
+                        jobsHtml += '</span>';
+                        jobsHtml += '<h4><a href="@Url.Action("Details","Jobs")/' + jobs[i].id + '" > ' + jobs[i].arName + '</a></h4>'
+
+
+                        jobsHtml += '<ul class="job-info" >';
+                        if (jobs[i].cityArName != null) {
+                            jobsHtml += '<li><i class="fa-sharp fa-solid fa-location-dot" > </i> ' + jobs[i].cityArName + '</li>';
+                        }
+                        jobsHtml += '<li><i class="fa-solid fa-clock" > </i> بداية الاعلان: ' + startFormatted + '</li>';
+                        jobsHtml += '<li><i class="fa-solid fa-clock" > </i> نهاية الاعلان: ' + endFormatted + '</li>';
+
+                        if (jobs[i].salary != null) {
+                            jobsHtml += '<li><i class="fa-solid fa-money-bill" ></i> ' + jobs[i].salary + ' <span>' + jobs[i].CurIconHtml + '</span ></li>';
+                        }
+                            jobsHtml += '<li><i class="fa-solid fa-id-badge"></i> عدد الشواغر: ' + jobs[i].beneficiaryCount + '</li>';
+                        jobsHtml += '</ul>';
+
+                        jobsHtml += '<ul class="job-other-info">';
+                        if (jobs[i].workNature == 1) jobsHtml += '<li class="time">دوام كلي</li>';
+                        else jobsHtml += '<li class="time" >دوام جزئي</li>';
+
+                        jobsHtml += '<li class="privacy">';
+                        
+                        if(jobs[i].empSectorArName !==null){
+                                jobsHtml += "<span>" + jobs[i].empSectorArName + "</span>";
+                        }
+                        
+                        /*if (jobs[i].employer.sector == 1) jobsHtml += '<span>قطاع خاص</span>';
+                        else if (jobs[i].employer.sector == 2) jobsHtml += '<span>قطاع عام</span>';
+                        else if (jobs[i].employer.sector == 3) jobsHtml += '<span>مؤسسات أهلية</span>';
+                        else if (jobs[i].employer.sector == 4) jobsHtml += '<span>مؤسسات دولية</span>';
+                        else if (jobs[i].employer.sector == 5) jobsHtml += '<span>الشركة العادية العامة</span>';
+                        else if (jobs[i].employer.sector == 6) jobsHtml += '<span>الشركة العادية المحدودة</span>';
+                        else if (jobs[i].employer.sector == 7) jobsHtml += '<span>الشركة ذات المسؤولية المحدودة</span>';
+                        else if (jobs[i].employer.sector == 8) jobsHtml += '<span>الشركة المساهمة الخصوصية</span>';
+                        else if (jobs[i].employer.sector == 9) jobsHtml += '<span>الشركة المساهمة العامة</span>';
+                        */
+
+                        jobsHtml += "</li></ul>";
+                        jobsHtml += '</div></div></div>';
+                    }                        
+                }
+                else{
+                    jobsHtml = "<div class='col-12 mt-5 d-flex justify-content-center text-center'><div class='alert alert-success' style='max-width:500px;width:100%;' >لم يتم العثور على نتائج...</div></div>";
+                }
+                if (data.paginate !== null && data.paginate != "") jobsHtml += data.paginate;
+                $("#jobsListCont").html(jobsHtml);
+            },
+            error: function (jqXhr, json, errorThrown) {
+                try {
+                    var errors = jqXhr.responseJSON.errors;
+                    console.log(errors);
+                }
+                catch (eee) {
+                    console.log(eee.message);
+                }
+            },
+            complete: function () {
+                $("#loader").remove();
+            }
+        });
+    }
+
+    
+    </script>
+    <partial name="_validationMsg" />
+}

@@ -1,0 +1,50 @@
+﻿@{
+    ViewData["Title"] = "التسجيل كمستحدم جديد";
+}
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+
+<section>
+    <div class="container">
+        <div class="row mb-3"><div class="col-12 text-center"><h3>التسجيل كمستخدم جديد</h3></div></div>
+        <div class="row">
+            <div class="col-12 col-md-6 mt-4">
+                <div class="program_content" id="program_content1">
+                    <img src="~/res/images/pic-1.png" alt="Operators">
+                    <div class="program_desc">
+                        <img src="~/res/images/الجهات المشغلة.png" class="mb-2" alt="">
+                        <h3 class="text-white">الجهات المشغلة</h3>
+                        <p>
+                            تسجيلك كمشغل في هذا النظام يضمن لك:<br />
+                            الوصول لجميع الباحثين عن عمل في جميع محافظات الوطن
+                            والذين تتوافق مؤهلاتهم مع متطلباتك كمشغل
+                            من خلال مشاريعنا او من خلال اعلاناتك كمشغل
+                            بأعلى معايير الشفافية والنزاهة
+                        </p>
+                        <a asp-action="Signup" asp-controller="Home" asp-route-type="1" class='btn'> سجل الآن <i class='fa-solid fa-arrow-left'></i></a>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-12 col-md-6 mt-4">
+                <div class="program_content" id="program_content2">
+                    <img src="~/res/images/pic-2.png" alt="Job seekers">
+                    <div class="program_desc">
+                        <img src="~/res/images/الباحثين عن العمل.png" alt="">
+                        <h3>الباحثين عن فرص تشغيل/ فرص تدريب على رأس العمل </h3>
+                        <p>تسجيلك في هذا النظام يضمن لك بأن تكون: مرشح لأي فرص عمل جديدة ضمن أعلى مبادئ الشفافية وتكافؤ الفرص وربطك مع كافة المشغلين ضمن أعلى مستويات العمل اللائق</p>
+                        <a asp-action="Signup" asp-controller="Home" asp-route-type="0" class="btn"> سجل الاّن <i class="fa-solid fa-arrow-left"></i></a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+@section Scripts{
+    <partial name="_validationMsg" />
+}

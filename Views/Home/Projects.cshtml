@@ -1,0 +1,109 @@
+﻿@using PEF.Models
+@using System.Globalization;
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["title"] ="قائمة المشاريع";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-md-9">
+            <div class="row mb-3"><div class="col-12 text-right" >@Html.Raw(ViewBag.Route)</div></div>
+            <h2>قائمة المشاريع</h2>
+            <div class="row mt-3">
+                @{
+                if(ViewBag.Projects != null)
+                {
+                    foreach(Projects item in ViewBag.Projects)
+                    {
+                        <div class="col-12 col-md-4">
+                            <div class="projects_col">
+                                <div class="projects_content internal">
+                                    <a asp-action="Project" asp-asp-controller="Home" asp-route-id="@item.Id">
+                                    @{
+                                        if(!String.IsNullOrEmpty(item.ProjectImage))
+                                        {
+                                            <img src="@Url.Content(item.ProjectImage)" alt="@item.ArName" title="@item.ArName" class="img-fluid">
+                                        }
+                                        else
+                                        {
+                                            <img src="~/res/images/projects.png" alt="@item.ArName" title="@item.ArName" class="img-fluid">
+                                        }
+                                    }
+                                    </a>
+                                </div>
+
+                                <div class="projects_description pt-4">
+                                        <a asp-action="Project" asp-asp-controller="Home" asp-route-id="@item.Id" style="text-decoration: none;">
+                                        <h5 class="projects_title">@(item.ArName.Length > 70 ? item.ArName.ToString().Substring(0, 70) : item.ArName)</h5>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            }
+            </div>
+            <div class="row mt-5">
+                <div class="col-12"><h5>قائمة المشاريع المنتهية</h5></div>
+                @{
+                if (ViewBag.FinishedProjects != null)
+                {
+                    foreach(Projects item in ViewBag.FinishedProjects)
+                    {
+                        <div class="col-12 col-md-12">
+                            <div class="row">
+                                <div class="col-12 col-sm-4 col-md-3" >
+                                    <a asp-action="Project" asp-asp-controller="Home" asp-route-id="@item.Id">
+                                    @{
+                                        if(!String.IsNullOrEmpty(item.ProjectImage))
+                                        {
+                                            <img src="@Url.Content(item.ProjectImage)" alt="@item.ArName" title="@item.ArName" class="img-fluid">
+                                        }
+                                        else
+                                        {
+                                            <img src="~/res/images/projects.png" alt="@item.ArName" title="@item.ArName" class="img-fluid">
+                                        }
+                                    }
+                                    </a>
+                                </div>
+
+                                <div class="col-12 col-sm-8 col-md-9" >
+                                    <a asp-action="Project" asp-asp-controller="Home" asp-route-id="@item.Id" style="text-decoration: none;">
+                                        <h6 class="">@(item.ArName.Length > 70 ? item.ArName.ToString().Substring(0, 70) : item.ArName)</h6>
+                                    </a>
+                                    <ul class="job-info" style="list-style:none;">
+                                        <li><i class="fa-solid fa-clock"></i> @item.StartDate.ToString("dd MMM yyyy", new CultureInfo("ar-AE")) -  @item.EndDate.ToString("dd MMM yyyy", new CultureInfo("ar-AE"))</li>
+                                        <li><i class="fa-solid fa-id-badge"></i> عدد الشواغر: 
+                                        @{
+                                            if (item.BeneficiaryNumbers == 0)
+                                            {
+                                                <span>غير محدد</span>
+                                            }
+                                            else
+                                            {
+                                                <span>@item.BeneficiaryNumbers</span>
+                                            }
+                                        }
+                                        </li>
+                                        <li>
+                                            <i class="fa-sharp fa-solid fa-location-dot"></i> المنطقة: @(item.District != null && item.District == "Gaza" ? Html.Raw("<span>قطاع غزة</span>") : (item.District != null && item.District == "Westbank" ? Html.Raw("<span>الضفة الغربية</span>") : Html.Raw("<span>الضفة الغربية وقطاع غزة</span>")))
+                                        </li>
+                                        </ul>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                }
+            </div>
+        </div>
+        <div class="col-12 col-md-3">
+            <!-- =========== Left Side ==============-->
+            @await Component.InvokeAsync("LatestJobs")
+            <!-- End left Side  -->
+        </div>
+        
+    </div>
+</div>

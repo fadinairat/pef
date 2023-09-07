@@ -1,0 +1,61 @@
+﻿@using PEF.Models
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<div style="border:solid 1px #ccc;" class="p-2">
+<h4>فرص جديدة</h4>
+<hr>
+@{
+    if(ViewBag.LatestJobs !=null){
+        foreach(Jobs item in ViewBag.LatestJobs){
+            int days = 8;
+            if (item.StartDate != null)
+            {
+                DateTime startDate = item.StartDate ?? DateTime.MinValue;
+                TimeSpan span = DateTime.Now.Subtract(startDate);
+                days = span.Days;
+            }
+            <div class="row mb-3">
+                <div class="col-12 col-md-12">
+                    <a asp-action="Details" asp-controller="Jobs" asp-route-id="@item.Id" ><h3 class="job_title" style="font-size:1.2rem !important;">@item.ArName</h3></a>
+                    <a asp-action="Details" asp-controller="Jobs" asp-route-id="@item.Id" style="text-decoration: none;color: #dcb45f;">@item.Employer.ArName</a><bR>
+                    @(item.Salary != null && item.Salary!=0 ? Html.Raw("<h6 style='display:inline;'>الراتب</h6>:<span>" + item.Salary + "</span> <span>"+item.Currency.IconHtml+"</span><bR>") : "")  
+                        @{
+                            if(item.Type == 1)
+                            {
+                                <span><b>نوع الفرصة: </b>تشغيل مدفوع الأجر</span><br />
+                            }
+                            else if(item.Type == 2)
+                            {
+                                <span><b>نوع الفرصة: </b>تدريب على رأس العمل مدفوع</span><br />
+                            }
+                            else if(item.Type == 3)
+                            {
+                                <span><b>نوع الفرصة: </b>تدريب على رأس العمل غير مدفوع</span><br />
+                            }
+                            else if(item.Type == 4)
+                            {
+                                <span><b>نوع الفرصة: </b>دعم المشاريع الصغيرة</span><br />
+                            }
+                            
+                            if(item.Type ==1 && item.WorkNature == 0){//Part Time
+                               <span><b>طبعة الدوام:</b> وظيفة بدوام جزئي</span><bR>
+                            }
+                            else
+                            {
+                                <span><b>طبعة الدوام:</b> وظيفة بدوام كامل</span><bR>
+                            }
+                    }   
+                </div>
+                <div class="jobs_btns col-12">
+                    <a asp-action="Details" asp-controller="Jobs" asp-route-id="@item.Id" class="btn apply_btn" type="button">تقدم الاّن</a>
+                </div>
+                <div class="col-12"><hr></div>                
+            </div>
+        }
+    }
+}
+</div>

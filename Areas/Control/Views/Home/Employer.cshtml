@@ -1,0 +1,191 @@
+﻿@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Identity
+@using PEF.Models
+@using PEF.Areas.Control.Controllers
+@using Microsoft.Extensions.Localization
+@inject IHttpContextAccessor HttpContextAccessor
+@inject IStringLocalizer<HomeController> Localizer
+@*
+    For @Localizer["More Info"]rmation on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var currentCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
+    ViewData["title"] = Localizer["Home"];
+    
+}
+
+@*<h3>The ID is "@HttpContextAccessor.HttpContext.Session.GetString("id")"</h3>
+@if (User.Identity.IsAuthenticated)
+{
+    <h2>Welcome @User.Identity.Name </h2>
+}
+<ul>
+    @foreach(var c in User.Claims){
+        <li>@c.Type : @c.Value</li>
+    }
+</ul>*@
+<partial name="_validationMsg" />
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">@Localizer["Dashboard"]</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-@Localizer["Float Rev"]">
+                    <li class="breadcrumb-item"><a href="~/Control">@Localizer["Home"]</a></li>
+                    <li class="breadcrumb-item active">@Localizer["Home"]</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- Small boxes (Stat box) -->
+        <div class="row">
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>@ViewBag.JobsCount</h3>
+
+                        <p>@Localizer["Jobs"]</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-stats-bars"></i>
+                    </div>
+                    <a asp-action="Index" asp-controller="Jobs" class="small-box-footer">@Localizer["More Info"] <i class="fas fa-arrow-circle-@Localizer["Float Rev"]"></i></a>
+                </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>@ViewBag.AppsCount</h3>
+
+                        <p>@Localizer["Jobs Applications"]</p>
+                    </div>
+                    <div class="icon">
+                        <i class="bi bi-file-earmark" style="font-size: 56px;"></i>
+                    </div>
+                    <a asp-action="AppsList" asp-controller="Jobs" class="small-box-footer">@Localizer["More Info"] <i class="fas fa-arrow-circle-@Localizer["Float Rev"]"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>@ViewBag.EmployedCount</h3>
+                        <p>@Localizer["Employed Job Seekers"]</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-bag"></i>
+                    </div>
+                    <a asp-action="AppsList" asp-controller="Jobs" asp-route-status="5" class="small-box-footer">@Localizer["More Info"] <i class="fas fa-arrow-circle-@Localizer["Float Rev"]"></i></a>
+                </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>@ViewBag.ProjectsCount</h3>
+                        <p>@Localizer["Active Projects"]</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-bag"></i>
+                    </div>
+                    <a asp-action="Index" asp-controller="Projects" class="small-box-footer">@Localizer["More Info"] <i class="fas fa-arrow-circle-@Localizer["Float Rev"]"></i></a>
+                </div>
+            </div>
+            <!-- ./col -->
+        </div>
+        <!-- /.row -->
+        <!-- Main row -->
+        <div class="row">
+            <!-- Left col -->
+            <section class="col-lg-6 connectedSortable">
+                <!-- Latest Jobs -->
+                <div class="card card-primary card-outline">
+                    <div class="card-body">
+                        <h3 class="card-title"><b>@Localizer["Active(Latest) Jobs"]</b></h3>
+
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th width="33%">@Localizer["Job Title"]</th>
+                                    <th>@Localizer["Start Date"]</th>
+                                    <th>@Localizer["Apps Count"]</th>
+                                    <th>@Localizer["Applications"]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (Jobs item in ViewBag.LatestJobs)
+                                {
+                                    <tr>
+                                        <td>1</td>
+                                        <td>@(currentCulture == "ar-AE" ? item.ArName : item.Name)</td>
+                                        <td>@item.StartDate?.ToString("dd MMM yyyy")</td>
+                                        <td>@item.JobsApplications?.Count()</td>
+                                        <td>
+                                            <a class="btn btn-info btn-sm" asp-action="Details" asp-controller="Jobs" asp-route-id="@item.Id"><i class="fas fa-folder"></i> @Localizer["Details"]</a>
+                                            <a asp-action="AppsList" asp-controller="Jobs" asp-route-id="@item.Id" target="_blank" class="btn btn-primary btn-sm"> <i class="fas fa-chalkboard-teacher"></i> @Localizer["Apps"]</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div><!-- /.card -->
+                <!-- /.jobs -->
+            </section>
+            <!-- /.Left col -->
+            <!-- right col (We are only adding the ID to make the widgets sortable)-->
+            <section class="col-lg-6 connectedSortable">
+                <!-- Expired Jobs -->
+                <div class="card card-primary card-outline">
+                    <div class="card-body">
+                        <h3 class="card-title"><b>@Localizer["Expired Jobs"]</b></h3>
+
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th width="33%">@Localizer["Job Title"]</th>
+                                    <th>@Localizer["Expire Date"]</th>
+                                    <th>@Localizer["Apps Count"]</th>
+                                    <th>@Localizer["Applications"]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (Jobs item in ViewBag.ExpiredJobs)
+                                {
+                                    <tr>
+                                        <td>@item.Id</td>
+                                        <td>@(currentCulture == "ar-AE" ? item.ArName : item.Name)</td>
+                                        <td>@item.ExpireDate?.ToString("dd MMM yyyy")</td>
+                                        <td>@item.JobsApplications.Count()</td>
+                                        <td>
+                                            <a class="btn btn-info btn-sm" asp-action="Details" asp-controller="Jobs" asp-route-id="@item.Id"><i class="fas fa-folder"></i> @Localizer["Details"]</a>
+                                            <a asp-action="AppsList" asp-controller="Jobs" asp-route-id="@item.Id" target="_blank" class="btn btn-primary btn-sm"> <i class="fas fa-chalkboard-teacher"></i> @Localizer["Apps"]</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div><!-- /.card -->
+                <!-- /.jobs -->
+            </section>
+            <!-- right col -->
+        </div>
+        <!-- /.row (main row) -->
+    </div><!-- /.container-fluid -->
+</section>  

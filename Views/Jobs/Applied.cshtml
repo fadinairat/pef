@@ -1,0 +1,348 @@
+﻿@model PEF.Models.Jobs
+@using PEF.Models;
+@using System;
+@using System.Linq;
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["title"] = "فرص التشغيل التي تقدمت لها";
+}
+<section class="ls-section">
+    <form asp-action="Index" asp-controller="Jobs" name="search_form" id="search_form" method="get">
+        <div class="container">
+            <div class="row mt-5 justify-content-center">
+                <div class="col-12 col-md-12">
+
+                    <div class="row mb-3"><div class="col-12 text-right">@Html.Raw(ViewBag.Route)</div></div>
+                    <div class="row">
+                        <div class="col-12">
+                            <h3>فرص تشغيل تقدمت لها</h3>
+                        </div>
+                    </div>
+
+                    <div class="row" id="jobsListCont">
+
+                        @{
+                            if (ViewBag.Jobs != null)
+                            {
+                                foreach (JobsApplications job in ViewBag.Jobs)
+                                {
+                                    <div class="job-block col-lg-6 col-md-6 col-12">
+                                        <div class="inner-box">
+                                            <div class="content" style="position:relative;">
+                                                <span class="company-logo">
+                                                    @{
+                                                        if (!String.IsNullOrEmpty(job.Job?.Employer?.Logo))
+                                                        {
+                                                            <img src="@Url.Content(job.Job.Employer.Logo)" alt="@job.Job.Employer.ArName" title="@job.Job.Employer.ArName">
+                                                        }
+                                                        else
+                                                        {
+                                                            <img src="~/res/images/job.png" alt="@job.Job?.Employer?.ArName" title="@job.Job?.Employer?.ArName">
+                                                        }
+                                                    }
+                                                </span>
+                                                
+                                                @{
+                                                    var status = "في الانتظار";
+                                                    var bgColor = "bg-info";
+                                                    if (job.Status == 1)
+                                                    {
+                                                        status = "تم القبول";
+                                                        bgColor = "bg-success";
+                                                    }
+                                                    else if (job.Status == 0)
+                                                    {
+                                                        status = "في الانتظار";
+                                                        bgColor = "bg-info";
+                                                    }
+                                                    else if (job.Status == 2)
+                                                    {
+                                                        status = "قيد الدراسة";
+                                                        bgColor = "bg-dark";
+                                                    }
+                                                    else if (job.Status == 3)
+                                                    {
+                                                        status = "قائمة الانتظار";
+                                                        bgColor = "bg-light";
+                                                    }
+                                                    else if (job.Status == 4)
+                                                    {
+                                                        status = "مقابلة";
+                                                        bgColor = "bg-warning";
+                                                    }
+                                                    else if (job.Status == 5)
+                                                    {
+                                                        status = "تم التوظيف/التعاقد";
+                                                        bgColor = "bg-success";
+                                                    }
+                                                    else if (job.Status == 6)
+                                                    {
+                                                        status = "تم القبول";
+                                                        bgColor = "bg-danger";
+                                                    }
+                                                }
+
+                                                <div style="position:absolute;left:0px;top:0px;border-radius:5px;padding:8px;font-size:13px;text-align:center;" class="@bgColor">@status</div>
+                                                <h4 style="margin-bottom: 0px;"><a asp-action="Details" asp-controller="Jobs" asp-route-id="@job.Job?.Id">@job.Job?.ArName</a></h4>
+                                                <div class="font-4 text-secondary mb-3">@job.Job?.Employer?.ArName</div>
+                                                <ul class="job-info">
+                                                    @{
+                                                        string fromTimeStr = "";
+                                                        int days = 0;
+                                                        int mins = 0;
+                                                        int hours = 0;
+                                                        if (job.Job?.StartDate != null)
+                                                        {
+                                                            DateTime startDate = job.Job.StartDate ?? DateTime.MinValue;//if job.StartDate is not null select it, else select the default value
+                                                            TimeSpan span = DateTime.Now.Subtract(startDate);
+                                                            days = span.Days;
+                                                            mins = span.Minutes;
+                                                            hours = span.Hours;
+                                                        }
+
+                                                        if (days >= 1)
+                                                        {
+                                                            if (days >= 30)
+                                                            {
+                                                                fromTimeStr = "قبل " + (Math.Floor((double)days / 30)) + " شهر و " + (days % 30) + " يوم";
+                                                            }
+                                                            else
+                                                            {
+                                                                fromTimeStr = "قبل " + days + " يوم";
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            if (hours >= 1)
+                                                            {
+                                                                fromTimeStr = "قبل " + hours + " ساعة";
+                                                            }
+                                                            else
+                                                            {
+                                                                fromTimeStr = "قبل " + mins + " دقيقة";
+                                                            }
+                                                        }
+
+                                                        if (job.Job?.City != null)
+                                                        {
+                                                            <li><i class="fa-sharp fa-solid fa-location-dot"></i> @job.Job.City?.ArName</li>
+                                                        }
+                                                    }
+                                                    <li><i class="fa-solid fa-clock"></i> تاريخ الاعلان: @job.StartDate?.ToString("yyyy/MM/dd")</li>
+                                                    @{
+                                                        if (job.Job.Salary != null)
+                                                        {
+                                                            <li><i class="fa-solid fa-money-bill"></i> @(job.Job.Salary + " ") <span>@Html.Raw(job.Job?.Currency?.IconHtml)</span></li>
+                                                        }
+                                                    }
+                                                    
+                                                    @{
+                                                        if (job.Job?.ExpireDate != null)
+                                                        {
+                                                            <li><i class="fa-solid fa-clock"></i> نهاية الاعلان: @job.Job.ExpireDate?.ToString("yyyy/MM/dd")</li>
+                                                        }
+                                                    }
+                                                    <li><i class="fa-solid fa-clock"></i> وقت التقدم: @job.ApplyDate?.ToString("yyyy/MM/dd")</li>
+                                                </ul>
+
+                                                <ul class="job-other-info">
+                                                    <li class="time">@(job.Job?.WorkNature == 0 ? "دوام جزئي" : "دوام كلي")</li>
+                                                    <li class="privacy">
+                                                        @{
+                                                            <span>@job.Job?.Employer?.EmployerSector?.ArName</span>
+                                                            @*
+                                                            if (job.Job?.Employer?.Sector == 1)
+                                                            {
+                                                                <span>قطاع خاص</span>
+                                                            }
+                                                            else if (job.Job?.Employer?.Sector == 2)
+                                                            {
+                                                                <span>قطاع عام</span>
+                                                            }
+                                                            else if (job.Job?.Employer?.Sector == 3)
+                                                            {
+                                                                <span>مؤسسات أهلية</span>
+                                                            }
+                                                            else if (job.Job?.Employer?.Sector == 4)
+                                                            {
+                                                                <span>مؤسسات دولية</span>
+                                                            }
+                                                            else if (job.Job?.Employer?.Sector == 5)
+                                                            {
+                                                                <span>الشركة العادية العامة</span>
+                                                            }
+                                                            else if (job.Job?.Employer?.Sector == 6)
+                                                            {
+                                                                <span>الشركة العادية المحدودة</span>
+                                                            }
+                                                            else if (job.Job?.Employer?.Sector == 7)
+                                                            {
+                                                                <span>الشركة ذات المسؤولية المحدودة</span>
+                                                            }
+                                                            else if (job.Job?.Employer?.Sector == 8)
+                                                            {
+                                                                <span>الشركة المساهمة الخصوصية</span>
+                                                            }
+                                                            else if (job.Job?.Employer?.Sector == 9)
+                                                            {
+                                                                <span>الشركة المساهمة العامة</span>
+                                                            }
+                                                            *@
+                                                        }
+                                                    </li>
+                                                    @*<li class="required">مستعجل</li>*@
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        }
+
+                        @*<div class="job-block col-lg-12 col-md-12 col-sm-12">
+                        <div class="inner-box">
+                        <div class="content">
+                        <span class="company-logo">
+                        <img src="~/res/images/test_img.png" alt="item brand">
+                        </span>
+
+                        <h4><a href="">عنوان الوظيفة</a></h4>
+
+                        <ul class="job-info">
+                        <li><i class="fa-sharp fa-solid fa-location-dot"></i> القدس</li>
+                        <li><i class="fa-solid fa-clock"></i> منذ 11 ساعة</li>
+                        <li><i class="fa-solid fa-money-bill"></i> $35k - $45k</li>
+                        </ul>
+
+                        <ul class="job-other-info">
+                        <li class="time">دوام جزئي</li>
+                        <li class="privacy">خاص</li>
+                        <li class="required">مستعجل</li>
+                        </ul>
+                        </div>
+                        </div>
+                        </div>*@
+                    </div>
+                    @{
+                        if (!String.IsNullOrEmpty(ViewBag.Msg))
+                        {
+                            <div class="row justify-content-center"><div class="col-8 alert alert-danger text-center mt-5">@ViewBag.Msg</div></div>
+                        }
+                    }
+                </div>
+
+                
+            </div>
+        </div>
+    </form>
+</section>
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            
+            $(document).on("click", ".JField", function () {
+                reloadJobs();
+            });
+
+            $(document).on("change", "#city, #ResCountOption, #SortOption, input[name=workNature]", function () {
+                console.log("reloadJobs");
+                reloadJobs();
+            });
+            $(document).on("blur", "#keyword", function () {
+                reloadJobs();
+            });
+        });
+
+        function reloadJobs() {
+            var fieldsList = "";
+            $(".JField").each(function () {
+                if ($(this).is(":checked")) {
+                    var fieldId = $(this).data("itemid");
+                    if (fieldsList == "") fieldsList = "&JFields=" + fieldId;
+                    else fieldsList += "&JFields=" + fieldId;
+                }
+            });
+            var keyword = $("#keyword").val();
+            var city = $("#city").val();
+            var resCount = $("#ResCountOption").val();
+            var sortOption = $("#SortOption").val();
+            var workNature = $("input[name=workNature]:checked").val();
+            var url = "@Url.Action("LoadJobs","Jobs")?keyword=" + keyword + "&city=" + city + fieldsList + "&ResCountOption=" + resCount + "&SortOption=" + sortOption + "&WorkNature=" + workNature;
+
+            $.ajax({
+                url: url,
+                dataType: "json",
+                beforeSend: function () {
+                    $("#jobsListCont").html('<div class="col-12 text-center" id="loader" style="padding-top:100px;" ><i class="fa-solid fa-spinner fa-spin fa-spin-reverse fa-lg fa-2xl"></i></div>');
+                },
+                success: function (data) {
+                    var jobs = data.jobs;
+                    var jobsHtml = "";
+                    $("#loader").remove();
+                    if (jobs.length > 0) {
+                        for (var i = 0; i < jobs.length; i++) {
+                            var fromTimeStr = "";
+                            jobsHtml += '<div class="job-block col-lg-12 col-md-12 col-sm-12" >' +
+                                '<div class="inner-box" >' +
+                                '<div class="content" ><span class="company-logo" >';
+
+                            if (jobs[i].employer.logo != null) {
+                                jobsHtml += '<img src="' + jobs[i].employer.logo.replace("~/", "/") + '" alt = "' + jobs[i].arName + '" title = "' + jobs[i].arName + '" >';
+                            }
+                            else jobsHtml += '<img src="~/res/images/job.png" alt = "' + jobs[i].arName + '" title = "' + jobs[i].arName + '" >';
+
+
+                            jobsHtml += '</span>';
+                            jobsHtml += '<h4><a href="@Url.Action("Details","Jobs")/' + jobs[i].id + '" > ' + jobs[i].arName + '</a></h4>'
+
+
+                            jobsHtml += '<ul class="job-info" >';
+                            if (jobs[i].city != null) {
+                                jobsHtml += '<li><i class="fa-sharp fa-solid fa-location-dot" > </i> ' + jobs[i].city.arName + '</li>';
+                            }
+                            jobsHtml += '<li><i class="fa-solid fa-clock" > </i> ' + fromTimeStr + '</li>';
+                            if (jobs[i].salary != null) {
+                                jobsHtml += '<li><i class="fa-solid fa-money-bill" ></i> ' + jobs[i].salary + ' <span>' + jobs[i].currency.iconHtml + '</span ></li>';
+                            }
+                            jobsHtml += '</ul>';
+
+                            jobsHtml += '<ul class="job-other-info">';
+                            if (jobs[i].workNature == 1) jobsHtml += '<li class="time">دوام كلي</li>';
+                            else jobsHtml += '<li class="time" >دوام جزئي</li>';
+
+                            jobsHtml += '<li class="privacy">';
+                            if (jobs[i].employer.sector == 1) jobsHtml += '<span>قطاع خاص</span>';
+                            else if (jobs[i].employer.sector == 2) jobsHtml += '<span>قطاع عام</span>';
+                            else if (jobs[i].employer.sector == 3) jobsHtml += '<span>مؤسسات أهلية</span>';
+                            else if (jobs[i].employer.sector == 4) jobsHtml += '<span>مؤسسات دولية</span>';
+                            jobsHtml += "</li></ul>";
+
+                            jobsHtml += '</div></div></div>';
+                        }
+                    }
+                    else {
+                        jobsHtml = "<div class='col-12 mt-5 d-flex justify-content-center text-center'><div class='alert alert-success' style='max-width:500px;width:100%;' >لم يتم العثور على نتائج...</div></div>";
+                    }
+                    $("#jobsListCont").html(jobsHtml);
+                },
+                error: function (jqXhr, json, errorThrown) {
+                    try {
+                        var errors = jqXhr.responseJSON.errors;
+                        console.log(errors);
+                    }
+                    catch (eee) {
+                        console.log(eee.message);
+                    }
+                },
+                complete: function () {
+                    $("#loader").remove();
+                }
+            });
+        }
+
+
+    </script>
+    <partial name="_validationMsg" />
+}

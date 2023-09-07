@@ -1,0 +1,310 @@
+﻿@model PEF.Models.Projects
+@using PEF.Models;
+@{
+    ViewData["Title"] = "Edit";
+}
+<link rel="stylesheet" href="~/LTE-Admin/plugins/select2/css/select2.min.css">
+<link rel="stylesheet" href="~/LTE-Admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+<partial name="_validationMsg" />
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Projects</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home</a></li>
+                    <li class="breadcrumb-item active">Projects</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<section class="content">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-6 text-left"><h1 class="form-title">Edit Project</h1></div>
+            <div class="col-6 text-right mt-3 sm-link"><a asp-action="Index"><i class="bi bi-list-ul"></i> List All Projects</a></div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+                <form asp-action="Edit" enctype="multipart/form-data">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            <label asp-for="ProgramType" class="control-label"></label>
+                            <select asp-for="ProgramType" class="form-control" asp-items="ViewBag.ProgramType"></select>
+                        </div>
+                        <div class="form-group col-sm-6" style="display:block;" id="projTypeCont">
+                            <label asp-for="ProjectType" class="control-label"></label>
+                            <select asp-for="ProjectType" class="form-control">
+                                <option value="">:: SELECT TYPE ::</option>
+                                <!option value="1" @(Model.ProjectType == 1 ? "SELECTED":"")>Grants</!option>
+                                <!option value="2" @(Model.ProjectType == 2 ? "SELECTED":"")>Loans</!option>
+                            </select>
+                            <span asp-validation-for="ProjectType" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            <label asp-for="Name" class="control-label"></label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label asp-for="ArName" class="control-label"></label>
+                            <input asp-for="ArName" class="form-control" />
+                            <span asp-validation-for="ArName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            <label asp-for="FormId" class="control-label"></label>
+                            <select asp-for="FormId" class="form-control">
+                                <option value="">:: No Application form ::</option>
+                                @{
+                                    foreach (Forms item in ViewBag.Forms)
+                                    {
+                                        <!option value="@item.Id" @(Model.FormId!=null && Model.FormId== item.Id  ? "SELECTED":"") >@item.Title</!option>
+                                    }
+                                }
+                            </select>
+                            <span asp-validation-for="FormId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label for="InternalFormId" class="control-label">Internal Page Form</label>
+                            <select asp-for="InternalFormId" class="form-control">
+                                <option value="">:: No Form ::</option>
+                                @{
+                                    foreach (Forms item in ViewBag.InternalForms)
+                                    {
+                                        <!option value="@item.Id" @(item.Id == Model.InternalFormId ? "SELECTED":"") >@item.Title</!option>
+                                    }
+                                }
+                            </select>
+                            <span asp-validation-for="FormId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            <label asp-for="TargetGroup" class="control-label"></label>
+                            <input asp-for="TargetGroup" class="form-control" />
+                            <span asp-validation-for="TargetGroup" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label asp-for="ArTargetGroup" class="control-label"></label>
+                            <input asp-for="ArTargetGroup" class="form-control" />
+                            <span asp-validation-for="ArTargetGroup" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            <label asp-for="DonorId" class="control-label"></label>
+                            <select asp-for="DonorId" class="form-control">
+                                <option value="">:: SELECT DONOR ::</option>
+                                @{
+                                    foreach (Donors item in ViewBag.Donors)
+                                    {
+                                        <!option value="@item.Id"  @(Model.DonorId == item.Id ? "SELECTED":"") >@item.Name</!option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        
+                        <div class="form-group col-sm-6">
+                            <label asp-for="Budget" class="control-label"></label>
+                            <input asp-for="Budget" type="number" class="form-control" />
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label asp-for="CurrencyId" class="control-label"></label>
+                            <select asp-for="CurrencyId" class="form-control" asp-items="ViewBag.CurrencyId"></select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            <label asp-for="BeneficiaryNumbers" class="control-label"></label>
+                            <input asp-for="BeneficiaryNumbers" class="form-control" />
+                            <span asp-validation-for="BeneficiaryNumbers" class="text-danger"></span>
+                        </div>
+                        @*<div class="form-group col-sm-6">
+                            <label asp-for="Location" class="control-label"></label>
+                            <select asp-for="Location" class="form-control" asp-items="ViewBag.Location"></select>
+                        </div>*@
+                        <div class="form-group col-6">
+                            <label asp-for="District" class="control-label"></label>
+                            <select asp-for="District" class="form-control">
+                                <option value="">:: SELECT DISTRICT ::</option>
+                                <!option value="Westbank" @(Model!=null && Model.District == "Westbank" ? "SELECTED" : "")  >Westbank</!option>
+                                <!option value="Gaza" @(Model!=null && Model.District == "Gaza" ? "SELECTED" : "")  >Gaza</!option>
+                                <!option value="Both" @(Model!=null && Model.District == "Both" ? "SELECTED" : "")  >Gaza and Westbank</!option>
+                            </select>
+                            <span asp-validation-for="District" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group col-sm-6">
+                            <label asp-for="TargetLocations" class="control-label"></label>
+                            <input asp-for="TargetLocations" class="form-control" />
+                            <span asp-validation-for="TargetLocations" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            <label asp-for="Duration" class="control-label"></label>
+                            <input asp-for="Duration" type="number" step="0.5" class="form-control" />
+                            <span asp-validation-for="Duration" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label asp-for="DurationUnit" class="control-label"></label>
+                            <select asp-for="DurationUnit" class="form-control">
+                                <!option value="1" @(Model.DurationUnit == 1 ? "SELECTED":"")>Days</!option>
+                                <!option value="2" @(Model.DurationUnit == 2 ? "SELECTED":"")>Months</!option>
+                                <!option value="3" @(Model.DurationUnit == 3 ? "SELECTED":"")>Years</!option>
+                            </select>
+                            <span asp-validation-for="DurationUnit" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            <label asp-for="StartDate" class="control-label"></label>
+                            <input asp-for="StartDate" class="form-control" />
+                            <span asp-validation-for="StartDate" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label asp-for="EndDate" class="control-label"></label>
+                            <input asp-for="EndDate" class="form-control" />
+                            <span asp-validation-for="EndDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            <label asp-for="Description" class="control-label"></label>
+                            <textarea asp-for="Description" rows="4" class="form-control tinymce"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label asp-for="ArDescription" class="control-label"></label>
+                            <textarea asp-for="ArDescription" rows="4" class="form-control tinymce"></textarea>
+                            <span asp-validation-for="ArDescription" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            <label asp-for="Conditions" class="control-label"></label>
+                            <textarea asp-for="Conditions" rows="4" class="form-control tinymce "></textarea>
+                            <span asp-validation-for="Conditions" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label asp-for="ArConditions" class="control-label"></label>
+                            <textarea asp-for="ArConditions" rows="4" class="form-control tinymce "></textarea>
+                            <span asp-validation-for="ArConditions" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            <label asp-for="Partners" class="control-label"></label>
+                            <textarea asp-for="Partners" rows="4" class="form-control tinymce"></textarea>
+                            <span asp-validation-for="Partners" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label asp-for="ArPartners" class="control-label"></label>
+                            <textarea asp-for="ArPartners" rows="4" class="form-control tinymce"></textarea>
+                            <span asp-validation-for="ArPartners" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            <label asp-for="ProjectActivities" class="control-label"></label>
+                            <textarea asp-for="ProjectActivities" rows="4" class="form-control tinymce"></textarea>
+                            <span asp-validation-for="ProjectActivities" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label asp-for="ArProjectActivities" class="control-label"></label>
+                            <textarea asp-for="ArProjectActivities" rows="4" class="form-control tinymce"></textarea>
+                            <span asp-validation-for="ArProjectActivities" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            <label asp-for="ProjectCoordinator" class="control-label"></label>
+                            <input asp-for="ProjectCoordinator" class="form-control" />
+                            <span asp-validation-for="ProjectCoordinator" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label asp-for="ArProjectCoordinator" class="control-label"></label>
+                            <input asp-for="ArProjectCoordinator" class="form-control" />
+                            <span asp-validation-for="ArProjectCoordinator" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            <label asp-for="Outputs" class="control-label"></label>
+                            <textarea asp-for="Outputs" rows="4" class="form-control tinymce"></textarea>
+                            <span asp-validation-for="Outputs" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label asp-for="ArOutputs" class="control-label"></label>
+                            <textarea asp-for="ArOutputs" rows="4" class="form-control tinymce"></textarea>
+                            <span asp-validation-for="ArOutputs" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            <label asp-for="ProjectImage" class="control-label"></label>
+                            <input asp-for="ProjectImage" type="file" accept=".jpg" class="form-control" />
+                            <span asp-validation-for="ProjectImage" class="text-danger"></span>
+                            @if (!String.IsNullOrEmpty(Model.ProjectImage))
+                            {
+                                <img src="@Url.Content(Model.ProjectImage)" style="width:120px;">
+                            }
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            <label asp-for="Standards" class="control-label"></label>
+                            <textarea asp-for="Standards" rows="4" class="form-control tinymce"></textarea>
+                            <span asp-validation-for="Standards" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label asp-for="ArStandards" class="control-label"></label>
+                            <textarea asp-for="ArStandards" rows="4" class="form-control tinymce"></textarea>
+                            <span asp-validation-for="ArStandards" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            <label asp-for="Notes" class="control-label"></label>
+                            <textarea asp-for="Notes" rows="4" class="form-control tinymce"></textarea>
+                            <span asp-validation-for="Notes" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label asp-for="ArNotes" class="control-label"></label>
+                            <textarea asp-for="ArNotes" rows="4" class="form-control tinymce"></textarea>
+                            <span asp-validation-for="ArNotes" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Save Changes" class="btn btn-primary" />
+                    </div>
+                </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+</div>
+</section>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

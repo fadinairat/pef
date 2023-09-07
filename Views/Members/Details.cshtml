@@ -1,0 +1,647 @@
+﻿@model PEF.Models.Members;
+@using PEF.Models;
+@using System.Globalization;
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["title"] = "بيانات الباحث";
+}
+<div class="container">
+    
+<dl class="row prof-details">
+    <div class="text-center mb-3" style="position:relative;">
+        <h2>الملف الشخصي</h2>
+        <div style="position:absolute;left:20px;top:10px;"><a asp-action="Profile" asp-controller="Members" class="display-6 text-danger"><i class="fa-solid fa-user-pen"></i></a></div>
+    </div>
+    <div class="col-12 col-sm-12 col-md-3" style="border-right:solid 1px #ccc;" >
+        <!-- Profile Image and Email -->
+        <div class="row">
+                <div class="col-12 mt-2 text-center">اخر تسجيل دخول : @Model.LastLogin?.ToString("dd MMM yyyy hh:mm", new CultureInfo("ar-AE"))</div><br />
+                <div class="col-12 mt-2 text-center">تاريخ التسجيل : @Model.AddDate?.ToString("dd MMM yyyy", new CultureInfo("ar-AE"))</div><br />
+        </div>
+        <div class="row">
+            @{
+                if (Model.Completed)
+                {
+                    <div class="col-12 text-center mb-3 mt-3"><div class="bg-success text-white p-2 mt-2 mb-2 d-inline">حسابك مكتمل</div></div>
+                }
+                else
+                {
+                    <div class="col-12 text-center mb-3 mt-3"><div class="bg-danger text-white p-2 mt-2 mb-2 d-inline">حسابك غير مكتمل</div></div>
+                }
+            }
+            <br />
+            @{
+                if (Model.Photo != null && Model.Photo != "")
+                {
+                     <div class="col-12 text-center"><div class="prof-image" ><img src="@Url.Content(Model.Photo)" style="width:100%;margin-right:auto;margin-left:auto;"></div></div>
+                }
+            }
+        </div>
+    </div>
+    <div class="col-12 col-sm-12 col-md-9" style="border-right:solid 0px #ccc;">
+        <!-- personal Details -->
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-bordered" style="width:100%;">
+                    <tbody>
+                        <tr>
+                            <td style="width:25%;"><b>الاسم الأول:</b></td>
+                            <td style="width:25%;">@Html.DisplayFor(model => model.FirstName)</td>
+                            <td style="width:25%;"><b>اسم الأب:</b></td>
+                            <td style="width:25%;">@Html.DisplayFor(model => model.FatherName)</td>
+                        </tr>
+                        <tr>
+                            <td><b>اسم الجد:</b></td>
+                            <td>@Html.DisplayFor(model => model.GrandName)</td>
+                            <td><b>اسم العائلة:</b></td>
+                            <td>@Html.DisplayFor(model => model.FamilyName)</td>
+                        </tr>
+                        <tr>
+                            <td><b>رقم الهوية:</b></td>
+                            <td>@Html.DisplayFor(model => model.IdNum)</td>
+                            <td><b>الجنس:</b></td>
+                            <td>@(Model.Gender==2 ? "أنثى" : "ذكر")</td>
+                        </tr>
+                        <tr>
+                            <td><b>الحالة الاجتماعية:</b></td>
+                            <td>@Html.DisplayFor(model => model.SocialStatus.ArName)</td>
+                            <td><b>تاريخ الميلاد:</b></td>
+                            <td>@Model.BirthDate.ToString("dd MMM yyyy", new CultureInfo("ar-AE"))</td>
+                        </tr>
+                        <tr>
+                            <td><b>عدد أفراد الأسرة:</b></td>
+                            <td>@Html.DisplayFor(model => model.FamilyMembersCount)</td>
+                            <td><b>المحافظة:</b></td>
+                            <td>@Html.DisplayFor(model => model.City.ArName)</td>
+                        </tr>
+                        <tr>
+                            <td><b>المدينة / المنطقة:</b></td>
+                                <td>@Html.DisplayFor(model => model.Area.ArName)</td>
+                                <td><b>الحي:</b></td>
+                                <td>@Html.DisplayFor(model => model.District)</td>
+                        </tr>
+                        <tr>
+                            <td><b>الشارع:</b></td>
+                            <td>@Html.DisplayFor(model => model.Street)</td>
+                            <td><b>بالقرب من:</b></td>
+                            <td>@Html.DisplayFor(model => model.NearTo)</td>
+                        </tr>
+                        <tr>
+                            <td><b>رقم الخلوي:</b></td>
+                                <td>@Html.DisplayFor(model => model.Mobile)</td>
+                                <td><b>رقم الخلوي 2:</b></td>
+                                <td>@Html.DisplayFor(model => model.Mobile2)</td>
+                        </tr>
+                        <tr>
+                            <td><b>الهاتف:</b></td>
+                            <td>@Html.DisplayFor(model => model.Tel)</td>
+                            <td><b>البريد الالكتروني:</b></td>
+                            <td>@Html.DisplayFor(model => model.Email)</td>
+                        </tr>
+
+                        <tr>
+                            <td><b>طبيعة الاهتمام:</b></td>
+                            <td>
+                                @{
+                                    if(Model.Interest!=null){
+                                        if (Model.Interest.Contains("1"))
+                                        {
+                                            <span>فرصة توظيف, </span>
+                                        }
+                                        if (Model.Interest.Contains("2"))
+                                        {
+                                            <span>تدريب على راس العمل, </span>
+                                        }
+                                        if (Model.Interest.Contains("3"))
+                                        {
+                                            <span>تدريب غير مدفوع, </span>
+                                        }
+                                        if (Model.Interest.Contains("4"))
+                                        {
+                                                <span>تمويل مشاريع صغيرة</span>
+                                            }
+                                        }
+                                    }
+                                </td>
+                            </tr>
+
+                <!-- Health Status and Property -->
+                <tr style="border-top:solid 4px brown;">
+                    <td><b> الوضع الصحي:</b></td>
+                    <td>
+                        @{
+                            if (Model.HealthStatus != null)
+                            {
+                                if (Model.HealthStatus == 1)
+                                {
+                                    <span>سليم</span>
+                                }
+                                else if (Model.HealthStatus == 2)
+                                {
+                                    <span>مريض</span>
+                                }
+                                else if (Model.HealthStatus == 3)
+                                {
+                                    <span>ذوي اعاقة</span>
+                                }
+                            }
+                        }
+                        </td>
+                        @{
+                            if(Model.HealthStatus != null && Model.HealthStatus == 2 && Model.SickNature!=null)
+                            {
+                                <td><b>طبيعة المرض</b></td>
+                                if(Model.SickNature == 1)
+                                {
+                                    <td>أمراض  قلب</td>
+                                }
+                                else if (Model.SickNature == 2)
+                                {
+                                    <td>الضغط</td>
+                                }
+                                else if(Model.SickNature == 3)
+                                {
+                                    <td>السكري</td>
+                                }
+                                else if (Model.SickNature == 4)
+                                {
+                                    <td>امراض المفاصل</td>
+                                }
+                            }
+                            else
+                            {
+                                <td></td>
+                                <td></td>
+                            }
+                        }
+                        
+                    </tr>
+                    @{
+                        if (Model.HealthStatus != null && Model.HealthStatus == 3)
+                        {
+                        <tr>
+                            <td><b>نوع الاعاقة:</b></td>
+                            <td>
+                                @{
+                                    if (Model.DisabilityType == 1)
+                                    {
+                                        <span>اعاقة حركية</span>
+                                    }
+                                    else if (Model.DisabilityType == 2)
+                                    {
+                                        <span>اعاقة سمعية</span>
+                                    }
+                                    else if (Model.DisabilityType == 3)
+                                    {
+                                        <span>اعاقة بصرية</span>
+                                    }
+                                    else if (Model.DisabilityType == 4)
+                                    {
+                                        <span>اعاقة عقلية</span>
+                                    }
+                                    else if (Model.DisabilityType == 5)
+                                    {
+                                        <span>اعاقة نطقية</span>
+                                    }
+                                }
+                            </td>
+                            <td>حجم الاعاقة:</td>
+                            <td>
+                            @{
+                                if (Model.DisabilitySize == 1)
+                                {
+                                    <span>جزئية</span>
+                                }
+                                else if (Model.DisabilitySize == 2)
+                                {
+                                    <span>كلية</span>
+                                }
+                            }
+                            </td>
+                        </tr>
+               
+                        }
+                    }
+            
+                    @{
+                        if(Model.HealthStatus!=null && (Model.HealthStatus == 3 || Model.HealthStatus==2)){
+                        <tr>
+                            <td><b>المرفق الطبي:</b></td>
+                            <td>
+                            @if (!String.IsNullOrEmpty(Model.HealthAtt1))
+                            {
+                                <a href="@Url.Content(Model.HealthAtt1)" target="_blank" class="btn btn-primary"><i class="fas fa-download"></i> تنزيل</a>
+                            }
+                            </td>
+                            <td></td>
+                            <td></td>
+                                    </tr>
+                                }
+                            }
+
+                        <tr>
+                            <td><b>ملكية المنزل:</b></td>
+                            <td>
+                        @{
+                            if (Model.PropertyType != null)
+                            {
+                                    if (Model.PropertyType == 0)
+                                    {
+                                        <span>أجار</span>
+                                    }
+                                    else if (Model.PropertyType == 1)
+                                    {
+                                        <span>ملك</span>
+                                    }
+                                    else if (Model.PropertyType == 2)
+                                    {
+                                        <span>استخدام</span>
+                                    }
+                            }
+                                    
+                        }
+                        </td>
+                        <td><b>طبيعة المسكن:</b></td>
+                        <td>
+                        @{
+                            if (Model.HouseNature!=null)
+                            {
+                                if (Model.HouseNature == 0)
+                                {
+                                    <span>شقة</span>
+                                }
+                                else if (Model?.HouseNature == 1)
+                                {
+                                    <span>منزل مستقل</span>
+                                }
+                                else if (Model?.HouseNature == 2)
+                                {
+                                                <span>أخرى</span>
+                                            }
+                                        }
+
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                        <td><b>شكل المسكن:</b></td>
+                        <td>
+                        @{
+                            if (Model.HouseType != null)
+                            {
+                                if (Model.HouseType == 0)
+                                {
+                                    <span>باطون</span>
+                                }
+                                else if (Model.HouseType == 1)
+                                {
+                                    <span>زينكو</span>
+                                }
+                                else if (Model.HouseType == 2)
+                                {
+                                    <span>خيمة</span>
+                                }
+                                else if (Model.HouseType == 3)
+                                {
+                                    <span>كرفان</span>
+                                }
+                            }
+                                       
+                        }
+                        </td>
+                        <td><b>مساحة المنزل:</b></td>
+                        <td>@Html.DisplayFor(model => model.HouseSize) متر مربع</td>
+                    </tr>
+                    @{
+                        if(Model.IncomeExist == true){
+                        <tr>
+                            <td><b>اسم معيل الأسرة:</b></td>
+                            <td>@Html.DisplayFor(model => model.BreedWinnder)</td>
+                            <td><b>مصدر الدخل:</b></td>
+                            <td>@Html.DisplayFor(model => model.IncomeSource)</td>
+                        </tr>
+                        <tr>
+                            <td><b>رقم هوية المعيل:</b></td>
+                            <td>@Html.DisplayFor(model => model.IncomeIdNumber)</td>
+                            <td><b>قيمة الدخل:</b></td>
+                            <td>@Html.DisplayFor(model => model.IncomeValue)</td>
+                        </tr>
+                        }
+                    }
+                    <tr>
+                        <td><b>صورة الهوية الشخصية/ جواز السفر:</b></td>
+                        <td>
+                            @{
+                                if(!string.IsNullOrEmpty(Model.Attach1)){
+                                    <a href="@Url.Content(Model.Attach1)" target="_blank"><i class="fas fa-download"></i></a>
+                                }
+                            }
+                        </td>
+                                <td><b>السيرة الذاتية:</b></td>
+                        <td>
+                        @{
+                            if(!string.IsNullOrEmpty(Model.Attach2)){
+                                <a href="@Url.Content(Model.Attach2)" target="_blank"><i class="fas fa-download"></i></a>
+                            }
+                        }  
+                        </td>      
+                    </tr>
+                    <tr>
+                        <td><b>مرفقات أخرى:</b></td>
+                        <td colspan="3">
+                            @{
+                                if (!string.IsNullOrEmpty(Model.Attach3))
+                                {
+                                    <a href="@Url.Content(Model.Attach3)" target="_blank"><i class="fas fa-download"></i></a>
+                                }
+                            }
+                        </td>
+                    </tr>
+
+                    <!-- end of health-->
+                    </tbody>
+                </table>
+            </div>
+            
+        </div>
+    </div>
+    
+    <div class="col-6 justify-content-center">
+        <table style="width:100%;" class="table table-bordered" >
+            
+        </table>
+    </div>
+   
+ 
+</dl>
+<dl class="row">
+    <div class="col-6 text-right" ><h3>أفراد العائلة</h3></div>
+        <div class="col-6 text-left"><a asp-action="ProfDetails" asp-controller="Members" class="display-6 text-danger"><i class="fa-solid fa-user-pen"></i></a></div>
+        <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>الاسم الكامل</th>
+                <th>صلة القرابة</th>
+                <th>رقم الهوية</th>
+                <th>الجنس</th>
+                <th>تاريخ الميلاد</th>
+                <th>الحالة الصحية</th>
+                <th>المرض</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                if (ViewBag.MembersFamily != null)
+                {
+                    var i = 1;
+                    foreach (MembersFamily item in ViewBag.MembersFamily)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td>@item.FullName</td>
+                            <td>
+                                @{
+                                    if (item.Relation == 1)
+                                    {
+                                        <span>ابن</span>
+                                    }
+                                    else if (item.Relation == 2)
+                                    {
+                                        <span>بنت</span>
+                                    }
+                                    else if (item.Relation == 3)
+                                    {
+                                        <span>أخ</span>
+                                    }
+                                    else if (item.Relation == 4)
+                                    {
+                                        <span>أخت</span>
+                                    }
+                                    else if (item.Relation == 5)
+                                    {
+                                        <span>زوج</span>
+                                    }
+                                    else if (item.Relation == 6)
+                                    {
+                                        <span>زوجة</span>
+                                    }
+                                    else if (item.Relation == 7)
+                                    {
+                                        <span>أب</span>
+                                    }
+                                    else if (item.Relation == 8)
+                                    {
+                                        <span>أم</span>
+                                    }
+                                }
+                            </td>
+                            <td>@item.IdNum</td>
+                            <td>
+                                @{
+                                    if (item.Gender == 1)
+                                    {
+                                        <span>ذكر</span>
+                                    }
+                                    else
+                                    {
+                                        <span>أنثى</span>
+                                    }
+                                }
+                            </td>
+                            <td>@{
+                            DateTime? dt = item.BirthDate;
+                                <span>@dt?.ToString("dd MMM yyyy", new CultureInfo("ar-AE"))</span>
+                            }</td>
+                            <td>
+                                @{
+                                    if (item.HealthStatus == 0)
+                                    {
+                                        <span>سليم</span>
+                                    }
+                                    else if(item.HealthStatus == 1)
+                                    {
+                                        <span>غير سليم</span>
+                                    }
+                                    else
+                                    {
+                                        <span>ذوي اعاقة</span>
+                                    }
+                                }
+                            </td>
+                            <th>@item.Disease</th>
+                        </tr>
+                        i++;
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</dl>
+<dl class="row">
+    <h3>التحصيل العلمي</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>نوع المستوى التعليمي</th>
+                <th>المستوى التعليمي</th>
+                <th>الكلية / الجامعة</th>
+                <th>تاريخ التخرج</th>
+                <th>المسار</th>
+                <th>التخصص</th>
+                <th>المرفقات</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                if (ViewBag.MembersEducation != null)
+                {
+                    var i = 1;
+                    foreach (MembersEducation item in ViewBag.MembersEducation)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td>
+                                @{
+                                    if (item.EducationLevelType == 1)
+                                    {
+                                        <span>عامل</span>
+                                    }
+                                    else if (item.EducationLevelType == 2)
+                                    {
+                                        <span>مهني</span>
+                                    }
+                                    else if (item.EducationLevelType == 3)
+                                    {
+                                        <span>خريج</span>
+                                    }
+                                }
+                            </td>
+                            <td>@item.Education?.ArName</td>
+                            <td>@item.University</td>
+                                <td>@item.GradDate?.ToString("dd MMM yyyy", new CultureInfo("ar-AE"))</td>
+                            <td>
+                                @{
+                                    if (item.EducationLevelType == 1)
+                                    {
+                                        <span>عامل</span>
+                                    }
+                                    else if (item.EducationLevelType == 2)
+                                    {
+                                        <span>مهنة</span>
+                                    }
+                                    else if (item.EducationLevelType == 2)
+                                    {
+                                        <span>تعليم اكاديمي</span>
+                                    }
+                                }
+                            </td>
+                            <td>@item.Specialize?.ArName</td>
+                            <td>
+                                @{
+                                    if(!string.IsNullOrEmpty(item.Attachment))
+                                    {
+                                        <a href="@Url.Content(item.Attachment)" target="_blank">تنزيل</a>
+                                    }
+                                }
+                            </td>
+                        </tr>
+                        i++;
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</dl>
+<dl class="row">
+    <h3>الخبرات</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>العنوان</th>
+                <th>المسمى الوظيفي</th>
+                <th>الفترة</th>
+                <th>المرفقات</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                if (ViewBag.MembersExpert != null)
+                {
+                    var i = 1;
+                    foreach (MembersExpert item in ViewBag.MembersExpert)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td>@item.JobTitle</td>
+                            <td>@item.JobLocation</td>
+                            <td>
+                                @{
+                                    if(item.StartDate?.ToString()!="" && item.EndDate?.ToString() != "")
+                                    {
+                                            <span>@(item.StartDate?.ToString("dd MMM yyyy", new CultureInfo("ar-AE")) + " الى " + item.EndDate?.ToString("dd MMM yyyy", new CultureInfo("ar-AE")))</span>
+                                    }
+                                }
+                            </td>
+                            <td>
+                                @{
+                                    if (!string.IsNullOrEmpty(item.Attachment))
+                                    {
+                                        <a href="@Url.Content(item.Attachment)" target="_blank">تنزيل</a>
+                                    }
+                                }
+                            </td>
+                        </tr>
+                        i++;
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</dl>
+<dl class="row">
+    <h3>الدورات التدريبية</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>الاسم</th>
+                <th>عدد الساعات</th>
+                <th>جهة الحصول على الدورة</th>
+                <th>المرفقات</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                if (ViewBag.MembersTraining != null)
+                {
+                    var i = 1;
+                    foreach (MembersTraining item in ViewBag.MembersTraining)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td>@item.Name</td>
+                            <td>@item.Hours</td>
+                            <td>@item.TrainingSupplier</td>
+                            <td>
+                                @{
+                                    if (!string.IsNullOrEmpty(item.Attachment))
+                                    {
+                                        <a href="@Url.Content(item.Attachment)" target="_blank">تنزيل</a>
+                                    }
+                                }
+                            </td>
+                        </tr>
+                        i++;
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</dl>
+</div>

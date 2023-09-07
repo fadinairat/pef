@@ -1,0 +1,50 @@
+﻿@model PEF.Models.Members
+@using PEF.Models
+@{
+    ViewData["Title"] = "تغيير كلمة المرور";
+}
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+<partial name="_validationMsg" />
+
+<div class="container">
+<div class="row d-flex justify-content-center mt-4 mb-5">
+    <div class="text-center mb-3" ><h2>نموذج تغيير كلمة المرور</h2></div>
+    <div class="col-12 col-md-4 col-sm-8 form-box">
+        <form asp-action="Change" asp-controller="Members" method="post">
+       
+        <div class="row mb-3 mt-3">
+                <div class="form-group col-12 col-md-12">
+                <label for="oldpassword" class="control-label  mb-2">كلمة المرور القديمة</label>
+                <input name="oldpassword" id="oldpassword" type="password" data-val="true" data-val-required="الحقل اجباري*" data-val-length="كلمة المرور يجب ان تتكون من ست خانات على الاقل" data-val-length-min="6"  required="required" class="form-control" />
+                 <span class="text-danger field-validation-valid" data-valmsg-for="oldpassword" data-valmsg-replace="true"></span>
+            </div>
+        </div>
+        <div class="row mb-3">
+                <div class="form-group col-12 col-md-12">
+                <label for="newpassword" class="control-label  mb-2">كلمة المرور الجديدة</label>
+                <input name="newpassword" id="newpassword" type="password" data-val="true" data-val-required="الحقل اجباري*" data-val-length="كلمة المرور يجب ان تتكون من ست خانات على الاقل" data-val-length-min="6" required="required" class="form-control" />
+                <span class="text-danger field-validation-valid" data-valmsg-for="newpassword" data-valmsg-replace="true"></span>
+            </div>
+        </div>
+         <div class="row mb-3">
+                <div class="form-group col-12 col-md-12">
+                <label for="confirmpassword" class="control-label  mb-2">تأكيد المرور الجديدة</label>
+                <input name="confirmpassword" id="confirmpassword" type="password" data-val="true" data-val-required="الحقل اجباري*" data-val-length="كلمة المرور يجب ان تتكون من ست خانات على الاقل" data-val-length-min="6" required="required" class="form-control" />
+                <span class="text-danger field-validation-valid" data-valmsg-for="confirmpassword" data-valmsg-replace="true"></span>
+            </div>
+        </div>
+        <div class="form-group mb-3 text-center">
+        <input type="submit" value="تغيير كلمة المرور" class="btn subscribe_btn" />
+        </div>
+        </form>
+    </div>
+</div>
+</div>
+@section Scripts{
+    {
+        <partial name="_ValidationScriptsPartial" >
+        <partial name="_validationMsg" />
+    }
+}

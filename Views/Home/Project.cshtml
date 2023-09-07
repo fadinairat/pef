@@ -1,0 +1,465 @@
+﻿@model PEF.Models.Projects
+@using PEF.Models
+@using System.Globalization;
+@using System.Text.RegularExpressions
+@inject IConfiguration _config
+@inject IHttpContextAccessor HttpContextAccessor
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["title"] = Model.ArName;
+    string myKey = _config["GoogleReCaptcha:key"];
+}
+<style>
+.dForm-label{
+    min-width:80px !important;
+}
+</style>
+<div class="container" >
+    <div class="row">
+        <div class="col-12 col-md-9" >
+            <div class="row mb-3"><div class="col-12 text-right" >@Html.Raw(ViewBag.Route)</div></div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-12 col-sm-6" >
+                            <h2>@Model.ArName</h2>
+                    @{
+                        if (!String.IsNullOrEmpty(Model.ProjectImage))
+                        {
+                            <img src="@Url.Content(Model.ProjectImage)" alt="@Model.ArName" title="@Model.ArName" class="img-fluid" style="width:100%;max-width:400px;">
+                        }
+                        else{
+                            <img src="~/res/images/projects.png" alt="@Model.ArName" title="@Model.ArName" class="img-fluid" style="width:100%;max-width:400px;">
+                        }
+                    }
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <table class="table table-bordered" >
+                                <tbody>
+                                    <tr>
+                                        <td style="width:30%;"><b>اسم المشروع:</b></td>
+                                        <td>@Model.ArName</td>
+                                    </tr>
+                                   <tr>
+                                        <td><b>عدد الشواغر:</b></td>
+                                        <td>@{
+                                                if (Model.BeneficiaryNumbers == 0)
+                                                {
+                                                    <span>غير محدد</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>@Model.BeneficiaryNumbers</span>
+                                                }
+                                            }
+                                        </td>
+                                    </tr>
+                                   <tr>
+                                        <td><b>فترة المشروع:</b></td>
+                                        <td>@Model.StartDate.ToString("dd MMM yyyy", new CultureInfo("ar-AE")) -  @Model.EndDate.ToString("dd MMM yyyy", new CultureInfo("ar-AE"))</td>
+                                    </tr>
+                                   <tr>
+                                        <td><b>المانح:</b></td>
+                                        <td>@Model.Donor?.ArName</td>
+                                    </tr>
+                                   <tr>
+                                        <td><b>المنطقة:</b></td>
+                                        <td>
+                                        @{
+                                            if(Model.District!=null && Model.District == "Gaza")
+                                            {
+                                                <span>قطاع غزة</span>
+                                            }
+                                            else if(Model.District!=null && Model.District == "Westbank")
+                                            {
+                                                <span>الضفة الغربية</span>
+                                            }
+                                            else if(Model.District!=null && Model.District == "Both")
+                                            {
+                                                <span>الضفة الغربية وقطاع غزة</span>
+                                            }
+                                        }
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>شركاء التنفيذ:<b></td>
+                                        <td>@Html.Raw(Model.ArPartners)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>الفئة المستهدفة:</b></td>
+                                        <td>@Model.ArTargetGroup</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                @{
+                    if (Model.ArDescription != null)
+                    {
+                        <div class="col-12 text-right mb-3 mt-3" >@Html.Raw(Model.ArDescription)</div>
+                    }
+                    if (Model.StartDate != null)
+                    {
+                        <div class="col-12">فترة المشروع: @Model.StartDate.ToString("dd MMM yyyy", new CultureInfo("ar-AE")) الى @Model.EndDate.ToString("dd MMM yyyy", new CultureInfo("ar-AE"))</div>
+                    }           
+                }
+                <div class="col-12">
+                    @{
+                        if (ViewBag.Form != null)
+                        {
+                            Forms ProjectForm = ViewBag.Form;
+                            <form method="post" asp-action="SaveProjectApp" enctype="multipart/form-data">
+                                <input type="hidden" name="FormId" value="@Model.InternalFormId" />
+                                <input type="hidden" name="ProjectId" value="@Model.Id" />
+                                <h3 class="mt-3">@Html.Raw(ProjectForm.ArTitle)</h3><br />
+                                @*
+                                @if (User.Identity.IsAuthenticated && @HttpContextAccessor.HttpContext?.Session.GetString("type") == "Employer")
+                                {
+                                }
+                                else
+                                {
+                                    <div class="alert alert-danger">يجب عليك تسجيل الدخول كمشغل لتتمكن من تعبة النموذج أدناه!</div>
+                                }
+                                *@
+                                <span>@(!String.IsNullOrEmpty(ProjectForm.ArDescription) ? Html.Raw(ProjectForm.ArDescription) : "")</span>
+                                @{
+
+                                    if (ViewBag.FormFields != null)
+                                    {                                        
+                                        foreach (FormsFields field in ViewBag.FormFields)
+                                        {
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    @{
+                                                        if (field.Type == "text" || field.Type == "number")
+                                                        {
+                                                            string extraParams = "";
+                                                            string subType = field.SubType;
+                                                            string style = "";
+                                                            if (field.Type == "number")
+                                                            {
+                                                                subType = "number";
+                                                                style = "max-width:200px;";
+                                                                if (field.MinAnsNumber != null) extraParams += " min=" + field.MinAnsNumber;
+                                                                if (field.MaxAnsNumber != null) extraParams += " max=" + field.MaxAnsNumber;
+                                                                if (field.Step != null) extraParams += " step=" + field.Step;
+                                                                extraParams += " maxlength='" + field.MaxLength + "' ";
+                                                            }
+                                                            else if (field.Type == "text")
+                                                            {
+                                                                extraParams += " maxlength=" + field.MaxLength + "";
+                                                            }
+                                                            if (field.SubType == "tel")
+                                                            {
+                                                                extraParams += " pattern=\"(05|0)\\d{8}|\\d{8}\" title=\"ادخل رقم الهاتف أو الخلوي بالشكل الصحيح! يبتدأ ب 05  او 0 ويتألف من 10  او 9 خانات فقط\" ";
+                                                            }
+
+                                                            <b>@Html.Raw(Regex.Replace(field.ArLabel, "<.*?>", "")) @(field.Required ? Html.Raw("<span class='requiredStar' >*</span>") : "") </b>
+
+                                                            <br>
+                                                            <input type="@subType" class="form-control @(field.Class)" placeholder="@field.ArPlaceHolder" name="@field.Title" @(field.Required == true ? "required=required" : "") value="@(!String.IsNullOrEmpty(field.DefaultValue) ? field.DefaultValue: "")" style="@style" @Html.Raw(extraParams) />
+                                                        }
+                                                        else if (field.Type == "textarea")
+                                                        {
+                                                            <b>@Html.Raw(Regex.Replace(field.ArLabel, "<.*?>", "")) @(field.Required ? Html.Raw("<span class='requiredStar' >*</span>") : "") </b>
+                                                            <br>
+                                                            <textarea class="form-control @(field.Class)" placeholder="@field.ArPlaceHolder" name="@field.Title" @(field.Required == true ? "required=required" : "") value="@(!String.IsNullOrEmpty(field.DefaultValue) ? field.DefaultValue: "")" rows="@field.Rows" maxlength="@field.MaxLength"></textarea>
+                                                        }
+                                                        else if (field.Type == "header")
+                                                        {
+                                                            string html_field = "<" + field.SubType + ">" + Html.Raw(Regex.Replace(field.ArLabel, "<.*?>", "")) + "</" + field.SubType + ">";
+                                                            <span>@Html.Raw(html_field)</span>
+                                                        }
+                                                        else if (field.Type == "paragraph")
+                                                        {
+                                                            string html_field = "<" + field.SubType + ">" + Html.Raw(Regex.Replace(field.ArLabel, "<.*?>", "")) + "</" + field.SubType + ">";
+                                                            <span>@Html.Raw(html_field)</span>
+                                                        }
+                                                        else if (field.Type == "file")
+                                                        {
+                                                            <b>@Html.Raw(Regex.Replace(field.ArLabel, "<.*?>", "")) @(field.Required ? Html.Raw("<span class='requiredStar' >*</span>") : "") </b>
+
+                                                            <br>
+                                                            <input type="file" name="@field.ArTitle" accept="@(!String.IsNullOrEmpty(field.Description) ? "": ".jpg,.png,.doc.docx,.xlsx,.pdf")" placeholder="@field.ArPlaceHolder" class="@field.Class" @(field.Required==true ? "required=required":"")>
+                                                        }
+                                                        else if (field.Type == "select")
+                                                        {
+                                                            <b>@Html.Raw(Regex.Replace(field.ArLabel, "<.*?>", "")) @(field.Required ? Html.Raw("<span class='requiredStar' >*</span>") : "") </b>
+
+                                                            <br />
+                                                            <select name="@field.ArTitle" id="@field.ArTitle" class="form-control @field.Class" @(field.Required==true ? "required=required":"")>
+                                                                <option value="">@field.Description</option>
+                                                                @{
+                                                                    if (field.Options != null && field.Options.Count() > 0)
+                                                                    {
+                                                                        foreach (FormsFieldsOptions opt in field.Options)
+                                                                        {
+                                                                            <option value="@opt.Value">@Html.Raw(Regex.Replace(opt.ArLabel, "<.*?>", ""))</option>
+                                                                        }
+                                                                    }
+                                                                }
+                                                            </select>
+                                                        }
+                                                        else if (field.Type == "radio-group")
+                                                        {
+                                                            <span><b>@Html.Raw(Regex.Replace(field.ArLabel, "<.*?>", "")) @(field.Required ? Html.Raw("<span class='requiredStar' >*</span>") : "") </b></span>
+
+                                                            <br />
+                                                            if (field.Options != null && field.Options.Count() > 0)
+                                                            {
+                                                                foreach (FormsFieldsOptions opt in field.Options)
+                                                                {
+                                                                    string br = "";
+                                                                    string radCont = "";
+                                                                    string radContCl = "";
+                                                                    if (field.Inline)
+                                                                    {
+                                                                        radCont = "<div class='radCont-inline' >";
+                                                                        radContCl = "</div>";
+                                                                    }
+                                                                    else br = "<br>";
+
+                                                                    @Html.Raw(radCont)
+                                                                    <label for="@field.ArTitle" class="dForm-label">@Html.Raw(Regex.Replace(opt.ArLabel, "<.*?>", ""))</label> <input type="radio" class="dForm-radio" name="@field.ArTitle" value="@opt.Value" @(field.Required==true ? "required=required":"")>
+                                                                    @Html.Raw(radContCl)
+                                                                    @Html.Raw(br)
+                                                                }
+                                                            }
+                                                        }
+                                                        else if (field.Type == "checkbox-group")
+                                                        {
+                                                            <span><b>@Html.Raw(Regex.Replace(field.ArLabel, "<.*?>", "")) @(field.Required ? Html.Raw("<span class='requiredStar' >*</span>") : "") </b></span>
+                                                            <br />
+                                                            if (field.Options != null && field.Options.Count() > 0)
+                                                            {
+                                                                foreach (FormsFieldsOptions opt in field.Options)
+                                                                {
+                                                                    string br = "";
+                                                                    string radCont = "";
+                                                                    string radContCl = "";
+                                                                    if (field.Inline)
+                                                                    {
+                                                                        radCont = "<div class='radCont-inline' style='margin-right:20px;' >";
+                                                                        radContCl = "</div>";
+                                                                    }
+                                                                    else br = "<br>";
+
+                                                                    @Html.Raw(radCont)
+                                                                    <input type="checkbox" class="dForm-chk" style="margin-left:10px;" name="opt-@opt.Id" id="opt-@opt.Id"> <label for="@field.ArTitle" class="dForm-label">@Html.Raw(Regex.Replace(opt.ArLabel, "<.*?>", ""))</label>
+                                                                    @Html.Raw(radContCl)
+                                                                    @Html.Raw(br)
+                                                                }
+                                                                if (field.EnableOther)
+                                                                {
+                                                                    <br /><input type="checkbox" class="dForm-chk other-chk" data-id="opt-otherTxt-@field.Id" name="opt-other-@field.Id" style="display:inline-block;" > <label for="@field.ArTitle" class="dForm-label">أخرى</label>  <input type="text" name="opt-otherTxt-@field.Id" id="opt-otherTxt-@field.Id" class="form-control" disabled="disabled" style="width:200px;" maxlength="50">
+                                                                }
+                                                            }
+                                                        }
+                                                        else if (field.Type == "date")
+                                                        {
+                                                            <b>@Html.Raw(Regex.Replace(field.ArLabel, "<.*?>", "")) @(field.Required ? Html.Raw("<span class='requiredStar' >*</span>") : "") </b>
+                                                            <br>
+                                                            <input type="date" class="form-control @(field.Class)" placeholder="@field.ArPlaceHolder" style="max-width:200px;" name="@field.Title" @(field.Required == true ? "required=required" : "") value="@(!String.IsNullOrEmpty(field.DefaultValue) ? field.DefaultValue: "")" />
+                                                        }
+                                                        else if (field.Type == "autocomplete")
+                                                        {
+
+                                                        }
+                                                    }
+                                                </div>
+                                            </div>
+                                        }
+                                        <div class="row mb-4">
+                                            <div class="col-md-12">
+                                                <div class="g-recaptcha" lang="ar" data-sitekey="@myKey"></div>
+                                                <span class="text-danger field-validation-valid" data-valmsg-for="g-recaptcha-response" data-valmsg-replace="true"></span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 text-center">
+                                                <button type="submit" class="btn subscribe_btn">@ProjectForm.ArSubmitLabel</button>
+                                            </div>
+                                        </div>
+                                        @*
+                                        if (User.Identity.IsAuthenticated && @HttpContextAccessor.HttpContext?.Session.GetString("type") == "Employer")
+                                        {
+                                            <div class="row">
+                                                <div class="col-12 text-center">
+                                                    <button type="submit" class="btn subscribe_btn">@ProjectForm.ArSubmitLabel</button>
+                                                </div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="alert alert-danger">يجب عليك تسجيل الدخول كمشغل لتتمكن من تعبة النموذج!</div>
+                                        } *@                                                                             
+                                    }
+                                }
+                            </form>
+
+                        }
+                    }
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="col-12"><h5>قائمة فرص التشغيل</h5></div>
+                @{
+                    if (ViewBag.Jobs != null)
+                    {
+                        foreach (Jobs job in ViewBag.Jobs)
+                        {
+                            <div class="job-block col-lg-12 col-md-12 col-sm-12">
+                                <div class="inner-box">
+                                    <div class="content">
+
+                                        <span class="company-logo">
+                                            @{
+                                                if (!String.IsNullOrEmpty(job.Employer.Logo))
+                                                {
+                                                    <img src="@Url.Content(job.Employer.Logo)" alt="@job.Employer.ArName" title="@job.Employer.ArName">
+                                                }
+                                                else
+                                                {
+                                                    <img src="~/res/images/job.png" alt="@job.Employer.ArName" title="@job.Employer.ArName">
+                                                }
+                                            }
+                                        </span>
+
+                                        <h4 style="margin-bottom: 0px;"><a asp-action="Details" asp-controller="Jobs" asp-route-id="@job.Id">@job.ArName</a></h4>
+                                        <div class="font-4 text-secondary mb-3">@job.Employer.ArName</div>
+                                        <ul class="job-info">
+                                            @{
+                                                string fromTimeStr = "";
+                                                int days = 0;
+                                                int mins = 0;
+                                                int hours = 0;
+                                                if (job.StartDate != null)
+                                                {
+                                                    DateTime startDate = job.StartDate ?? DateTime.MinValue;//if job.StartDate is not null select it, else select the default value
+                                                    TimeSpan span = DateTime.Now.Subtract(startDate);
+                                                    days = span.Days;
+                                                    mins = span.Minutes;
+                                                    hours = span.Hours;
+                                                }
+
+                                                if (days >= 1)
+                                                {
+                                                    if (days >= 30)
+                                                    {
+                                                        fromTimeStr = "قبل " + (Math.Floor((double)days / 30)) + " شهر و " + (days % 30) + " يوم";
+                                                    }
+                                                    else
+                                                    {
+                                                        fromTimeStr = "قبل " + days + " يوم";
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (hours >= 1)
+                                                    {
+                                                        fromTimeStr = "قبل " + hours + " ساعة";
+                                                    }
+                                                    else
+                                                    {
+                                                        fromTimeStr = "قبل " + mins + " دقيقة";
+                                                    }
+                                                }
+
+                                                if (job.City != null)
+                                                {
+                                                    <li><i class="fa-sharp fa-solid fa-location-dot"></i> @job.City?.ArName</li>
+                                                }
+                                            }
+                                            <li><i class="fa-solid fa-clock"></i> تاريخ الاعلان: @job.StartDate?.ToString("yyyy/MM/dd")</li>
+                                            @{
+                                                if (job.Salary != null)
+                                                {
+                                                    <li><i class="fa-solid fa-money-bill"></i> @(job.Salary + " ") <span>@Html.Raw(job.Currency.IconHtml)</span></li>
+                                                }
+                                            }
+                                            @{
+                                                if (job.ExpireDate != null)
+                                                {
+                                                    <li><i class="fa-solid fa-clock"></i> نهاية الاعلان: @job.ExpireDate?.ToString("yyyy/MM/dd")</li>
+                                                }
+                                            }
+                                            <li><i class="fa-solid fa-id-badge"></i> عدد الشواغر: @job.BeneficiaryCount</li>
+                                        </ul>
+
+                                        <ul class="job-other-info">
+                                            <li class="time">@(job.WorkNature == 0 ? "دوام جزئي" : "دوام كلي")</li>
+                                            <li class="privacy">
+                                            @{
+                                                <span>@job.Employer?.EmployerSector?.ArName</span>
+                                            }
+                                            </li>
+                                            @*<li class="required">مستعجل</li>*@
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                }
+
+            </div>
+        </div>
+        <div class="col-12 col-md-3">
+            <!-- Left Side -->
+            @await Component.InvokeAsync("LatestJobs")
+        </div>
+    </div>    
+</div>
+
+@section Scripts{
+        {
+            <partial name="_validationMsg" />
+            <partial name="_ValidationScriptsPartial" >
+        }
+        <script src='https://www.google.com/recaptcha/api.js'></script>
+        <script>
+        window.onload = function() {
+            var $recaptcha = document.querySelector('#g-recaptcha-response');
+            if ($recaptcha) {
+                $recaptcha.setAttribute("required", "required");
+            };
+
+            $(document).ready(function() {
+                $(document).on("change",".other-chk",function(){
+                    var otherId = $(this).data("id");
+                    if(otherId!=""){
+                        if($(this).is(":checked")){
+                                $("#" + otherId).removeAttr("disabled");
+                        }
+                        else{
+                                $("#" + otherId).attr("disabled", "disabled");
+                        }
+                    }
+                });
+                $(document).on('submit', '#contForm', function(e) {
+                    if (grecaptcha.getResponse() == "") {
+                        e.preventDefault();
+                        alert("يجب عليك التأكيد عن انك لست روبوت!");
+                    } else {
+
+                    }
+                });
+            });
+        }
+        </script>
+
+        <style>
+            #g-recaptcha-response {
+                display: block !important;
+                position: absolute;
+                margin: -78px 0 0 0 !important;
+                width: 302px !important;
+                height: 76px !important;
+                z-index: -999999;
+                opacity: 0;
+            }
+        </style>
+}

@@ -1,0 +1,132 @@
+﻿@model PEF.Models.Donors
+@using PEF.Models;
+@{
+    ViewData["Title"] = "Details";
+}
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Donors</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home</a></li>
+                    <li class="breadcrumb-item active">Donors</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+<section class="content">
+    <div class="container-fluid">
+
+        <h1 class="form-title">Donor Details</h1>
+        <hr />
+        <dl class="row">
+
+        <dt class="col-sm-6 mb-2 pb-3 pt-2">
+            <div class="mt-2" >@Html.DisplayNameFor(model => model.LastLogin) : @Html.DisplayFor(model => model.LastLogin)</div><br />
+            <div class="mt-2">@Html.DisplayNameFor(model => model.AddDate) : @Html.DisplayFor(model => model.AddDate)</div><br />
+            @{
+                if (Model.Active) {
+                    <div class="bg-success p-2 mt-2 mb-2 d-inline" >Active</div>
+                }
+                else {
+                    <div class="bg-danger p-2 mt-2 mb-2 d-inline" >Deactive</div>
+                }
+            }
+        </dt>
+        <dt class="col-sm-6">
+            @{
+                if (Model.Logo != null && Model.Logo != "")
+                {
+                    <img src="@Url.Content(Model.Logo)" style="width:180px;">
+                }
+            }
+        </dt>
+
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class = "col-sm-4">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ArName)
+        </dt>
+        <dd class = "col-sm-4">
+            @Html.DisplayFor(model => model.ArName)
+        </dd>
+        <dt class = "col-sm-12">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class = "col-sm-12">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class = "col-sm-12">
+            @Html.DisplayNameFor(model => model.ArDescription)
+        </dt>
+        <dd class = "col-sm-12">
+            @Html.DisplayFor(model => model.ArDescription)
+        </dd>
+       
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd class = "col-sm-4">
+            @Html.DisplayFor(model => model.Email)
+        </dd>       
+
+        <dt class="col-12">
+            <h3>Projects List:</h3>
+            <table class="table table-striped" >
+                <thead>
+                    <th>Name</th>
+                    <th>Program</th>
+                    <th>Currency</th>
+                    <th>Beneficiary Count</th>
+                    <th>Duration</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Jobs</th>
+                </thead>
+                <tbody>
+                @{
+                    if(ViewBag.Projects != null)
+                    {
+                        foreach(Projects item in ViewBag.Projects){
+                          <tr>
+                                <td>@item.Name</td>
+                                <td>@item.Program</td>
+                                <td>@item.Currency?.Name</td>
+                                <td>@item.BeneficiaryNumbers</td>
+                                <td>
+                                    @{
+                                        var durationUnit  = "Days";
+                                        if (item.DurationUnit == 1) durationUnit = "Days";
+                                        else if (item.DurationUnit == 2) durationUnit = "Months";
+                                        else if (item.DurationUnit == 3) durationUnit = "Years";
+                                        <span>@(item.Duration + " " + durationUnit)</span>
+                                    }
+                                </td>
+                                <td>@item.StartDate</td>
+                                <td>@item.EndDate</td>
+                                <td><a class="btn btn-primary btn-sm" target="_blank" asp-controller="Jobs" asp-action="Index" asp-area="Control" asp-route-project="@item.Id" target="_blank" title="Applied Jobs" alt="Applied Jobs"> <i class="fas fa-chalkboard-teacher"></i></a></td>
+                            </tr>                   
+                        }
+                    }
+                }                   
+                </tbody>
+            </table>
+        </dt>
+        
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
+</div>
+</section>

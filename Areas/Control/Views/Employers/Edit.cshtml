@@ -1,0 +1,951 @@
+﻿@model PEF.Models.Employers
+@using PEF.Models;
+@using Microsoft.Extensions.Localization
+@using PEF.Areas.Control.Controllers
+@inject IStringLocalizer<HomeController> Localizer
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var currentCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
+    ViewData["Title"] = Localizer["Edit Details"];
+}
+<partial name="_validationMsg" />
+
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">@Localizer["Employers/Institutions"]</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-@Localizer["Float Rev"]">
+                    <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">@Localizer["Home"]</a></li>
+                    <li class="breadcrumb-item active">@Localizer["Employers/Institutions"]</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<section class="content">
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-6 text-@Localizer["Float"]"><h1 class="form-title">@Localizer["Edit Employers/Institutions"]</h1></div>
+            @{
+                if (@HttpContextAccessor.HttpContext.Session.GetString("type") != "Employer" && @HttpContextAccessor.HttpContext.Session.GetString("type")!="Donor" && @HttpContextAccessor.HttpContext.Session.GetString("type") != "Trainer")
+                {
+                    <div class="col-6 text-right mt-3 sm-link"><a asp-action="Index"><i class="bi bi-plus-circle"></i> @Localizer["List All Employers/Institutions"]</a></div>                    
+                }
+            }     
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+            <form asp-action="Edit" id="EmployersForm" enctype="multipart/form-data">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="row">
+                
+                <div class="form-group col-sm-6">
+                    <label asp-for="ArName" class="control-label"></label>
+                    <input asp-for="ArName" class="form-control" />
+                    <span asp-validation-for="ArName" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label asp-for="Shortcut" class="control-label"></label>
+                    <input asp-for="Shortcut" class="form-control" />
+                    <span asp-validation-for="Shortcut" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-6"></div>
+
+                <div class="form-group col-sm-6">
+                    <label asp-for="Type" class="control-label"></label>
+                    <select asp-for="Type" id="type" class="form-control">
+                        <option value="">:: @Localizer["Select Type"] ::</option>
+                        <!option value="1" @(Model.Type==1 ? "SELECTED":"")>@Localizer["Company"]</!option>
+                                <!option value="2" @(Model.Type==2 ? "SELECTED":"")>@Localizer["Instition"]</!option>
+                    </select>
+                    <span asp-validation-for="Type" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label asp-for="Sector" class="control-label"></label>
+                    <select asp-for="Sector" class="form-control">
+                        <option value="">:: @Localizer["Select Option"] ::</option>
+                        @{
+                            if (ViewBag.Sectors != null)
+                            {
+                                foreach (LookupEmployersSectors item in ViewBag.Sectors)
+                                {
+                                    <!option value="@item.Id" @(Model!=null && Model.Sector == item.Id ? "SELECTED" :"") >@(currentCulture=="ar-AE"? item.ArName : item.Name)</!option>
+                                }
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="Sector" class="text-danger"></span>
+                    <span asp-validation-for="Sector" class="text-danger"></span>
+                    <div id="secOtherCont" style="display:none;margin-top:10px;">
+                        <label asp-for="SectorOther" class="control-label"></label>
+                        <input asp-for="SectorOther" class="form-control" />
+                        <span asp-validation-for="SectorOther" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group col-sm-6">
+                    <label asp-for="WorkSectorId" class="control-label"></label>
+                    <select asp-for="WorkSectorId" class="form-control" asp-items="ViewBag.WorkSectorId"></select>
+                    <div id="secWorkOtherCont" style="display:none;margin-top:10px;">
+                        <label asp-for="WorkSectorOther" class="control-label"></label>
+                        <input asp-for="WorkSectorOther" class="form-control" />
+                        <span asp-validation-for="WorkSectorOther" class="text-danger"></span>
+                    </div>
+
+                </div>
+                <div class="form-group col-sm-6">
+                    <label asp-for="EstablishYear" class="control-label"></label>
+                    <input asp-for="EstablishYear" class="form-control" />
+                    <span asp-validation-for="EstablishYear" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label asp-for="RegNumber" class="control-label"></label>
+                    <input asp-for="RegNumber" class="form-control" />
+                    <span asp-validation-for="RegNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-6" id="operatedCont" style="@(Model!=null && Model.Type==1 ? "display:block;": "display:none;")">
+                    <label asp-for="OperationNumber" class="control-label"></label>
+                    <input asp-for="OperationNumber" class="form-control" />
+                    <span asp-validation-for="OperationNumber" class="text-danger"></span>
+                </div>
+
+            </div>
+
+
+            <!--#############  Contact Information ###############-->
+            <div class="row">
+                <div class="col-12"><h5 class="text-danger">@Localizer["Login Details"]</h5></div>
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-sm-6">
+                    <label asp-for="Password" class="control-label"></label>
+                    <input asp-for="Password" type="password" value="******" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-sm-6">
+                    <label asp-for="ConfirmPassword" class="control-label"></label>
+                            <input asp-for="ConfirmPassword" type="password" value="******" class="form-control" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+            </div>
+
+
+            <!--#############  Contact Information ###############-->
+            <div class="row">
+                <div class="col-12"><h5 class="text-danger">@Localizer["Contact Information"]</h5></div>
+
+                <div class="form-group col-sm-6">
+                    <label asp-for="CityId" class="control-label"></label>
+                    <select asp-for="CityId" class="form-control" asp-items="ViewBag.CityId"></select>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label asp-for="AreaId" class="control-label"></label>
+                    <select asp-for="AreaId" class="form-control">
+                        <option value="">:: @Localizer["Select Option"] ::</option>
+                        @{
+                            if (ViewBag.AreaId != null)
+                            {
+                                foreach (Villages item in ViewBag.AreaId)
+                                {
+                                    <!option value="@item.Id" @(Model !=null && Model.AreaId == item.Id ? "SELECTED":"") >@(currentCulture == "ar-AE" ? item.ArName : item.Name)</!option>
+                                }
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="AreaId" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label asp-for="Village" class="control-label"></label>
+                    <input asp-for="Village" class="form-control" />
+                    <span asp-validation-for="Village" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label asp-for="Mobile" class="control-label"></label>
+                    <input asp-for="Mobile" class="form-control" />
+                    <span asp-validation-for="Mobile" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label asp-for="Tel" class="control-label"></label>
+                    <input asp-for="Tel" class="form-control" />
+                    <span asp-validation-for="Tel" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Address" class="control-label"></label>
+                    <input asp-for="Address" class="form-control" />
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!--#############  Contact Person ###############-->
+            <div class="row">
+                <div class="col-12"><h5 class="text-danger">@Localizer["Contact Person"]</h5></div>
+                <div class="form-group col-6">
+                    <label asp-for="ContactName" class="control-label"></label>
+                    <input asp-for="ContactName" class="form-control" />
+                    <span asp-validation-for="ContactName" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="contactJobTitle" class="control-label"></label>
+                    <input asp-for="contactJobTitle" class="form-control" />
+                    <span asp-validation-for="contactJobTitle" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="ContactMobile" class="control-label"></label>
+                    <input asp-for="ContactMobile" class="form-control" />
+                    <span asp-validation-for="ContactMobile" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="ContactMobile2" class="control-label"></label>
+                    <input asp-for="ContactMobile2" class="form-control" />
+                    <span asp-validation-for="ContactMobile2" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="ContactEmail" class="control-label"></label>
+                    <input asp-for="ContactEmail" class="form-control" />
+                    <span asp-validation-for="ContactEmail" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!--#############  Field ###############-->
+            <div class="row">
+                <div class="col-12"><h5 class="text-danger">@Localizer["Employer/Institutions Field"]</h5></div>
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label"></label>
+                    <textarea asp-for="Description" rows="3" class="form-control"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ArDescription" class="control-label"></label>
+                    <textarea asp-for="ArDescription" rows="3" class="form-control" dir="rtl"></textarea>
+                    <span asp-validation-for="ArDescription" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- ##### Extra Data (Others) ########-->
+            <div class="row">
+                <div class="col-12"><h5 class="text-danger">@Localizer["Extra Details"]</h5></div>
+                <div class="form-group">
+                    <label asp-for="ExtraData" class="control-label"></label>
+                    <textarea asp-for="ExtraData" rows="3" class="form-control"></textarea>
+                    <span asp-validation-for="ExtraData" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ArExtraData" class="control-label"></label>
+                            <textarea asp-for="ArExtraData" rows="3" class="form-control" dir="rtl"></textarea>
+                    <span asp-validation-for="ArExtraData" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- #########  Capabilities  ##########-->
+            <div class="row">
+                <div class="col-12"><h5 class="text-danger">@Localizer["Employer/Institutions Capabilities"]</h5></div>
+
+                <div class="form-group col-6">
+                    <label asp-for="PermanentEmpCount" class="control-label"></label>
+                    <input asp-for="PermanentEmpCount" class="form-control" />
+                    <span asp-validation-for="PermanentEmpCount" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="PermanentFemaleEmpCount" class="control-label"></label>
+                    <input asp-for="PermanentFemaleEmpCount" class="form-control" />
+                    <span asp-validation-for="PermanentFemaleEmpCount" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 mb-3">
+                    <label asp-for="FulltimeEmpCount" class="control-label"></label>
+                    <input asp-for="FulltimeEmpCount"  class="form-control" />
+                    <span asp-validation-for="FulltimeEmpCount" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 mb-3">
+                    <label asp-for="FulltimeFemaleEmpCount" class="control-label"></label>
+                    <input asp-for="FulltimeFemaleEmpCount" class="form-control" />
+                    <span asp-validation-for="FulltimeFemaleEmpCount" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="ParttimeEmpCount" class="control-label"></label>
+                    <input asp-for="ParttimeEmpCount" class="form-control" />
+                    <span asp-validation-for="ParttimeEmpCount" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="ParttimeFemaleEmpCount" class="control-label"></label>
+                    <input asp-for="ParttimeFemaleEmpCount" class="form-control" />
+                    <span asp-validation-for="ParttimeFemaleEmpCount" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="WeekWorkDays" class="control-label"></label>
+                    <input asp-for="WeekWorkDays" class="form-control" />
+                    <span asp-validation-for="WeekWorkDays" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="DayWorkHours" class="control-label"></label>
+                    <input asp-for="DayWorkHours" class="form-control" />
+                    <span asp-validation-for="DayWorkHours" class="text-danger"></span>
+                </div>
+                <div class="form-group form-check col-6">
+                    <label asp-for="InjuredInsurance" class="control-label" style="width:60%;"></label>
+                    <input asp-for="InjuredInsurance" type="checkbox" data-bootstrap-switch data-off-color="danger" data-on-color="success" />
+                </div>
+                <div class="form-group form-check col-6">
+                    <label asp-for="HealthInsurance" class="control-label" style="width:60%;"></label>
+                    <input asp-for="HealthInsurance" type="checkbox" data-bootstrap-switch data-off-color="danger" data-on-color="success" />
+                </div>
+
+                <div class="form-group form-check col-6 mb-3">
+                    @Localizer["Host Trainees"]
+                    <label asp-for="AcceptTrainers">
+                        <input type="radio" asp-for="AcceptTrainers" value="true" /> @Localizer["Yes"]
+                    </label>
+                    <label asp-for="AcceptTrainers">
+                        <input type="radio" asp-for="AcceptTrainers" value="false" /> @Localizer["No"]
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Branches" class="control-label"></label>
+                    <input asp-for="Branches" type="number" style="width:120px;" class="form-control">
+                    <span asp-validation-for="Branches" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="BranchesLocation" class="control-label"></label>
+                    <textarea asp-for="BranchesLocation" rows="3" class="form-control"></textarea>
+                    <span asp-validation-for="BranchesLocation" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label asp-for="SafetyProcedures" class="control-label"></label>
+                    <textarea asp-for="SafetyProcedures" rows="3" class="form-control"></textarea>
+                    <span asp-validation-for="SafetyProcedures" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ArSafetyProcedures" class="control-label"></label>
+                    <textarea asp-for="ArSafetyProcedures" rows="3" class="form-control" dir="rtl"></textarea>
+                    <span asp-validation-for="ArSafetyProcedures" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- ##### Extra Data (Others) ########-->
+            <div class="row">
+                <div class=""><h5 class="text-danger">@Localizer["Attachments"]</h5></div>
+                <div class="form-group col-6">
+                    <label asp-for="FinancialReport" class="control-label"></label>
+                    <input asp-for="FinancialReport" type="file" accept=".pdf,.doc" class="form-control" />
+                    <span asp-validation-for="FinancialReport" class="text-danger"></span>
+                    @if (!String.IsNullOrEmpty(Model.FinancialReport))
+                    {
+                        <a href="@Url.Content(Model.FinancialReport)" target="_blank" class="btn btn-danger mt-2"><i class="bi bi-cloud-arrow-down-fill"></i> @Localizer["Download"]</a>
+                    }
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="AnnualReport" class="control-label"></label>
+                    <input asp-for="AnnualReport" type="file" accept=".pdf,.doc" class="form-control" />
+                    <span asp-validation-for="AnnualReport" class="text-danger"></span>
+                            @if (!String.IsNullOrEmpty(Model.AnnualReport))
+                    {
+                        <a href="@Url.Content(Model.AnnualReport)" target="_blank" class="btn btn-danger mt-2"><i class="bi bi-cloud-arrow-down-fill"></i> @Localizer["Download"]</a>
+                    }
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="RegistrationDocument" class="control-label"></label>
+                    <input asp-for="RegistrationDocument" type="file" accept=".pdf,.doc" class="form-control" />
+                    <span asp-validation-for="RegistrationDocument" class="text-danger"></span>
+                    @if (!String.IsNullOrEmpty(Model.RegistrationDocument))
+                    {
+                        <a href="@Url.Content(Model.RegistrationDocument)" target="_blank" class="btn btn-danger mt-2"><i class="bi bi-cloud-arrow-down-fill"></i> @Localizer["Download"]</a>
+                    }
+                </div>
+                <div class="form-group col-6 mb-3" id="commDocCont">
+                    <label asp-for="CommercialRegister" class="control-label"></label>
+                    <input asp-for="CommercialRegister" type="file" accept=".pdf,.doc" class="form-control" />
+                    <span asp-validation-for="CommercialRegister" class="text-danger"></span>
+                    @if (!String.IsNullOrEmpty(Model.CommercialRegister))
+                    {
+                        <a href="@Url.Content(Model.CommercialRegister)" target="_blank" class="btn btn-danger mt-2"><i class="bi bi-cloud-arrow-down-fill"></i> @Localizer["Download"]</a>
+                    }
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="CommercialRegister" class="control-label"></label>
+                    <input asp-for="CommercialRegister" type="file" accept=".pdf,.doc" class="form-control" />
+                    <span asp-validation-for="CommercialRegister" class="text-danger"></span>
+                    @if (!String.IsNullOrEmpty(Model.CommercialRegister))
+                    {
+                       <a href="@Url.Content(Model.CommercialRegister)" target="_blank" class="btn btn-danger mt-2"><i class="bi bi-cloud-arrow-down-fill"></i> @Localizer["Download"]</a>
+                    }
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="OtherAttachments" class="control-label"></label>
+                    <input asp-for="OtherAttachments" type="file" accept=".pdf,.doc" class="form-control" />
+                    <span asp-validation-for="OtherAttachments" class="text-danger"></span>
+                    @if (!String.IsNullOrEmpty(Model.OtherAttachments))
+                    {
+                        <a href="@Url.Content(Model.OtherAttachments)" target="_blank" class="btn btn-danger mt-2"><i class="bi bi-cloud-arrow-down-fill"></i> @Localizer["Download"]</a>
+                    }
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label asp-for="Logo" class="control-label"></label>
+                    <input asp-for="Logo" type="file" accept=".jpg" class="form-control" />
+                    <span asp-validation-for="Logo" class="text-danger"></span>
+                    @if (!String.IsNullOrEmpty(Model.Logo))
+                    {
+                        <img src="@Url.Content(Model.Logo)" style="width:120px;" >
+                    }
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <input type="submit" value="@Localizer["Save Changes"]" class="btn btn-primary" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="text-left">
+@{
+    if (@HttpContextAccessor.HttpContext.Session.GetString("type") != "Employer")
+    {
+        <div>
+            <a asp-action="Index">@Localizer["Back To List"]</a>
+        </div>                
+    }
+}
+
+</div>
+</section>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <partial name="_validationMsg" />
+    <script src="https://cdn.tiny.cloud/1/2c5w0wmw9nov8zgkagrjpr94l8e4ryuo598sm3y8shic3c8z/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+
+    <script type="text/javascript">
+        tinymce.init({
+            selector: 'textarea',
+            height: 220,
+            menubar: false,
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments  | align lineheight | removeformat',
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name',
+            mergetags_list: [
+                { value: 'First.Name', title: 'First Name' },
+                { value: 'Email', title: 'Email' },
+            ]
+        });
+    </script>
+    <script type="text/javascript">
+        $(function () {
+            $("input[data-bootstrap-switch]").each(function () {
+                $(this).bootstrapSwitch('state', $(this).prop('checked'));
+            });
+        });
+
+        $("#EmployersForm").validate({
+                rules: {
+                    Name: {
+                        required: true,
+                        englishLettersOnly: true
+                    },
+                    ArName: {
+                        required: true,
+                        arabicOnly: true
+                    },
+                    Shortcut: {
+                        required: true,
+                        maxlength: 20,
+                    },
+                    Type:{
+                        required: true,
+                    },
+                    Sector: {
+                        required: true,
+                    },
+                    WorkSectorId: {
+                        required: true,
+                    },
+                    EstablishYear: {
+                        required: true,
+                        number:true,
+                        correctYear: true,
+                    },
+                    RegNumber: {
+                        required: true,
+                    },
+                    OperationNumber: {
+                        required: {
+                            depends: function() {
+                                return $("#Type").val() == "1";
+                            }
+                        }
+                    },
+                    Email : {
+                        required: true,
+                        email: true,
+                    },
+                    Password: {
+                        required: true,
+                        minlength: 6
+                    },
+                    ConfirmPassword: {
+                        required: true,
+                        minlength: 6,
+                        equalTo: "#Password"
+                    },
+                    CityId: {
+                        required: true
+                    },
+                    AreaId: {
+                        required: true
+                    },
+                    Village: {
+                        required: true
+                    },
+                    Mobile:{
+                        required: true,
+                        digits: true,
+                        minlength: 10,
+                        maxlength: 10,
+                        pattern: /^05\d{8}$/
+                    },
+                    Tel:{
+                        digits: true,
+                        minlength: 9,
+                        maxlength: 9,
+                        pattern: /^0\d{8}$/
+                    },
+                    Address:{
+                        required: true,
+                    },
+                    ContactName:{
+                        required: true,
+                        arabicEnglishLettersOnly: true,
+                    },
+                    ContactMobile:{
+                        required: true,
+                        digits: true,
+                        minlength: 10,
+                        maxlength: 10,
+                        pattern: /^05\d{8}$/
+                    },
+                    contactJobTitle:{
+                        required: true,
+                        arabicEnglishLettersOnly: true,
+                    },
+                    ContactMobile2:{
+                        digits: true,
+                        minlength: 10,
+                        maxlength: 10,
+                        pattern: /^05\d{8}$/
+                    },
+                    ContactEmail:{
+                        required: true,
+                        email: true
+                    },
+                    Description:{
+                        required: true,
+                        minlength: 50,
+                        maxlength: 50,
+                    },
+                    ArDescription:{
+                        required: true,
+                        minlength: 50,
+                        maxlength: 50,
+                    },
+                    ExtraData: {
+                        maxlength: 500,
+                    },
+                    ArExtraData: {
+                        maxlength: 500,
+                    },
+                    BranchesLocation: {
+                        maxlength: 500,
+                    },
+                    SafetyProcedures: {
+                        maxlength: 500,
+                    },
+                    ArSafetyProcedures: {
+                        maxlength: 500,
+                    },
+                    PermanentEmpCount: {
+                        required: true,
+                        number: true,
+                        min: 0
+                    },
+                    ParttimeEmpCount: {
+                        required: true,
+                        number: true,
+                        min: 0
+                    },
+                    WeekWorkDays: {
+                        required: true,
+                        number:true,
+                        min:0,
+                        max: 7
+                    },
+                    DayWorkHours:{
+                        required: true,
+                        number: true,
+                        min: 0,
+                        max: 24,
+                    },
+                    InjuredInsurance: {
+                        //required: true,
+                    },
+                    HealthInsurance: {
+                        //required: true,
+                    },
+                    Branches: {
+                        required: true,
+                        number:true,
+                        min:0
+                    },
+                    FinancialReport: {
+                        //required: true,
+                        accept: {
+                            allowed: "jpg,png,jpeg,pdf,doc,docx"
+                        }
+                    },
+                    AnnualReport: {
+                            //required: true,
+                            accept: {
+                            allowed: "jpg,png,jpeg,pdf,doc,docx"
+                        }
+                    },
+                    RegistrationDocument: {
+                            //required: true,
+                            accept: {
+                            allowed: "jpg,png,jpeg,pdf,doc,docx"
+                        }
+                    },
+                    OtherAttachments: {
+                        //required: true,
+                        accept: {
+                            allowed: "jpg,png,jpeg,pdf,doc,docx"
+                        }
+                    },
+                    Logo: {
+                        //required: true,
+                        accept: {
+                            allowed: "jpg,png,jpeg"
+                        }
+                    },
+                },
+                messages: {
+                    Name: {
+                        required: "@Localizer["Field Mandatory"]",
+                        englishLettersOnly: "@Localizer["English Only"]"
+                    },
+                    ArName: {
+                        required: "@Localizer["Field Mandatory"]",
+                        arabicOnly: "@Localizer["Arabic Only"]",
+                    },
+                    Shortcut: {
+                        required: "@Localizer["Field Mandatory"]",
+                        maxlength: "@Localizer["FieldLength"]",
+                    },
+                    Type:{
+                        required: "@Localizer["Field Mandatory"]",
+                    },
+                    Sector: {
+                        required: "@Localizer["Field Mandatory"]",
+                    },
+                    WorkSectorId: {
+                        required: "@Localizer["Field Mandatory"]",
+                    },
+                    EstablishYear: {
+                        required: "@Localizer["Field Mandatory"]",
+                        number: "@Localizer["Wrong Number"]",
+                        correctYear: "@Localizer["Wrong Year"]",
+                    },
+                    RegNumber: {
+                        required: "@Localizer["Field Mandatory"]",
+                    },
+                    OperationNumber: {
+                        required: "@Localizer["Field Mandatory"]",
+                    },
+                    Email : {
+                        required: "@Localizer["Field Mandatory"]",
+                        email: "@Localizer["Wrong Email"]",
+                    },
+                    Password: {
+                        required: "@Localizer["Field Mandatory"]",
+                        minlength: "@Localizer["Wrong Password"]"
+                    },
+                    ConfirmPassword: {
+                        required: "@Localizer["Field Mandatory"]",
+                        minlength: "@Localizer["Wrong Password"]",
+                        equalTo:  "@Localizer["PasswordMatch"]",
+                    },
+                    CityId: {
+                        required: "@Localizer["Field Mandatory"]",
+                    },
+                    AreaId: {
+                        required: "@Localizer["Field Mandatory"]",
+                    },
+                    Village: {
+                        required: "@Localizer["Field Mandatory"]",
+                    },
+                    Mobile:{
+                        required: "@Localizer["Field Mandatory"]",
+                        digits: "@Localizer["Wrong Number"]",
+                        minlength: "@Localizer["Wrong Mobile"]",
+                        maxlength: "@Localizer["Wrong Mobile"]",
+                        pattern: /^05\d{8}$/
+                    },
+                    Tel:{
+                        digits: "@Localizer["Wrong Number"]",
+                        minlength: "@Localizer["Wrong Telephone"]",
+                        maxlength:"@Localizer["Wrong Telephone"]",
+                        pattern: "@Localizer["Wrong Telephone"]",
+                    },
+                    Address:{
+                        required: "@Localizer["Field Mandatory"]",
+                    },
+                    ContactName:{
+                        required: "@Localizer["Field Mandatory"]",
+                        arabicOnly: "@Localizer["Arabic Chars"]",
+                    },
+                    ContactMobile:{
+                        required: "@Localizer["Field Mandatory"]",
+                        digits: "@Localizer["Wrong Mobile"]",
+                        minlength: "@Localizer["Wrong Mobile"]",
+                        maxlength: "@Localizer["Wrong Mobile"]",
+                        pattern: /^05\d{8}$/
+                    },
+                    contactJobTitle: {
+                        required: "@Localizer["Field Mandatory"]",
+                        arabicEnglishLettersOnly: "@Localizer["Arabic English Only"]",
+                    },
+                    ContactMobile2:{
+                        digits: "@Localizer["Wrong Mobile"]",
+                        minlength: "@Localizer["Wrong Mobile"]",
+                        maxlength: "@Localizer["Wrong Mobile"]",
+                        pattern: /^05\d{8}$/
+                    },
+                    ContactEmail:{
+                        required: "@Localizer["Field Mandatory"]",
+                        email: "@Localizer["Wrong Email"]",
+                    },
+                    Description:{
+                        required: "@Localizer["Field Mandatory"]",
+                        maxlength: "@string.Format(Localizer["ExceededMaxLength"],500)",
+                        tinymceLength: "@string.Format(Localizer["ExceededMaxLength"],500)",
+                    },
+                    ArDescription:{
+                        required: "@Localizer["Field Mandatory"]",
+                    maxlength: "@string.Format(Localizer["ExceededMaxLength"],500)",
+                        tinymceLength: "@string.Format(Localizer["ExceededMaxLength"],500)",
+                    },
+                    ExtraData: {
+                        maxlength: "@string.Format(Localizer["ExceededMaxLength"],500)",
+                    },
+                    ArExtraData: {
+                        maxlength: "@string.Format(Localizer["ExceededMaxLength"],500)",
+                    },
+                    BranchesLocation: {
+                        maxlength: "@string.Format(Localizer["ExceededMaxLength"],500)",
+                    },
+                    SafetyProcedures: {
+                        maxlength: "@string.Format(Localizer["ExceededMaxLength"],500)",
+                    },
+                    ArSafetyProcedures: {
+                        maxlength: "@string.Format(Localizer["ExceededMaxLength"],500)",
+                    },
+                    PermanentEmpCount: {
+                        required: "@Localizer["Field Mandatory"]",
+                        number: "@Localizer["Wrong Number"]",
+                        min: "@Localizer["Wrong Number"]",
+                    },
+                    ParttimeEmpCount: {
+                        required: "@Localizer["Field Mandatory"]",
+                        number: "@Localizer["Wrong Number"]",
+                        min: "@Localizer["Wrong Number"]",
+                    },
+                    WeekWorkDays: {
+                        required: "@Localizer["Field Mandatory"]",
+                        number:"@Localizer["Wrong Number"]",
+                        min:"@Localizer["Wrong Number"]",
+                        max:"@Localizer["Wrong Days"]",
+                    },
+                    DayWorkHours:{
+                        required: "@Localizer["Field Mandatory"]",
+                        number: "@Localizer["Wrong Number"]",
+                        min: "@Localizer["Wrong Number"]",
+                        max:"@Localizer["Wrong Working Hours"]",
+                    },
+                    InjuredInsurance: {
+                        //required: "@Localizer["Field Mandatory"]",
+                    },
+                    HealthInsurance: {
+                        //required: "@Localizer["Field Mandatory"]",
+                    },
+                    Branches: {
+                        required: "@Localizer["Field Mandatory"]",
+                        number:"@Localizer["Wrong Number"]",
+                        min: "@Localizer["Wrong Number"]",
+                    },
+                    FinancialReport: {
+                        required: "@Localizer["Field Mandatory"]",
+                        accept: "@Localizer["Wrong Document Ext"]"
+                    },
+                    AnnualReport: {
+                        required: "@Localizer["Field Mandatory"]",
+                        accept: "@Localizer["Wrong Document Ext"]"
+                    },
+                    RegistrationDocument: {
+                        required: "@Localizer["Field Mandatory"]",
+                        accept: "@Localizer["Wrong Document Ext"]"
+                    },
+                    OtherAttachments: {
+                        required: "@Localizer["Field Mandatory"]",
+                        accept: "@Localizer["Wrong Document Ext"]"
+                    },
+                    Logo: {
+                        required: "@Localizer["Field Mandatory"]",
+                        accept: "@Localizer["Wrong Image Ext"]"
+                    },
+                }
+            });
+
+
+        $(document).ready(function () {
+            $(document).on("change","#Sector",function(){
+                var sec = $(this).val();
+                if(sec == "9999"){
+                    $("#secOtherCont").show();
+                }
+                else{
+                    $("#secOtherCont").hide();
+                }
+            });
+             $(document).on("change","#WorkSectorId",function(){
+                var sec = $(this).val();
+                if(sec == "9999"){
+                    $("#secWorkOtherCont").show();
+                }
+                else{
+                    $("#secWorkOtherCont").hide();
+                }
+            });
+
+            $("#CityId").change(function () {
+                var city = $("#CityId").val();
+
+                var url = "@Url.Action("getAreas", "Home")?cityId=" + city
+                $("#AreaId").empty();
+                $.ajax({
+                    url: url,
+                    dataType: "json",
+                    beforeSend: function () {
+                        $("#AreaId").hide();
+                        $("#AreaId").before($('<i class="fa fa-spinner fa-spin fa-3x fa-fw" style="font-size:15px;" id="loader"></i> '));
+                    },
+                    success: function (data) {
+                        var areas = data.areas;
+                        $("#AreaId").append($('<option></option>').val("").html(":: SELECT VILLAGE/AREA ::"));
+                        for (var i = 0; i < areas.length; i++) {
+                            $("#AreaId").append($('<option></option>').val(areas[i].id).html(areas[i].arName));
+                        }
+                    },
+                    error: function (jqXhr, json, errorThrown) {
+                        try {
+                            var errors = jqXhr.responseJSON.errors;
+                            console.log(errors);
+                        }
+                        catch (eee) {
+                            console.log(eee.message);
+                        }
+                    },
+                    complete: function () {
+                        //alert("complete");
+                        $("#loader").remove();
+                        $("#AreaId").show();
+                    }
+                });
+
+            });
+        });
+
+        $(document).on("change","#type",function(){
+                var val = $(this).val();
+                if(val == "1"){//If Company
+                    $("#operatedCont").show();
+                     $("#commDocCont").show();
+                }
+                else{//If Institution
+                    $("#operatedCont").hide();
+                     $("#commDocCont").hide();
+                }
+                var url = "@Url.Action("getSectors", "Home")?type=" + val
+                $("#Sector").empty();
+                $.ajax({
+                    url: url,
+                    dataType: "json",
+                    beforeSend: function () {
+                        $("#Sector").hide();
+                        $("#Sector").before($('<i class="fa fa-spinner fa-spin fa-3x fa-fw" style="font-size:15px;" id="loader"></i> '));
+                    },
+                    success: function (data) {
+                        var sectors = data.sectors;
+                        $("#Sector").append($('<option></option>').val("").html(":: SELECT Company/Institution Type ::"));
+                        for (var i = 0; i < sectors.length; i++) {
+                                $("#Sector").append($('<option></option>').val(sectors[i].id).html(sectors[i].name));
+                        }
+                    },
+                    error: function (jqXhr, json, errorThrown) {
+                        try {
+                            var errors = jqXhr.responseJSON.errors;
+                            console.log(errors);
+                        }
+                        catch (eee) {
+                            console.log(eee.message);
+                        }
+                    },
+                    complete: function () {
+                        //alert("complete");
+                        $("#loader").remove();
+                        $("#Sector").show();
+                    }
+                });
+        });
+        /*$(document).on("change", "#type", function () {
+            var val = $(this).val();
+            if (val == "1") {
+                //Companies
+                $("#Sector").html('<option value="" >:: SELECT Company Type ::</option><option value="5">General Ordinary Company</option>' +
+                    '<option value="6">Ordinary Company Limited</option>' +
+                    '<option value="7">Limited liability company</option>' +
+                    '<option value="8">Private joint stock company</option>' +
+                    '<option value="9">The public shareholding company</option>');
+                $("#operatedCont").show();
+            }
+            else {
+                //Institutions
+                $("#Sector").html('<option value="" >:: Select the Institutions type ::</option><option value="1">Private Sector</option>' +
+                    '<option value="2">Public Sector</option>' +
+                    '<option value="3">Local Sector</option>' +
+                    '<option value="4">International Institutions</option>');
+                $("#operatedCont").hide();
+            }
+        });
+        */
+    </script>
+}

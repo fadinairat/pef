@@ -1,0 +1,513 @@
+﻿@model PEF.Models.Employers
+@using PEF.Models;
+@using Microsoft.Extensions.Localization
+@using PEF.Areas.Control.Controllers
+@inject IStringLocalizer<HomeController> Localizer
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var currentCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
+    ViewData["Title"] = "Create";
+}
+<partial name="_validationMsg" />
+
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">@Localizer["Employers/Institutions"]</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-@Localizer["Float Rev"]">
+                <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">@Localizer["Home"]</a></li>
+                <li class="breadcrumb-item active">@Localizer["Employers/Institutions"]</li>
+            </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+      
+<section class="content">
+<div class="container-fluid">
+
+<div class="row">
+    <div class="col-6 text-left"><h1 class="form-title">Add New Employers/Institutions</h1></div>
+            <div class="col-6 text-right mt-3 sm-link"><a asp-action="Index"><i class="bi bi-list-ul"></i> @Localizer["List All Employers/Institutions"]</a></div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="row">
+                <div class="form-group col-sm-6">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label asp-for="ArName" class="control-label"></label>
+                    <input asp-for="ArName" class="form-control" />
+                    <span asp-validation-for="ArName" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label asp-for="Shortcut" class="control-label"></label>
+                    <input asp-for="Shortcut" class="form-control" />
+                    <span asp-validation-for="Shortcut" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-6"></div>
+
+                <div class="form-group col-sm-6">
+                    <label asp-for="Type" class="control-label"></label>
+                    <select asp-for="Type" id="type" class="form-control">
+                        <option value="">:: SELECT TYPE ::</option>
+                        <option value="1" >Company</option>
+                        <option value="2" >Institution</option>
+                    </select>
+                    <span asp-validation-for="Type" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-sm-6">
+                    <label asp-for="Sector" class="control-label"></label>
+                    <select asp-for="Sector" class="form-control">
+                        <option value="">:: SELECT Company/Institution Type ::</option>
+                        @{
+                            if (ViewBag.Sectors != null)
+                            {
+                                foreach (LookupEmployersSectors item in ViewBag.Sectors)
+                                {
+                                    <!option value="@item.Id" @(Model!=null && Model.Sector == item.Id ? "SELECTED" :"") >@(currentCulture=="ar-AE"? item.ArName : item.Name)</!option>
+                                }
+                            }
+                        }                       
+                    </select>
+                    <span asp-validation-for="Sector" class="text-danger"></span>
+                    <div id="secOtherCont" style="display:none;margin-top:10px;">
+                        <label asp-for="SectorOther" class="control-label"></label>
+                        <input asp-for="SectorOther" class="form-control" />
+                        <span asp-validation-for="SectorOther" class="text-danger"></span>
+                    </div>
+                </div>
+
+
+                <div class="form-group col-sm-6">
+                    <label asp-for="WorkSectorId" class="control-label"></label>
+                    <select asp-for="WorkSectorId" class ="form-control" asp-items="ViewBag.WorkSectorId"></select>
+                    <div id="secWorkOtherCont" style="display:none;margin-top:10px;">
+                        <label asp-for="WorkSectorOther" class="control-label"></label>
+                        <input asp-for="WorkSectorOther" class="form-control" />
+                        <span asp-validation-for="WorkSectorOther" class="text-danger"></span>
+                    </div>
+                </div>
+
+
+                <div class="form-group col-sm-6">
+                    <label asp-for="EstablishYear" class="control-label"></label>
+                    <input asp-for="EstablishYear" class="form-control" />
+                    <span asp-validation-for="EstablishYear" class="text-danger"></span>
+                </div>
+
+
+                <div class="form-group col-sm-6">
+                    <label asp-for="RegNumber" class="control-label"></label>
+                    <input asp-for="RegNumber" class="form-control" />
+                    <span asp-validation-for="RegNumber" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-sm-6">
+                    <label asp-for="OperationNumber" class="control-label"></label>
+                    <input asp-for="OperationNumber" class="form-control" />
+                    <span asp-validation-for="OperationNumber" class="text-danger"></span>
+                </div>
+
+            </div>
+                    
+
+             <!--#############  Contact Information ###############-->
+            <div class="row">
+                <div class="col-12"><h5 class="text-danger">Login Details</h5></div>
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input asp-for="Email"  class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-sm-6">
+                    <label asp-for="Password" class="control-label"></label>
+                    <input asp-for="Password" type="password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                        <div class="form-group col-sm-6">
+                    <label asp-for="ConfirmPassword" class="control-label"></label>
+                    <input asp-for="ConfirmPassword" type="password" class="form-control" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+            </div>
+
+
+            <!--#############  Contact Information ###############-->
+            <div class="row">
+                <div class="col-12"><h5 class="text-danger">Contact Information</h5></div>
+                
+                <div class="form-group col-sm-6">
+                    <label asp-for="CityId" class="control-label"></label>
+                    <select asp-for="CityId" class ="form-control" >
+                    <option value="">:: Select City ::</option>
+                        @{
+                            if (ViewBag.CityId != null)
+                            {
+                                foreach (City item in ViewBag.CityId)
+                                {
+                                    <!option value="@item.Id">@(currentCulture=="ar-AE"? item.ArName : item.Name)</!option>
+                                }
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label asp-for="AreaId" class="control-label"></label>
+                    <select asp-for="AreaId" class="form-control">
+                        <option value="">:: SELECT VILLAGE/AREA ::</option>
+                        @{
+                            if (ViewBag.VillageId != null)
+                            {
+                                foreach (Villages item in ViewBag.VillageId)
+                                {
+                                    <!option value="@item.Id" @(Model !=null && Model.AreaId == item.Id ? "SELECTED":"") >@(currentCulture=="ar-AE"? item.ArName : item.Name)</!option>
+                                }
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="AreaId" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label asp-for="Village" class="control-label"></label>
+                    <input asp-for="Village" class="form-control" />
+                    <span asp-validation-for="Village" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label asp-for="Mobile" class="control-label"></label>
+                    <input asp-for="Mobile" class="form-control" />
+                    <span asp-validation-for="Mobile" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label asp-for="Tel" class="control-label"></label>
+                    <input asp-for="Tel" class="form-control" />
+                    <span asp-validation-for="Tel" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group">
+                    <label asp-for="Address" class="control-label"></label>
+                    <input asp-for="Address" class="form-control" />
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!--#############  Contact Person ###############-->
+            <div class="row">
+                <div class="col-12"><h5 class="text-danger">Contact Person</h5></div>
+                <div class="form-group col-6">
+                    <label asp-for="ContactName" class="control-label"></label>
+                    <input asp-for="ContactName" class="form-control" />
+                    <span asp-validation-for="ContactName" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="contactJobTitle" class="control-label"></label>
+                    <input asp-for="contactJobTitle" class="form-control" />
+                    <span asp-validation-for="contactJobTitle" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="ContactMobile" class="control-label"></label>
+                    <input asp-for="ContactMobile" class="form-control" />
+                    <span asp-validation-for="ContactMobile" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="ContactMobile2" class="control-label"></label>
+                    <input asp-for="ContactMobile2" class="form-control" />
+                    <span asp-validation-for="ContactMobile2" class="text-danger"></span>
+                </div>
+                        <div class="form-group col-6">
+                    <label asp-for="ContactEmail" class="control-label"></label>
+                    <input asp-for="ContactEmail"  class="form-control" />
+                    <span asp-validation-for="ContactEmail" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!--#############  Field ###############-->
+            <div class="row">
+                <div class="col-12"><h5 class="text-danger">Employer/Institution Field</h5></div>
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label"></label>
+                    <textarea asp-for="Description" rows="3" class="form-control tinymce" ></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ArDescription" class="control-label"></label>
+                    <textarea asp-for="ArDescription" rows="3" class="form-control tinymce" dir="rtl" ></textarea>
+                    <span asp-validation-for="ArDescription" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- ##### Extra Data (Others) ########-->
+            <div class="row">
+                <div class="col-12"><h5 class="text-danger">Extra Details</h5></div>
+                <div class="form-group">
+                    <label asp-for="ExtraData" class="control-label"></label>
+                    <textarea asp-for="ExtraData" rows="3" class="form-control tinymce" ></textarea>
+                    <span asp-validation-for="ExtraData" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ArExtraData" class="control-label"></label>
+                    <textarea asp-for="ArExtraData" rows="3" class="form-control tinymce" dir="rtl"></textarea>
+                    <span asp-validation-for="ArExtraData" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- #########  Capabilities  ##########-->
+            <div class="row">
+                <div class="col-12"><h5 class="text-danger">Employer/Institutions Capabilities</h5></div>
+
+                <div class="form-group col-6">
+                    <label asp-for="PermanentEmpCount" class="control-label"></label>
+                    <input asp-for="PermanentEmpCount" class="form-control" />
+                    <span asp-validation-for="PermanentEmpCount" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="PermanentFemaleEmpCount" class="control-label"></label>
+                    <input asp-for="PermanentFemaleEmpCount" class="form-control" />
+                    <span asp-validation-for="PermanentFemaleEmpCount" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 mb-3">
+                    <label asp-for="FulltimeEmpCount" class="control-label"></label>
+                    <input asp-for="FulltimeEmpCount" class="form-control" />
+                    <span asp-validation-for="FulltimeEmpCount" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 mb-3">
+                    <label asp-for="FulltimeFemaleEmpCount" class="control-label"></label>
+                    <input asp-for="FulltimeFemaleEmpCount" class="form-control" />
+                    <span asp-validation-for="FulltimeFemaleEmpCount" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="ParttimeEmpCount" class="control-label"></label>
+                    <input asp-for="ParttimeEmpCount" class="form-control" />
+                    <span asp-validation-for="ParttimeEmpCount" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="ParttimeFemaleEmpCount" class="control-label"></label>
+                    <input asp-for="ParttimeFemaleEmpCount" class="form-control" />
+                    <span asp-validation-for="ParttimeFemaleEmpCount" class="text-danger"></span>
+                </div>
+                <div class="form-group form-check col-6">
+                    <label asp-for="InjuredInsurance" class="control-label" style="width:60%;"></label>
+                    <input asp-for="InjuredInsurance" type="checkbox" data-bootstrap-switch data-off-color="danger" data-on-color="success" />
+                </div>
+                <div class="form-group form-check col-6">
+                    <label asp-for="HealthInsurance" class="control-label" style="width:60%;"></label>
+                    <input asp-for="HealthInsurance" type="checkbox" data-bootstrap-switch data-off-color="danger" data-on-color="success" />
+                </div>
+                <div class="form-group form-check col-6 mb-3">
+                    Is the institution/company willing to host on-the-job trainees?
+                    <label asp-for="AcceptTrainers">
+                        <input type="radio" asp-for="AcceptTrainers" value="true" /> Yes
+                    </label>
+                    <label asp-for="AcceptTrainers">
+                        <input type="radio" asp-for="AcceptTrainers" value="false" /> No
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Branches" class="control-label"></label>
+                    <input asp-for="Branches" type="number" style="width:120px;" class="form-control">
+                    <span asp-validation-for="Branches" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="BranchesLocation" class="control-label"></label>
+                    <textarea asp-for="BranchesLocation" rows="3" class="form-control tinymce"></textarea>
+                    <span asp-validation-for="BranchesLocation" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label asp-for="SafetyProcedures" class="control-label"></label>
+                            <textarea asp-for="SafetyProcedures" rows="3" class="form-control tinymce"></textarea>
+                    <span asp-validation-for="SafetyProcedures" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ArSafetyProcedures" class="control-label"></label>
+                            <textarea asp-for="ArSafetyProcedures" rows="3" class="form-control" dir="rtl"></textarea>
+                    <span asp-validation-for="ArSafetyProcedures" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- ##### Extra Data (Others) ########-->
+            <div class="row">
+                <div class="" ><h5 class="text-danger" >Attachments</h5></div>
+                <div class="form-group col-6">
+                    <label asp-for="FinancialReport" class="control-label"></label>
+                    <input asp-for="FinancialReport" type="file" accept=".pdf,.doc" class="form-control" />
+                    <span asp-validation-for="FinancialReport" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="AnnualReport" class="control-label"></label>
+                    <input asp-for="AnnualReport" type="file" accept=".pdf,.doc" class="form-control" />
+                    <span asp-validation-for="AnnualReport" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="RegistrationDocument" class="control-label"></label>
+                    <input asp-for="RegistrationDocument" type="file" accept=".pdf,.doc" class="form-control" />
+                    <span asp-validation-for="RegistrationDocument" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 mb-3" id="commDocCont">
+                    <label asp-for="CommercialRegister" class="control-label"></label>
+                    <input asp-for="CommercialRegister" type="file" accept=".pdf,.doc" class="form-control" />
+                    <span asp-validation-for="CommercialRegister" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="CommercialRegister" class="control-label"></label>
+                    <input asp-for="CommercialRegister" type="file" accept=".pdf,.doc" class="form-control" />
+                    <span asp-validation-for="CommercialRegister" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="OtherAttachments" class="control-label"></label>
+                    <input asp-for="OtherAttachments" type="file" accept=".pdf,.doc" class="form-control" />
+                            <span asp-validation-for="OtherAttachments" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label asp-for="Logo" class="control-label"></label>
+                    <input asp-for="Logo" type="file" accept=".jpg" class="form-control" />
+                    <span asp-validation-for="Logo" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+</div>
+</section>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+        $(function () {
+   
+            $("input[data-bootstrap-switch]").each(function () {
+                $(this).bootstrapSwitch('state', $(this).prop('checked'));
+            });
+        });
+        $(document).ready(function () {
+            $(document).on("change","#Sector",function(){
+                var sec = $(this).val();
+                if(sec == "9999"){
+                    $("#secOtherCont").show();
+                }
+                else{
+                    $("#secOtherCont").hide();
+                }
+            });
+             $(document).on("change","#WorkSectorId",function(){
+                var sec = $(this).val();
+                if(sec == "9999"){
+                    $("#secWorkOtherCont").show();
+                }
+                else{
+                    $("#secWorkOtherCont").hide();
+                }
+            });
+
+            $("#CityId").change(function () {
+                var city = $("#CityId").val();
+
+                var url = "@Url.Action("getAreas", "Home")?cityId=" + city
+                $("#AreaId").empty();
+                $.ajax({
+                    url: url,
+                    dataType: "json",
+                    beforeSend: function () {
+                        $("#AreaId").hide();
+                        $("#AreaId").before($('<i class="fa fa-spinner fa-spin fa-3x fa-fw" style="font-size:15px;" id="loader"></i> '));
+                    },
+                    success: function (data) {
+                        var areas = data.areas;
+                        $("#AreaId").append($('<option></option>').val("").html(":: SELECT VILLAGE/AREA ::"));
+                        for (var i = 0; i < areas.length; i++) {
+                            $("#AreaId").append($('<option></option>').val(areas[i].id).html(areas[i].arName));
+                        }
+                    },
+                    error: function (jqXhr, json, errorThrown) {
+                        try {
+                            var errors = jqXhr.responseJSON.errors;
+                            console.log(errors);
+                        }
+                        catch (eee) {
+                            console.log(eee.message);
+                        }
+                    },
+                    complete: function () {
+                        //alert("complete");
+                        $("#loader").remove();
+                        $("#AreaId").show();
+                    }
+                });
+
+            });
+        });
+
+        $(document).on("change","#type",function(){
+                var val = $(this).val();
+                if(val == "1"){//If Company
+                    $("#operatedCont").show();
+                    $("#commDocCont").show();
+                }
+                else{//If Institution
+                    $("#operatedCont").hide();
+                    $("#commDocCont").hide();
+                }
+
+                var url = "@Url.Action("getSectors", "Home")?type=" + val
+                $("#Sector").empty();
+                $.ajax({
+                    url: url,
+                    dataType: "json",
+                    beforeSend: function () {
+                        $("#Sector").hide();
+                        $("#Sector").before($('<i class="fa fa-spinner fa-spin fa-3x fa-fw" style="font-size:15px;" id="loader"></i> '));
+                    },
+                    success: function (data) {
+                        var sectors = data.sectors;
+                        $("#Sector").append($('<option></option>').val("").html(":: SELECT Company/Institution Type ::"));
+                        for (var i = 0; i < sectors.length; i++) {
+                                $("#Sector").append($('<option></option>').val(sectors[i].id).html(sectors[i].name));
+                        }
+                    },
+                    error: function (jqXhr, json, errorThrown) {
+                        try {
+                            var errors = jqXhr.responseJSON.errors;
+                            console.log(errors);
+                        }
+                        catch (eee) {
+                            console.log(eee.message);
+                        }
+                    },
+                    complete: function () {
+                        //alert("complete");
+                        $("#loader").remove();
+                        $("#Sector").show();
+                    }
+                });
+           
+            });
+       
+    </script>
+}

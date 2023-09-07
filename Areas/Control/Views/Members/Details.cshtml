@@ -1,0 +1,744 @@
+﻿@model PEF.Models.Members
+@using PEF.Models
+@using Microsoft.Extensions.Localization
+@using PEF.Areas.Control.Controllers
+@inject IStringLocalizer<HomeController> Localizer
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var currentCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
+    ViewData["Title"] = Localizer["Job Seeker Details"];
+}
+<style>
+    col-4{
+        border-right:solid 1px #ccc;
+    }
+</style>
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">@Localizer["Job Seekers"]</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-@Localizer["Float Rev"]">
+                    <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">@Localizer["Home"]</a></li>
+                    <li class="breadcrumb-item active">@Localizer["Job Seekers"]</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+<section class="content">
+<div class="container-fluid">
+
+<h1 class="form-title">@Localizer["Job Seeker Details"]</h1>
+
+<dl>
+    
+    <dl class="row">
+        <dt class="col-sm-6 mb-2 pb-3 pt-2">
+            <div class="mt-2" >@Html.DisplayNameFor(model => model.LastLogin) : @Html.DisplayFor(model => model.LastLogin)</div><br />
+            <div class="mt-2">@Html.DisplayNameFor(model => model.AddDate) : @Html.DisplayFor(model => model.AddDate)</div><br />
+            @{
+                if (Model.Active) {
+                    <div class="bg-success p-2 mt-2 mb-2 d-inline" ><i class="fas fa-user-alt"></i> @Localizer["Active"]</div>
+                }
+                else {
+                    <div class="bg-danger p-2 mt-2 mb-2 d-inline" ><i class="fas fa-user-alt-slash"></i> @Localizer["Deactive"]</div>
+                }
+                if(Model.Completed)
+                {
+                    <div class="bg-success p-2 mt-2 mb-2 d-inline"><i class="fas fa-thumbs-up"></i> @Localizer["Profile Completed"]</div>
+                }     
+                else {
+                    <div class="bg-danger p-2 mt-2 mb-2 d-inline"><i class="far fa-thumbs-up"></i> @Localizer["Not Complete"]</div>
+                }
+                if (ViewBag.WorkStatus == "Current Beneficiary")
+                {
+                    <div class="bg-danger p-2 mt-2 mb-2 d-inline"><i class="fas fa-user-tie"></i> @Localizer["Current Beneficiary"]</div>
+                }
+                else if(ViewBag.WorkStatus == "Previous Beneficiary"){
+                    <div class="bg-warning p-2 mt-2 mb-2 d-inline"><i class="fas fa-user-tie"></i> @Localizer["Previous Beneficiary"]</div>
+                }
+                else if (ViewBag.WorkStatus == "Not Beneficiary")
+                {
+                    <div class="bg-success p-2 mt-2 mb-2 d-inline"><i class="fas fa-user-tie"></i> @Localizer["Not Beneficiary"]</div>
+                }
+            }
+        </dt>
+        <dt class="col-sm-6">
+            <a asp-action="DownloadPDF" asp-route-id="@Model.Id"><i class="fas fa-file-pdf"></i> @Localizer["Download PDF"]</a>
+            @{
+                if(Model.Photo != null && Model.Photo != "")
+                {
+                    <img src="@Url.Content(Model.Photo)" style="width:180px;">
+                }
+            }
+        </dt>
+        <dt class = "col-6 col-sm-2">
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+        <dd class = "col-6 col-sm-2">
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+        <dt class = "col-6 col-sm-2">
+            @Html.DisplayNameFor(model => model.FatherName)
+        </dt>
+        <dd class = "col-4 col-sm-4">
+            @Html.DisplayFor(model => model.FatherName)
+        </dd>
+        <dt class = "col-6 col-sm-2">
+            @Html.DisplayNameFor(model => model.GrandName)
+        </dt>
+        <dd class = "col-4 col-sm-4">
+            @Html.DisplayFor(model => model.GrandName)
+        </dd>
+        <dt class = "col-6 col-sm-2">
+            @Html.DisplayNameFor(model => model.FamilyName)
+        </dt>
+        <dd class = "col-4 col-sm-4">
+            @Html.DisplayFor(model => model.FamilyName)
+        </dd>
+       
+        <dt class = "col-6 col-sm-2">
+            @Html.DisplayNameFor(model => model.IdNum)
+        </dt>
+        <dd class = "col-4 col-sm-4">
+            @Html.DisplayFor(model => model.IdNum)
+        </dd>
+        <dt class = "col-sm-4">
+            @Html.DisplayNameFor(model => model.Gender)
+        </dt>
+        <dd class = "col-6 col-sm-2">
+            @(Model.Gender == 1 ? Localizer["Male"] :Localizer["Female"])
+        </dd>
+        <dt class = "col-sm-4">
+            @Html.DisplayNameFor(model => model.SocialId)
+        </dt>
+        <dd class = "col-6 col-sm-2">
+            @(currentCulture =="ar-AE" ? Model.SocialStatus.ArName : Model.SocialStatus.Name)
+        </dd>
+        <dt class = "col-sm-4">
+            @Html.DisplayNameFor(model => model.BirthDate)
+        </dt>
+        <dd class = "col-6 col-sm-2">
+            @Html.DisplayFor(model => model.BirthDate)
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.FatherIdNum)
+        </dt>
+        <dd class="col-6 col-sm-2">
+            @Html.DisplayFor(model => model.FatherIdNum)
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.MotherIdNum)
+        </dt>
+                <dd class="col-6 col-sm-2">
+            @Html.DisplayFor(model => model.MotherIdNum)
+        </dd>
+        <dt class="col-6 col-sm-2">
+            @Html.DisplayNameFor(model => model.PartnerIdNum)
+        </dt>
+        <dd class="col-6 col-sm-2">
+            @Html.DisplayFor(model => model.PartnerIdNum)
+        </dd>
+        <dt class = "col-6 col-sm-2">
+            @Html.DisplayNameFor(model => model.FamilyMembersCount)
+        </dt>
+        <dd class = "col-6 col-sm-2">
+            @Html.DisplayFor(model => model.FamilyMembersCount)
+        </dd>
+        <dt class = "col-6 col-sm-2">
+            @Html.DisplayNameFor(model => model.CityId)
+        </dt>
+        <dd class = "col-6 col-sm-2
+            @(currentCulture == "ar-AE" ? Model.City.ArName : Model.City.Name)
+        </dd>
+        <dt class = "col-6 col-sm-2">
+            @Html.DisplayNameFor(model => model.AreaId)
+        </dt>
+        <dd class = "col-6 col-sm-2">
+            @Html.DisplayFor(model => model.Area)
+        </dd>
+        <dt class = "col-6 col-sm-2">
+            @Html.DisplayNameFor(model => model.District)
+        </dt>
+        <dd class="col-6 col-sm-2">
+            @Html.DisplayFor(model => model.District)
+        </dd>
+        <dt class = "col-6 col-sm-2">
+            @Html.DisplayNameFor(model => model.Street)
+        </dt>
+        <dd class = "col-6 col-sm-2">
+            @Html.DisplayFor(model => model.Street)
+        </dd>
+        <dt class = "col-6 col-sm-2">
+            @Html.DisplayNameFor(model => model.NearTo)
+        </dt>
+        <dd class = "col-6 col-sm-2">
+            @Html.DisplayFor(model => model.NearTo)
+        </dd>
+        <dt class = "col-6 col-sm-2">
+            @Html.DisplayNameFor(model => model.Mobile)
+        </dt>
+        <dd class = "col-6 col-sm-2">
+            @Html.DisplayFor(model => model.Mobile)
+        </dd>
+        <dt class = "col-6 col-sm-2">
+            @Html.DisplayNameFor(model => model.Mobile2)
+        </dt>
+        <dd class = "col-6 col-sm-2">
+            @Html.DisplayFor(model => model.Mobile2)
+        </dd>
+        <dt class = "col-6 col-sm-2">
+            @Html.DisplayNameFor(model => model.Tel)
+        </dt>
+        <dd class = "col-6 col-sm-2">
+            @Html.DisplayFor(model => model.Tel)
+        </dd>
+        <dt class = "col-6 col-sm-2">
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd class = "col-6 col-sm-2">
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <hr />
+        <dt class = "col-6 col-sm-2">
+            @Html.DisplayNameFor(model => model.Interest)
+        </dt>
+        <dd class="col-6 col-sm-2">
+            @{
+                if(Model.Interest != null)
+                {
+                    if (Model.Interest.Contains("1"))
+                    {
+                        <span>@Localizer["Employment,"] </span>
+                    }
+                    if (Model.Interest.Contains("2"))
+                    {
+                        <span>@Localizer["Paid Training,"] </span>
+                    }
+                    if (Model.Interest.Contains("3"))
+                    {
+                        <span>@Localizer["Un-Paid Training,"] </span>
+                    }
+                    if (Model.Interest.Contains("4"))
+                    {
+                        <span>@Localizer["Funding Small Business"]</span>
+                    }
+                }
+            }
+        </dd>
+      
+        <dt class = "col-6 col-sm-2">
+            @Html.DisplayNameFor(model => model.HealthStatus)
+        </dt>
+                <dd class="col-6 col-sm-2">
+            @{
+                if(Model.HealthStatus == 1)
+                {
+                    <span>@Localizer["Healthy"]</span>
+                }
+                else if(Model.HealthStatus == 2)
+                {
+                    <span>@Localizer["Sick"]</span>
+                }
+                else if(Model.HealthStatus == 3)
+                {
+                    <span>@Localizer["Handicapped"]</span>
+                }
+            }
+        </dd>
+       
+        <dt class="col-6 col-sm-2" style="@(Model!=null && Model.HealthStatus == 3 ? "display:block;":"display:none;" )">
+            @Html.DisplayNameFor(model => model.DisabilityType)
+        </dt>
+            <dd class="col-6 col-sm-2" style="@(Model!=null && Model.HealthStatus == 3 ? "display:block;":"display:none;" )">
+            @{
+                if (Model.DisabilityType != null)
+                {
+                    if (Model.DisabilityType == 1)
+                    {
+                    <span>@Localizer["Impaired Mobility"]</span>
+                    }
+                    else if (Model.DisabilityType == 2)
+                    {
+                    <span>@Localizer["Impaired Hearing"]</span>
+                    }
+                    else if (Model.DisabilityType == 3)
+                    {
+                    <span>@Localizer["Visual Impairment"]</span>
+                    }
+                    else if (Model.DisabilityType == 4)
+                    {
+                    <span>@Localizer["Mental Retardation"]</span>
+                    }
+                    else if (Model.DisabilityType == 5)
+                    {
+                    <span>@Localizer["Speech Impediment"]</span>
+                    }
+                }        
+            }
+        </dd>
+        <dt class="col-6 col-sm-2" style="@(Model!=null && Model.HealthStatus == 3 ? "display:block;":"display:none;" )">
+            @Html.DisplayNameFor(model => model.DisabilitySize)
+        </dt>
+        <dd class="col-6 col-sm-2" style="@(Model!=null && Model.HealthStatus == 3 ? "display:block;":"display:none;" )">
+            @{
+                if (Model.DisabilitySize == 1)
+                {
+                    <span>@Localizer["Partial"]</span>
+                }
+                else if (Model.DisabilitySize == 2)
+                {
+                    <span>@Localizer["Totally"]</span>
+                }
+
+            }
+        </dd>
+           
+        
+        <dt class="col-6 col-sm-2" style="@(Model!=null && (Model.HealthStatus == 3 || Model.HealthStatus==1) ? "display:block;":"display:none;" )">
+            @Html.DisplayNameFor(model => model.HealthAtt1)
+        </dt>
+        <dd class="col-6 col-sm-2" style="@(Model!=null && (Model.HealthStatus == 3 || Model.HealthStatus==1) ? " display:block;":"display:none;" )">
+            @if (!String.IsNullOrEmpty(Model.HealthAtt1))
+            {
+                <a href="@Url.Content(Model.HealthAtt1)" target="_blank" class="btn btn-primary"><i class="fas fa-download"></i> @Localizer["Download"]</a>
+            }
+        </dd>
+
+        <hr />
+        <dt class = "col-6 col-sm-2">
+            @Html.DisplayNameFor(model => model.PropertyType)
+        </dt>
+        <dd class = "col-6 col-sm-2">
+        @{
+            if (Model.PropertyType == 0)
+            {
+                <span>@Localizer["Rent"]</span>
+            }
+            else if(Model.PropertyType == 1)
+            {
+                <span>@Localizer["Owner"]</span>
+            }
+            else if(Model.PropertyType == 2){
+                 <span>@Localizer["Use"]</span>
+            }
+        }
+        </dd>
+        <dt class="col-6 col-sm-2">
+            @Html.DisplayNameFor(model => model.HouseNature)
+        </dt>
+        <dd class="col-6 col-sm-2">
+            @{
+                if (Model.HouseNature == 0)
+                {
+                    <span>@Localizer["Flat"]</span>
+                }
+                else if(Model.HouseNature==1)
+                {
+                    <span>@Localizer["Detached House"]</span>
+                }
+                else if(Model.HouseNature==2)
+                {
+                    <span>@Localizer["Other"]</span>
+                }
+            }
+        </dd>
+        <dt class="col-6 col-sm-2">
+            @Html.DisplayNameFor(model => model.HouseType)
+        </dt>
+        <dd class="col-6 col-sm-2">
+            @{
+                if (Model.HouseType == 0)
+                {
+                    <span>@Localizer["Batoon"]</span>
+                }
+                else if(Model.HouseNature==1)
+                {
+                    <span>@Localizer["Zenko"]</span>
+                }
+                else if(Model.HouseNature==2)
+                {
+                    <span>@Localizer["Tent"]</span>
+                }
+                 else if(Model.HouseNature==3)
+                {
+                    <span>@Localizer["Caravan"]</span>
+                }
+            }
+        </dd>
+
+        <dt class="col-6 col-sm-2">
+            @Html.DisplayNameFor(model => model.HouseSize)
+        </dt>
+        <dd class="col-6 col-sm-2">
+             @Html.DisplayFor(model => model.HouseSize)
+        </dd>
+       
+        <hr />
+        <div style="@(Model.IncomeExist == true ? "display:block;":"")"><div class="row" >
+            <dt class = "col-6 col-sm-2">
+                @Html.DisplayNameFor(model => model.BreedWinnder)
+            </dt>
+            <dd class = "col-6 col-sm-2">
+                @Html.DisplayFor(model => model.BreedWinnder)
+            </dd>
+            <dt class = "col-6 col-sm-2">
+                @Html.DisplayNameFor(model => model.BreedWinnderType)
+            </dt>
+            <dd class = "col-6 col-sm-2">
+            @{
+                if (Model.BreedWinnderType == 0)
+                {
+                    <span>@Localizer["Himself/Herself"]</span>
+                }
+                else if(Model.BreedWinnderType == 1)
+                {
+                    <span>@Localizer["Husband / Wife"]</span>
+                }else if(Model.BreedWinnderType == 2)
+                {
+                    <span>@Localizer["Borther / Sister"]</span>
+                }else if(Model.BreedWinnderType == 3)
+                {
+                    <span>@Localizer["Son"]</span>
+                }else if(Model.BreedWinnderType == 4)
+                {
+                    <span>@Localizer[""]Father</span>
+                }else if(Model.BreedWinnderType == 5)
+                {
+                    <span>@Localizer["Mother"]</span>
+                }else if(Model.BreedWinnderType == 6)
+                {
+                    <span>@Localizer["Other"]</span>
+                }
+            }
+            </dd>
+            <dt class = "col-6 col-sm-2">
+                @Html.DisplayNameFor(model => model.IncomeSource)
+            </dt>
+            <dd class = "col-4 col-sm-4">
+                @Html.DisplayFor(model => model.IncomeSource)
+            </dd>
+            <dt class = "col-6 col-sm-2">
+                @Html.DisplayNameFor(model => model.IncomeValue)
+            </dt>
+            <dd class = "col-4 col-sm-4">
+                @Html.DisplayFor(model => model.IncomeValue)
+            </dd>
+                    </div>
+                </div>
+        <hr />
+        @{
+            if (!string.IsNullOrEmpty(Model.Attach1))
+            {
+                <dt class="col-6 col-sm-2">
+                    @Html.DisplayNameFor(model => model.AttachTitle1)
+                </dt>
+                <dd class="col-4 col-sm-4">
+                    <a href="@Url.Content(Model.Attach1)" target="_blank"><i class="fas fa-download"></i></a>
+                </dd>
+            }
+            if (!string.IsNullOrEmpty(Model.Attach2 ))
+            {
+                <dt class="col-6 col-sm-2">
+                    @Html.DisplayNameFor(model => model.AttachTitle2)
+                </dt>
+                <dd class="col-4 col-sm-4">
+                    <a href="@Url.Content(Model.Attach2)" target="_blank"><i class="fas fa-download"></i></a>
+                </dd>
+            }
+            if (!string.IsNullOrEmpty(Model.Attach3 ))
+            {
+                <dt class="col-6 col-sm-2">
+                    @Html.DisplayNameFor(model => model.AttachTitle3)
+                </dt>
+                <dd class="col-4 col-sm-4">
+                    <a href="@Url.Content(Model.Attach3)" target="_blank"><i class="fas fa-download"></i></a>
+                </dd>
+            }
+        }
+       
+    </dl>
+    <dl class="row">
+        <h5>@Localizer["Family Members"]</h5>
+        <table class="table res-tbl">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>@Localizer["Full Name"]</th>
+                    <th>@Localizer["Relation"]</th>
+                    <th>@Localizer["Id Num"]</th>
+                    <th>@Localizer["Gender"]</th>
+                    <th>@Localizer["Birth Date"]</th>
+                    <th>@Localizer["Health Status"]</th>
+                    <th>@Localizer["Disease"]</th>
+                </tr>
+            </thead>
+            <tbody>
+            @{
+                if (ViewBag.MembersFamily != null)
+                {
+                    var i = 1;
+                    foreach (MembersFamily item in ViewBag.MembersFamily)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td>@item.FullName</td>
+                            <td>
+                                            @{
+                                if (item.Relation == 1)
+                                {
+                                    <span>@Localizer["Son"]</span>
+                                }
+                                else if (item.Relation == 2)
+                                {
+                                    <span>@Localizer["Daughter"]</span>
+                                }
+                                else if (item.Relation == 3)
+                                {
+                                    <span>@Localizer["Brother"]</span>
+                                }
+                                else if (item.Relation == 4)
+                                {
+                                    <span>@Localizer["Sister"]</span>
+                                }
+                                else if (item.Relation == 5)
+                                {
+                                    <span>@Localizer["Husband"]</span>
+                                }
+                                else if (item.Relation == 6)
+                                {
+                                    <span>@Localizer["Wife"]</span>
+                                }
+                                else if (item.Relation == 7)
+                                {
+                                    <span>@Localizer["Father"]</span>
+                                }
+                                else if (item.Relation == 8)
+                                {
+                                    <span>@Localizer["Mother"]</span>
+                                }
+                            }
+                            </td>
+                            <td>@item.IdNum</td>
+                            <td>@(item.Gender == 1 ? Localizer["Male"]:Localizer["Female"])</td>
+                            <td>@item.BirthDate?.ToString("dd MMM yyyy")</td>
+                            <td>
+                                @{
+                                    if (item.HealthStatus==0)
+                                    {
+                                        <span>@Localizer["Healthy"]</span>
+                                    }
+                                    else if(item.HealthStatus == 1)
+                                    {
+                                        <span>@Localizer["Not Healthy"]</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@Localizer["Handicapped"]</span>
+                                    }
+                                }
+                            </td>
+                            <th>@item.Disease</th>
+                        </tr>
+                        i++;
+                    }
+                }
+            }
+            </tbody>
+        </table>
+    </dl>
+    <dl class="row">
+        <h5>@Localizer["Job Seeker Education"]</h5>
+        <table class="table res-tbl">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>@Localizer["Education Level Type"]</th>
+                    <th>@Localizer["Education Level"]</th>
+                    <th>@Localizer["University/College"]</th>
+                    <th>@Localizer["Country"]</th>
+                    <th>@Localizer["Graduation Date"]</th>
+                    <th>@Localizer["Path"]</th>
+                    <th>@Localizer["Grade"]</th>
+                    <th>@Localizer["Specialization"]</th>
+                    <th>@Localizer["Attachments"]</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    if (ViewBag.MembersEducation != null)
+                    {
+                        var i = 1;
+                        foreach (MembersEducation item in ViewBag.MembersEducation)
+                        {
+                            <tr>
+                                <td>@i</td>
+                                <td>
+                                    @{
+                                        if (item.EducationLevelType == 1)
+                                        {
+                                            <span>@Localizer["Worker"]</span>
+                                        }
+                                        else if (item.EducationLevelType == 2)
+                                        {
+                                            <span>@Localizer["Profession"]</span>
+                                        }
+                                        else if (item.EducationLevelType == 3)
+                                        {
+                                            <span>@Localizer["Graduate"]</span>
+                                        }
+                                    }
+                                </td>
+                                <td>@(currentCulture == "ar-AE" ? item.Education?.ArName : item.Education?.Name)</td>
+                                <td>@item.University</td>
+                                <td>@(!string.IsNullOrEmpty(item.CountryName) ? item.CountryName: item.Country?.Name)</td>
+                                <td>@item.GradDate?.ToString("dd MMM yyyy")</td>
+                                <td>
+                                @{
+                                    if (item.EducationLevelType == 1)
+                                    {
+                                        <span>@Localizer["Worker"]</span>
+                                    }
+                                    else if(item.EducationLevelType == 2)
+                                    {
+                                        <span>@Localizer["Profession"]</span>
+                                    }
+                                    else if (item.EducationLevelType == 2)
+                                    {
+                                        <span>@Localizer["Academic Graduate"]</span>
+                                    }
+                                }
+                                </td>
+                                <td>@item.Grade</td>
+                                <td>@(currentCulture == "ar-AE" ? item.Specialize?.ArName : item.Specialize?.Name)</td>
+                                <td>
+                                    @{
+                                        if(item.Attachment != null)
+                                        {
+                                            <a href="@Url.Content(item.Attachment)" target="_blank" >@Localizer["Download"]</a>
+                                        }    
+                                    }
+                                </td>
+                            </tr>
+                            i++;
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    </dl>
+    <dl class="row">
+        <h5>@Localizer["Job Seeker Experts"]</h5>
+        <table class="table res-tbl">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>@Localizer["Job Title"]</th>
+                    <th>@Localizer["Job Location"]</th>
+                    <th>@Localizer["Period"]</th>
+                    <th>@Localizer["Expert Field"]</th>
+                    <th>@Localizer["Attachments"]</th>
+                </tr>
+            </thead>
+            <tbody>
+            @{
+                if (ViewBag.MembersExpert != null)
+                {
+                    var i = 1;
+                    foreach (MembersExpert item in ViewBag.MembersExpert)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td>@item.JobTitle</td>
+                            <td>@item.JobLocation</td>
+                            <td>@(item.StartDate?.ToString("dd MMM yyyy") + " To " + item.EndDate?.ToString("dd MMM yyyy"))</td>
+                            <td>@item.ExpDescription</td>
+                            <td>
+                                @{
+                                    if (item.Attachment != null)
+                                    {
+                                        <a href="@Url.Content(item.Attachment)" target="_blank">@Localizer["Download"]</a>
+                                    }
+                                }
+                            </td>
+                        </tr>
+                        i++;
+                    }
+                }
+            }
+            </tbody>
+        </table>
+    </dl>
+    <dl class="row">
+        <h5>@Localizer["Job Seeker Training"]</h5>
+            <table class="table res-tbl">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>@Localizer["Name"]</th>
+                    <th>@Localizer["Hours"]</th>
+                    <th>@Localizer["Start Date"]</th>
+                    <th>@Localizer["End Date"]</th>
+                    <th>@Localizer["Training Supplier"]</th>
+                    <th>@Localizer["Attachments"]</th>
+                </tr>
+            </thead>
+            <tbody>
+            @{
+                if (ViewBag.MembersTraining != null)
+                {
+                    var i = 1;
+                    foreach (MembersTraining item in ViewBag.MembersTraining)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td>@item.Name</td>
+                            <td>@item.Hours</td>
+                            <td>@{
+                            DateTime? dt = item.StartDate;
+                            <span>@dt?.ToString("dd MMM yyyy")</span>
+                            }</td>
+                                <td>@{
+                            dt = item.EndDate;
+                            <span>@dt?.ToString("dd MMM yyyy")</span>
+                            }</td>
+                            <td>@item.TrainingSupplier</td>
+                            <td>
+                                @{
+                                    if (item.Attachment != null)
+                                    {
+                                        <a href="@Url.Content(item.Attachment)" target="_blank">@Localizer["Download"]</a>
+                                    }
+                                }
+                            </td>
+                        </tr>
+                        i++;
+                    }
+                }
+            }
+            </tbody>
+        </table>
+    </dl>
+</div>
+    @{
+        if (@HttpContextAccessor.HttpContext.Session.GetString("type") == "CMS_User")
+        {
+            <a asp-action="Edit" asp-route-id="@Model?.Id">@Localizer["Edit"]</a>
+            <span> | </span>
+            <a asp-action="Index">@Localizer["Back To List"]</a>
+        }
+    }
+<div>
+    
+</div>
+</section>
+
+@section Scripts{
+    <script type="text/javascript" >
+    
+    </script>
+}

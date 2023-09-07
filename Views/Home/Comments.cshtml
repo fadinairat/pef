@@ -1,0 +1,111 @@
+﻿@inject IConfiguration _config
+@{
+	string myKey = _config["GoogleReCaptcha:key"];
+}
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+	ViewData["Title"] = "الشكاوى";
+}
+<section class="container">
+	<div class="row">
+		<div class="col-12 text-center">
+			<h1 class="">أضف الشكوى/التعليق</h1>
+		<h6 class=""><div>بإمكانك إضافة تعليقك/الشكوى على اي من خدماتنا</div></h6>
+		</div>
+	</div>
+	<div class="row">
+		<form class="mb-5 mt-5" method="post" asp-action="CreateComment" id="formComm" name="formComm">
+			<div class="row">
+				<div class="col-md-6 form-group mb-4">
+					<label for="" class="col-form-label d-none">الإسم *</label>
+					<input type="text" class="form-control valid" name="Name" id="Name" placeholder="الإسم" aria-required="true" data-val="true" data-val-required="الحقل اجباري*" required="required" aria-invalid="false"><label id="name-error" class="error" for="Name" style="display: none;"></label>
+					<span class="text-danger field-validation-valid" data-valmsg-for="Name" data-valmsg-replace="true"></span>
+				</div>
+				<div class="col-md-6 form-group mb-4">
+					<label for="" class="col-form-label  d-none">Email *</label>
+					<input type="text" class="form-control" required="required" name="Email" id="Email" data-val="true" data-val-required="الحقل اجباري*" placeholder="البريد الالكتروني">
+					<span class="text-danger field-validation-valid" data-valmsg-for="Email" data-valmsg-replace="true"></span>
+				</div>
+
+			</div>
+			<div class="row">
+				<div class="col-md-6 form-group mb-4">
+					<label for="" class="col-form-label  d-none">Location</label>
+					<input type="text" class="form-control" required="required" name="Location" id="Location" data-val="true" data-val-required="الحقل اجباري*" placeholder="المكان /  المدينة">
+					<span class="text-danger field-validation-valid" data-valmsg-for="Location" data-valmsg-replace="true"></span>
+				</div>
+				<div class="col-md-6 form-group mb-4">
+					<label for="" class="col-form-label  d-none">Mobile</label>
+					<input type="text" class="form-control" required="required" name="Mobile" id="Mobile" data-val="true" data-val-required="الحقل اجباري*" data-rule-mobileTelNumber="true" data-msg-mobileTelNumber='ادخل رقم هاتف خلوي أو أرضي يبدا ب 05 او 02!' placeholder="رقم الخلوي">
+					<span class="text-danger field-validation-valid" data-valmsg-for="Mobile" data-valmsg-replace="true"></span>
+				</div>
+				<div class="col-md-6 form-group mb-4">
+					<label for="" class="col-form-label  d-none">Subject</label>
+					<input type="text" class="form-control" required="required" name="Subject" id="Subject" data-val="true" data-val-required="الحقل اجباري*" placeholder="الموضوع">
+					<span class="text-danger field-validation-valid" data-valmsg-for="Subject" data-valmsg-replace="true"></span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12 form-group mb-4">
+					<label for="message" class="col-form-label  d-none">Body *</label>
+					<textarea class="form-control" name="Body" required="required" id="Body" data-val="true" data-val-required="الحقل اجباري*" cols="30" rows="4" placeholder="الشكوى / التعليق"></textarea>
+					<span class="text-danger field-validation-valid" data-valmsg-for="Body" data-valmsg-replace="true"></span>
+				</div>
+			</div>
+			<div class="row mb-4">
+				<div class="col-md-12">
+					<div class="g-recaptcha" lang="ar" data-sitekey="@myKey"></div>
+					<span class="text-danger field-validation-valid" data-valmsg-for="g-recaptcha-response" data-valmsg-replace="true"></span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12 form-group text-center">
+					<button type="submit" id="sendCommentBtn" class="btn subscribe_btn">أرسل</button>
+					<span class="submitting"></span>
+				</div>
+			</div>
+		</form>
+	</div>
+</section>
+@section Scripts{
+	<script src='https://www.google.com/recaptcha/api.js'></script>
+	<partial name="_ValidationScriptsPartial" >
+	<partial name="_validationMsg" />
+	<script type="text/javascript" >
+	</script>
+	<script>
+		window.onload = function () {
+			var $recaptcha = document.querySelector('#g-recaptcha-response');
+			if ($recaptcha) {
+				$recaptcha.setAttribute("required", "required");
+				$recaptcha.setAttribute("data-val", "true");
+				$recaptcha.setAttribute("data-val-required", "الحقل اجباري");
+			};
+
+			$(document).ready(function () {
+				$(document).on('submit', '#contForm', function (e) {
+					if (grecaptcha.getResponse() == "") {
+						e.preventDefault();
+						alert("يجب عليك التأكيد عن انك لست روبوت!");
+					} else {
+
+					}
+				});
+			});
+		}
+		
+	</script>
+	<style>
+        #g-recaptcha-response {
+            display: block !important;
+            position: absolute;
+            margin: -78px 0 0 0 !important;
+            width: 302px !important;
+            height: 76px !important;
+            z-index: -999999;
+            opacity: 0;
+        }
+    </style>
+}

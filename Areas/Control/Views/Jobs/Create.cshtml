@@ -1,0 +1,391 @@
+﻿@model PEF.Models.Jobs
+@using PEF.Models;
+@using PEF.Areas.Control.Controllers
+@inject IStringLocalizer<HomeController> Localizer
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    ViewData["Title"] = Localizer["Create Job"];
+    var currentCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
+}
+<partial name="_validationMsg" />
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">@Localizer["Jobs"]</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-@Localizer["Float Rev"]">
+                    <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">@Localizer["Home"]</a></li>
+                    <li class="breadcrumb-item active">@Localizer["Jobs"]</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-6 text-@Localizer["Float"]"><h1 class="form-title">@Localizer["Add New Job"] </h1></div>
+            <div class="col-6 text-@Localizer["Float Rev"] mt-3 sm-link"><a asp-action="Index"><i class="bi bi-list-ul"></i> @Localizer["List All Jobs"]</a></div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+            <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            @{
+                if(ViewBag.ShowEmployers !=null && ViewBag.ShowEmployers)
+                {
+                    <div class="row">
+                        <div class="form-group">
+                            <label asp-for="EmployerId" class="control-label"></label>
+                            <select asp-for="EmployerId" required class="form-control input-validation-error" data-val-required="@Localizer["Required Field"]">
+                                <option value="">:: @Localizer["Select Employer/Association"] ::</option>
+                                @{
+                                    if (ViewBag.EmployerId != null)
+                                    {
+                                        foreach (Employers item in ViewBag.EmployerId)
+                                        {
+                                            <!option value="@item.Id" @(Model !=null && Model.EmployerId == item.Id ? "SELECTED":"") >@(currentCulture == "ar-AE" ? item.ArName : item.Name)</!option>
+                                        }
+                                    }
+                                }
+                            </select>
+                            <span class="text-danger field-validation-error" data-valmsg-for="EmployerId" data-valmsg-replace="true"></span>
+                        </div>
+                    </div> 
+                }
+            }
+            
+            <div class="row">
+                <div class="form-group col-sm-6">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label asp-for="ArName" class="control-label"></label>
+                    <input asp-for="ArName" class="form-control" />
+                    <span asp-validation-for="ArName" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label asp-for="ProjectId" class="control-label"></label>
+                    <select asp-for="ProjectId" class="form-control" >
+                    <option value="">:: @Localizer["Select Project"] ::</option>
+                    @{
+                        if (ViewBag.ProjectId != null)
+                        {
+                            foreach (Projects item in ViewBag.ProjectId)
+                            {
+                                 <!option value="@item.Id" @(Model !=null && Model.ProjectId == item.Id ? "SELECTED":"") >@(currentCulture == "ar-AE" ? item.ArName : item.Name)</!option>
+                            }
+                        }
+                    }
+                    </select>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label asp-for="BeneficiaryCount" class="control-label"></label>
+                    <input asp-for="BeneficiaryCount" class="form-control" />
+                    <span asp-validation-for="BeneficiaryCount" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-sm-4">
+                    <label asp-for="WorkNature" class="control-label"></label>
+                    <select class="form-control" asp-for="WorkNature">
+                        <!option value="1">@Localizer["Full Time"]</!option>
+                        <!option value="0">@Localizer["Part Time"]</!option>
+                    </select>
+                </div>
+                <div class="form-group col-sm-4">
+                    <label asp-for="Type" class="control-label"></label>
+                    <select class="form-control" asp-for="Type">
+                        <option value="">::  @Localizer["Select The Type"] :: </option>
+                        <!option value="1" @(Model!=null && Model.Type == 1 ? "SELECTED": "") >@Localizer["Paid Job Opportunity"]</!option>
+                        <!option value="2" @(Model!=null && Model.Type == 2 ? "SELECTED": "")>@Localizer["Paid Training"]</!option>
+                        <!option value="3" @(Model!=null && Model.Type == 3 ? "SELECTED": "")>@Localizer["Unpaid Training"]</!option>
+                        <!option value="4" @(Model!=null && Model.Type == 4 ? "SELECTED": "")>@Localizer["Funding Small Projects"]</!option>
+                    </select>
+                </div>
+                <div class="form-group col-sm-4">
+                    <label asp-for="Featured" class="control-label"></label>
+                    <select class="form-control" asp-for="Featured">
+                        <!option value="false" @(Model!=null && Model.Featured==false ? "SELECTED": "") >@Localizer["Not Featured"]</!option>
+                        <!option value="true" @(Model!=null && Model.Featured==true ? "SELECTED": "") >@Localizer["Featured"]</!option>
+                    </select>
+                </div>
+
+                <div class="form-group col-sm-4">
+                    <label asp-for="SalaryType" class="control-label"></label>
+                    <select class="form-control" asp-for="SalaryType">
+                        <!option value="1">@Localizer["Monthly"]</!option>
+                        <!option value="0">@Localizer["Daily"]</!option>
+                    </select>
+                </div>
+
+                <div class="form-group col-sm-4">
+                    <label asp-for="Salary" class="control-label"></label>
+                    <input asp-for="Salary" class="form-control">
+                </div>
+
+                <div class="form-group col-sm-4">
+                    <label asp-for="CurrencyId" class="control-label"></label>
+                    <select asp-for="CurrencyId" class="form-control" asp-items="ViewBag.CurrencyId"></select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-sm-6">
+                    <label asp-for="CityId" class="control-label"></label>
+                    <select asp-for="CityId" class="form-control" >
+                        <option value="" >:: @Localizer["Select City"] ::</option>
+                        @{
+                            if(ViewBag.CityId != null)
+                            {
+                                foreach(City item in ViewBag.CityId)
+                                {
+                                    <!option value="@item.Id" @(Model !=null && Model.CityId == item.Id ? "SELECTED":"") >@(currentCulture == "ar-AE" ? item.ArName : item.Name)</!option>
+                                }
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="form-group col-sm-6" ></div>
+
+                <div class="form-group col-sm-6">
+                    <label asp-for="StartDate" class="control-label"></label>
+                    <input asp-for="StartDate" class="form-control" />
+                    <span asp-validation-for="StartDate" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label asp-for="ExpireDate" class="control-label"></label>
+                    <input asp-for="ExpireDate" class="form-control" />
+                    <span asp-validation-for="ExpireDate" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12"><h5 class="text-danger">@Localizer["Details"]</h5></div>
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label"></label>
+                    <textarea rows=3 asp-for="Description" class="form-control tinymce"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ArDescription" class="control-label"></label>
+                    <textarea rows=3 asp-for="ArDescription" class="form-control tinymce" dir="rtl"></textarea>
+                    <span asp-validation-for="ArDescription" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Tasks" class="control-label"></label>
+                    <textarea rows=3 asp-for="Tasks" class="form-control tinymce" ></textarea>
+                    <span asp-validation-for="Tasks" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ArTasks" class="control-label"></label>
+                    <textarea rows=3 asp-for="ArTasks" class="form-control tinymce" dir="rtl"></textarea>
+                    <span asp-validation-for="ArTasks" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Conditions" class="control-label"></label>
+                            <textarea rows=3 asp-for="Conditions" class="form-control tinymce" ></textarea>
+                    <span asp-validation-for="Conditions" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ArConditions" class="control-label"></label>
+                    <textarea rows=3 asp-for="ArConditions" class="form-control tinymce" dir="rtl"></textarea>
+                    <span asp-validation-for="ArConditions" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label asp-for="Contacts" class="control-label"></label>
+                    <input asp-for="Contacts" class="form-control" />
+                    <span asp-validation-for="Contacts" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label asp-for="ArContacts" class="control-label"></label>
+                    <input asp-for="ArContacts" class="form-control" />
+                    <span asp-validation-for="ArContacts" class="text-danger"></span>
+                </div>
+            </div>
+
+            
+
+
+            <div class="row">
+                <div class="col-12"><h5 class="text-danger">@Localizer["Selection Creteria"]</h5></div>
+                <div class="form-group ">
+                    <label>@Localizer["Job Fields"]</label>
+                    <select class="multipleSelect" multiple name="job_fields[]">
+                        @{
+                            List<LookupJobsFields> fields_list = ViewBag.Fields;
+                            foreach (LookupJobsFields item in fields_list)
+                            {
+                                <!option value="@item.Id">@(currentCulture == "ar-AE" ? item.ArName : item.Name)</!option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group col-sm-6" >
+                    <label asp-for="SelFromAge" class="control-label"></label>
+                    <input asp-for="SelFromAge" class="form-control" />
+                    <span asp-validation-for="SelFromAge" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-sm-6">
+                    <label asp-for="SelToAge" class="control-label"></label>
+                    <input asp-for="SelToAge" class="form-control" />
+                    <span asp-validation-for="SelToAge" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-6">
+                    <label asp-for="SelSocialId" class="control-label"></label>
+                    <select asp-for="SelSocialId" class="form-control">
+                        <option value="">:: @Localizer["Select Social Status"] ::</option>
+                        @{
+                            if (ViewBag.SocialId != null)
+                            {
+                                foreach (LookupSocialStatus item in ViewBag.SocialId)
+                                {
+                                     <!option value="@item.Id" @(Model!=null && Model.SelSocialId == item.Id ? "SELECTED":"")  >@(currentCulture == "ar-AE" ? item.ArName : item.Name)</!option>
+                                }
+                            }
+                        }
+                    </select>
+                </div>
+
+                 <div class="form-group col-6">
+                    <label asp-for="SelGender" class="control-label"></label>
+                    <select asp-for="SelGender" class="form-control">
+                        <option value="">:: @Localizer["Select Gender"] ::</option>
+                        <!option value="1" @(Model!=null && Model.SelGender == 1 ? "SELECTED" : "")  >@Localizer["Male"]</!option>
+                        <!option value="2" @(Model!=null && Model.SelGender == 2 ? "SELECTED" : "")  >@Localizer["Female"]</!option>
+                    </select>
+                    <span asp-validation-for="SelGender" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-6">
+                    <label asp-for="SelDistrict" class="control-label"></label>
+                    <select asp-for="SelDistrict" class="form-control">
+                                <option value="">:: @Localizer["Select District"] ::</option>
+                        <!option value="WestBank" @(Model!=null && Model.SelDistrict == "WestBank" ? "SELECTED" : "")  >@Localizer["Westbank"]</!option>
+                        <!option value="Gaza" @(Model!=null && Model.SelDistrict == "Gaza" ? "SELECTED" : "")  >@Localizer["Gaza"]</!option>
+                        <!option value="Both" @(Model!=null && Model.SelDistrict == "Both" ? "SELECTED" : "")  >@Localizer["Westbank & Gaza"]</!option>
+                    </select>
+                    <span asp-validation-for="SelDistrict" class="text-danger"></span>
+                </div>
+                @*
+                <div class="form-group col-6"></div>
+                <div class="form-group col-sm-6">
+                    <label asp-for="SelCityId" class="control-label"></label>
+                    <select asp-for="SelCityId" class="form-control" >
+                        <option value="" >:: SELECT CITY ::</option>
+                        @{
+                            if(ViewBag.CityId != null)
+                            {
+                                foreach(City item in ViewBag.CityId)
+                                {
+                                    <!option value="@item.Id" @(Model !=null && Model.SelCityId == item.Id ? "SELECTED":"") >@(currentCulture == "ar-AE" ? item.ArName : item.Name)</!option>
+                                }
+                            }
+                        }
+                    </select>
+                </div>
+                *@
+                <div class="form-group col-sm-6">
+                            <label asp-for="SelCityId" class="control-label"></label>
+                    <select name="cities[]" class="multipleSelect" multiple >
+                        <option value="" >:: @Localizer["Select City"] ::</option>
+                        @{
+                            if(ViewBag.CityId != null)
+                            {
+                                foreach(City item in ViewBag.CityId)
+                                {
+                                    <!option value="@item.Id" @(Model !=null && Model.SelCityId == item.Id ? "SELECTED":"") >@item.ArName</!option>
+                                }
+                            }
+                        }
+                    </select>
+                </div>
+                @*
+                <div class="form-group col-sm-6">
+                    <label asp-for="SelVillageId" class="control-label"></label>
+                        <select asp-for="SelVillageId" class="form-control">
+                        <option value="" >:: Select Village/Area ::</option>
+                        @{
+                            if(ViewBag.VillageId != null)
+                            {
+                                foreach (Villages item in ViewBag.VillageId)
+                                {
+                                    <!option value="@item.Id" @(Model !=null && Model.SelVillageId == item.Id ? "SELECTED":"") >@(currentCulture == "ar-AE" ? item.ArName : item.Name)</!option>
+                                }
+                            }
+                        }
+                    </select>
+                </div>
+                *@
+
+            </div>
+           
+            
+            <div class="form-group">
+                <input type="submit" value="@Localizer["Create"]" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">@Localizer["Back To List"]</a>
+</div>
+</div>
+</section>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+        $('.multipleSelect').fastselect();
+        $(document).ready(function(){
+            $("#SelCityId").change(function () {
+                var city = $("#SelCityId").val();
+
+                var url = "@Url.Action("getAreas", "Home")?cityId=" + city
+                $("#SelVillageId").empty();
+                $.ajax({
+                    url: url,
+                    dataType: "json",
+                    beforeSend: function () {
+                        $("#SelVillageId").hide();
+                        $("#SelVillageId").before($('<i class="fa fa-spinner fa-spin fa-3x fa-fw" style="font-size:15px;" id="loader"></i> '));
+                    },
+                    success: function (data) {
+                        var areas = data.areas;
+                        $("#SelVillageId").append($('<option></option>').val("").html(":: @Localizer["Select Village/Area"] ::"));
+                        for (var i = 0; i < areas.length; i++) {
+                            $("#SelVillageId").append($('<option></option>').val(areas[i].id).html(areas[i].arName));
+                        }
+                    },
+                    error: function (jqXhr, json, errorThrown) {
+                        try {
+                            var errors = jqXhr.responseJSON.errors;
+                            console.log(errors);
+                        }
+                        catch (eee) {
+                            console.log(eee.message);
+                        }
+                    },
+                    complete: function () {
+                        //alert("complete");
+                        $("#loader").remove();
+                        $("#SelVillageId").show();
+                    }
+                });
+
+            });
+        });
+    </script>
+}

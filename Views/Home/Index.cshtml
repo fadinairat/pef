@@ -1,0 +1,457 @@
+﻿@using PEF.Models
+@inject IHttpContextAccessor HttpContextAccessor
+@inject IConfiguration _config
+@{
+    string myKey = _config["GoogleReCaptcha:key"];
+}
+@{
+    //ViewData["Title"] = @Localizer["page.title"];
+    if(ViewBag.PageTitle!=null) ViewData["title"] = ViewBag.PageTitle;
+}
+
+<!-- Page Content -->
+<section class="home_center">
+    <section class="slider">
+        <div id="pefSlider" class="carousel slide">
+        <div class="carousel-inner">
+                <div class='carousel-item active'>
+                <div class='carousel_img'><img src='~/res/images/slider.png' class='d-block w-100' alt='Slider1'><div class='slider_content'><h1>أحصل على وظيفة الآن</h1><h3>الوظائف والتوظيف وفرص العمل المستقبلية</h3>
+                <div class='slider_buttons'>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        if (@HttpContextAccessor.HttpContext?.Session.GetString("type") == "Employer")
+                        {
+                            <a asp-action="Create" asp-controller="Jobs" asp-area="Control" class='btn publish_job'> أنشر فرصة تشغيل/ تدريب على رأس العمل <i class='fa-solid fa-arrow-left'></i></a>
+                        }
+                        else
+                        {
+                            <a asp-action="Login" asp-controller="Home" asp-route-type="1" class='btn publish_job'> أنشر فرصة تشغيل/ تدريب على رأس العمل <i class='fa-solid fa-arrow-left'></i></a>
+                        }
+                    }
+                    else
+                    {
+                        <a asp-action="Login" asp-controller="Home" asp-route-type="1" class='btn publish_job'>  أنشر فرصة تشغيل/ تدريب على رأس العمل <i class='fa-solid fa-arrow-left'></i></a>
+                        <a asp-action="Login" asp-controller="Home" asp-route-type="0" class='btn apply_job'> تقدم الاّن <i class='fa-solid fa-arrow-left'></i></a>
+                    }
+                </div></div></div></div>
+                <div class='carousel-item '><div class='carousel_img'><img src='~/res/images/slider2.png' class='d-block w-100' alt='Slider2'><div class='slider_content'><h1>أحصل على فرصة تدريب</h1><h3>فرص التدريب على رأس العمل والتدريب غير المدفوع</h3><div class='slider_buttons'>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        if (@HttpContextAccessor.HttpContext?.Session.GetString("type") == "Employer")
+                        {
+                            <a asp-action="Create" asp-controller="Jobs" asp-area="Control" class='btn publish_job'> أنشر فرصة تشغيل/ تدريب على رأس العمل <i class='fa-solid fa-arrow-left'></i></a>
+                        }
+                        else
+                        {
+                            <a asp-action="Login" asp-controller="Home" asp-route-type="1" class='btn publish_job'> أنشر فرصة تشغيل/ تدريب على رأس العمل <i class='fa-solid fa-arrow-left'></i></a>
+                        }
+                    }
+                    else
+                    {
+                        <a asp-action="Login" asp-controller="Home" asp-route-type="1" class='btn publish_job'> أنشر فرصة تشغيل/ تدريب على رأس العمل <i class='fa-solid fa-arrow-left'></i></a>
+                        <a asp-action="Login" asp-controller="Home" asp-route-type="0" class='btn apply_job'> تقدم الاّن <i class='fa-solid fa-arrow-left'></i></a>
+                    }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                    
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#pefSlider" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#pefSlider" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</section>
+
+<section class="apply_tape">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-sm-12 col-md-9 col-lg-7">
+                <div class="wrapper">
+
+                    <div class="div_tape">
+                        <img src="~/res/images/أنشيء حسابك.png" alt="">
+                        <span>أنشئ حسابك</span>
+                    </div>
+
+                    <hr class="divider">
+
+                    <div class="div_tape center">
+                        <img src="~/res/images/السير الذاتية المرسلة.png" alt="">
+                        <span>أنشئ سيرتك الذاتية</span>
+                    </div>
+                    <hr class="divider">
+
+                    <div class="div_tape">
+                        <img src="~/res/images/تقدم للوظيفة.png" alt="">
+                        <span>تقدم لفرصة تشغيل / تدريب على رأس العمل</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-6 mt-4">
+                <div class="program_content" id="program_content1">
+                    <img src="~/res/images/pic-1.png" alt="Operators">
+                    <div class="program_desc">
+                        <img src="~/res/images/الجهات المشغلة.png" class="mb-2" alt="">
+                        <h3 style="color:white;">الجهات المشغلة</h3>
+                        <p>
+                            تسجيلك كمشغل في هذا النظام يضمن لك:<br />
+                            الوصول لجميع الباحثين عن عمل في جميع محافظات الوطن
+                            والذين تتوافق مؤهلاتهم مع متطلباتك كمشغل
+                            من خلال مشاريعنا او من خلال اعلاناتك كمشغل
+                            بأعلى معايير الشفافية والنزاهة
+                        </p>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            if (@HttpContextAccessor.HttpContext?.Session.GetString("type") == "Employer")
+                            {
+                                <a asp-action="Create" asp-controller="Jobs" asp-area="Control" class='btn'>  أنشر فرصة تشغيل/ تدريب على رأس العمل <i class='fa-solid fa-arrow-left'></i></a>
+                            }
+                            else
+                            {
+                                <a asp-action="Login" asp-controller="Home" asp-route-type="1" class='btn'>  أنشر فرصة تشغيل/ تدريب على رأس العمل <i class='fa-solid fa-arrow-left'></i></a>
+                            }
+                        }
+                        else
+                        {
+                            <a asp-action="Login" asp-controller="Home" asp-route-type="1" class='btn'>  أنشر فرصة تشغيل/ تدريب على رأس العمل <i class='fa-solid fa-arrow-left'></i></a>
+                        }
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-12 col-md-6 mt-4">
+                <div class="program_content" id="program_content2">
+                    <img src="~/res/images/pic-2.png" alt="Job seekers">
+                    <div class="program_desc">
+                        <img src="~/res/images/الباحثين عن العمل.png" alt="">
+                        <h3>الباحثين عن فرص تشغيل/ فرص تدريب على رأس العمل </h3>
+                        <p>تسجيلك في هذا النظام يضمن لك بأن تكون: مرشح لأي فرصة تشغيل / تدريب جديدة ضمن أعلى مبادئ الشفافية وتكافؤ الفرص ربطك مع كافة المشغلين ضمن أعلى مستويات العمل اللائق</p>
+                        <a asp-action="Login" asp-controller="Home" asp-route-type="0" class="btn"> تقدم الاّن <i class="fa-solid fa-arrow-left"></i></a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<section class="new_jobs mt-5">
+    <!--<h3 class="section_title text-center mt-5">فرص جديدة</h3>-->
+
+    <div class="container">
+        <div class="row justify-content-center mt-4"><div class="col-12">
+            <div class="home-links"><a asp-action="Index" asp-controller="Jobs" asp-route-type="NewOpp"><div class="inside-home-links pulse"><img src="~/res/images/icon-new-opp.png" />فرص جديدة</div></a></div>
+            <div class="home-links"><a asp-action="Index" asp-controller="Jobs" asp-route-type="Featured"><div class="inside-home-links pulse"><img src="~/res/images/icon-special-opp.png" />فرص مميزة</div></a></div>
+            <div class="home-links"><a asp-action="Index" asp-controller="Jobs" asp-route-type="Jobs"><div class="inside-home-links pulse"><img src="~/res/images/icon-job-paid.png" />فرص تشغيل مدفوعة</div></a></div>
+            <div class="home-links"><a asp-action="Index" asp-controller="Jobs" asp-route-type="PaidTraining"><div class="inside-home-links pulse"><img src="~/res/images/icon-paid-training.png" />فرص تدريب على رأس العمل مدفوعة الأجر</div></a></div>
+            <div class="home-links"><a asp-action="Index" asp-controller="Jobs" asp-route-type="NonPaidTraining"><div class="inside-home-links pulse"><img src="~/res/images/icon-nonpaid-training.png" />فرص تدريب غير مدفوعة</div></a></div>
+        </div></div>
+
+        @*<div class="row justify-content-center mt-4">
+            <div class="col-md-8">
+                <div id="myBtnContainer" class="text-center">
+                    <button class="btn-1" onclick="filterSelection('all')"> الكل</button>
+                    <button class="btn-1" onclick="filterSelection('new_jobs')"> وظائف جديدة</button>
+                    <button class="btn-1" onclick="filterSelection('special_jobs')"> وظائف مميزة</button>
+                    <button class="btn-1" onclick="filterSelection('full_jobs')"> وظائف بدوام كامل</button>
+                    <button class="btn-1" onclick="filterSelection('part_jobs')">وظائف بدوام جزئي</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- The filterable elements. Note that some have multiple class names (this can be used if they belong to multiple categories) -->
+        <div class="row mt-5 justify-content-center">
+                @{
+                    if (ViewBag.LatestJobs!=null)
+                    {
+                        var counter = 1;
+                        foreach(Jobs item in ViewBag.LatestJobs)
+                        {
+                            int days = 8;
+                            if (item.StartDate != null)
+                            {
+                                DateTime startDate = item.StartDate ?? DateTime.MinValue;
+                                TimeSpan span = DateTime.Now.Subtract(startDate);
+                                days = span.Days;
+                            }
+                           
+
+                            string tags = "";
+                            if (item.Featured) tags += " special_jobs";
+                            if (days <= 7) tags += " new_jobs";
+                            if (item.WorkNature == 0) tags += " part_jobs";
+                            else if (item.WorkNature == 1) tags += " full_jobs";
+
+                            <div class="col-12 col-md-6 filterDiv @tags">
+                            <div class="job_div mb-4">
+                                <div class="job_desc">
+                                    <h3 class="job_title">@item.ArName</h3>
+                                    <a asp-action="Details" asp-controller="Jobs" asp-route-id="@item.Id" style="text-decoration: none;color: #dcb45f;">@item.Employer.ArName</a><br>
+                                    @(item.Salary != null ? Html.Raw("<h6 style='display:inline;'>الراتب</h6>:<span>" + item.Salary + "</span> <span>"+item.Currency.IconHtml+"</span>") : "")  
+                                </div>
+
+                                <div class="jobs_btns">
+                                    <a asp-action="Details" asp-controller="Jobs" asp-route-id="@item.Id" class="btn apply_btn" type="button">تقدم الاّن</a>
+                                    @{
+                                        if(item.WorkNature == 0){//Part Time
+                                            <button class="btn fullJob_btn" type="button">وظيفة بدوام جزئي</button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn fullJob_btn" type="button">وظيفة بدوام كامل</button>
+                                        }
+                                    }                                        
+                                </div>
+                            </div>
+                            </div>
+                            counter = counter+1;
+                            if (counter >= 4) break;
+                        }   
+                }
+            }
+
+        </div>*@
+    </div>
+</section>
+
+<section class="about_us mt-5" id="counter">
+    <div class="container">
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row text-center">
+                    <div class="col-6 col-md-2 mt-4">
+                        <div class="about_us_content">
+                            <img src="~/res/images/training-and-employment.png" alt="">
+                            <h2 id="available_jobs"><i class="fa-solid fa-plus"></i> @ViewBag.AvailableJobs </h2>
+                            <h5>فرص تشغيل / تدريب</h5>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-2 mt-4">
+                        <div class="about_us_content">
+                            <img src="~/res/images/seekers.png" alt="">
+                            <h2 id="sent_resumes"><i class="fa-solid fa-plus"></i> @ViewBag.SeekersCount </h2>
+                            <h5>باحثين عن عمل</h5>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-2 mt-4">
+                        <div class="about_us_content">
+                            <img src="~/res/images/companies.png" alt="">
+                            <h2 id="companies"><i class="fa-solid fa-plus"></i> @ViewBag.EmployersCount </h2>
+                            <h5>المؤسسات والشركات</h5>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-2 mt-4">
+                        <div class="about_us_content">
+                            <img src="~/res/images/projectsdone.png" alt="">
+                            <h2 id="companies"><i class="fa-solid fa-plus"></i> @ViewBag.ActiveProjects </h2>
+                            <h5>مشاريع منجزة</h5>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-2 mt-4">
+                        <div class="about_us_content">
+                            <img src="~/res/images/employed.png" alt="">
+                            <h2 id="appointed_employees"><i class="fa-solid fa-plus"></i> @ViewBag.Employed </h2>
+                            <h5>تم توظيفهم</h5>
+                        </div>
+                    </div>
+                     <div class="col-6 col-md-2 mt-4">
+                        <div class="about_us_content">
+                            <img src="~/res/images/trained.png" alt="">
+                                <h2 id="appointed_employees"><i class="fa-solid fa-plus"></i> @ViewBag.Trained </h2>
+                            <h5>تم تدريبهم</h5>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="projects mt-5 mb-5">
+    <h3 class="section_title text-center">المشاريع</h3>
+    <div class="container">
+        <div class="row mt-4">
+            @{
+                if(ViewBag.Projects != null)
+                {
+                    foreach(Projects item in ViewBag.Projects)
+                    {
+                        <div class="col-12 col-md-4">
+                            <div class="projects_col">
+                                <div class="projects_content">
+                                    <a asp-action="Project" asp-asp-controller="Home" asp-route-id="@item.Id">
+                                    @{
+                                        if(item.ProjectImage != null)
+                                        {
+                                            <img src="@Url.Content(item.ProjectImage)" alt="@item.ArName" title="@item.ArName" class="img-fluid">
+                                        }
+                                    }
+                                    </a>
+                                </div>
+
+                                <div class="projects_description pt-4">
+                                        <a asp-action="Project" asp-asp-controller="Home" asp-route-id="@item.Id" style="text-decoration: none;">
+                                            <h5 class="projects_title">@(item.ArName.Length > 70 ? item.ArName.ToString().Substring(0, 70) : item.ArName)</h5>
+                                    </a>
+
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            }
+            @*
+            <div class="col-12 col-md-4">
+                <div class="projects_col">
+                    <div class="projects_content">
+                        <a href="#"><img src="~/res/images/المشروع-1.png" class="img-fluid"></a>
+                    </div>
+
+                    <div class="projects_description pt-4">
+                        <a href="#" style="text-decoration: none;">
+                            <h5 class="projects_title">مشروع تعيين موظفين لدوائر البلدية - بلدية طولكرم</h5>
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="projects_col">
+                    <div class="projects_content">
+                        <a href="#"><img src="~/res/images/المشروع-1.png" class="img-fluid"></a>
+                    </div>
+
+                    <div class="projects_description pt-4">
+                        <a href="#" style="text-decoration: none;">
+                            <h5 class="projects_title">مشروع تعيين موظفين لدوائر البلدية - بلدية طولكرم</h5>
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="projects_col">
+                    <div class="projects_content">
+                        <a href="#"><img src="~/res/images/المشروع-1.png" class="img-fluid"></a>
+                    </div>
+
+                    <div class="projects_description pt-4">
+                        <a href="#" style="text-decoration: none;">
+                            <h5 class="projects_title">مشروع تعيين موظفين لدوائر البلدية - بلدية طولكرم</h5>
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+            *@
+        </div>
+
+        <div class="d-flex justify-content-center">
+            <div class="projects_btn d-flex justify-content-center mt-4">
+                <a asp-action="Projects" asp-controller="Home"  class="btn">كل المشاريع</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    <div class="container"><div class="row"><div class="col-12 text-center mt-5 mb-3" >
+        <h3>تم تطوير هذه المنصة ضمن أنشطة مشروع "بناء الصلادة الاقتصادية لقطاع غزة" المنفذ من قبل أوكسفام وبالشراكة مع مركز العمل التنموي/ معاً والممول من الاتحاد الأوروبي.</h3>
+        <img src="~/res/images/sponsors.png" style="margin-right:auto;margin-left:auto;width:100%;max-width:650px;" class="mt-3"/>
+    </div></div></div>
+</section>
+
+
+@section Scripts {
+    <partial name="_validationMsg" />
+
+	<script src='https://www.google.com/recaptcha/api.js'></script>
+	<script type="text/javascript" >
+	$(document).ready(function(){
+    });
+	</script>
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+                const myCarouselElement = document.querySelector('#pefSlider')
+
+                const carousel = new bootstrap.Carousel(myCarouselElement, {
+                    interval: 2000,
+                    ride: "carousel",
+                })
+
+                wow = new WOW(
+                    {
+                        boxClass: 'wow',                        // default
+                        animateClass: 'animated',         // default
+                        offset: 0,                                // default
+                        mobile: true,                       // default
+                        live: true                           // default
+                    }
+                )
+                wow.init();
+            });
+        </script>
+
+	<script>
+	window.onload = function() {
+		var $recaptcha = document.querySelector('#g-recaptcha-response');
+		if ($recaptcha) {
+			$recaptcha.setAttribute("required", "required");
+		};
+
+		$(document).ready(function() {
+			$(document).on('submit', '#contForm', function(e) {
+				if (grecaptcha.getResponse() == "") {
+					e.preventDefault();
+					alert("يجب عليك التأكيد عن انك لست روبوت!");
+				} else {
+
+				}
+			});
+		});
+	}
+
+    // Add active class to the current control button (highlight it)
+    var btnContainer = document.getElementById("myBtnContainer");
+    var btns = btnContainer.getElementsByClassName("btn");
+    for (var i = 0; i < btns.length; i++) {
+        btns[i].addEventListener("click", function () {
+            var current = document.getElementsByClassName("active");
+            current[0].className = current[0].className.replace(" active", "");
+            this.className += " active";
+        });
+    }
+    </script>
+
+	<style>
+        #g-recaptcha-response {
+            display: block !important;
+            position: absolute;
+            margin: -78px 0 0 0 !important;
+            width: 302px !important;
+            height: 76px !important;
+            z-index: -999999;
+            opacity: 0;
+        }
+    </style>
+}

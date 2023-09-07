@@ -1,0 +1,118 @@
+﻿@model IEnumerable<PEF.Models.Donors>
+@using PEF.Models;
+@{
+    ViewData["Title"] = "Index";
+}
+<partial name="_validationMsg" />
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Donors</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home</a></li>
+                    <li class="breadcrumb-item active">Donors</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<section class="content">
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-6 text-start">
+            <h1 class="form-title">
+                List All Donors
+            </h1>
+        </div>
+        @if (Functions.CheckAccess("Create", "Donors", "Control", HttpContextAccessor.HttpContext))
+        {
+            <div class="col-6 text-right mt-3 sm-link"><a asp-action="Create"><i class="bi bi-plus-circle"></i> Add New Donor</a></div>
+        }
+    </div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            
+            <th>
+                @Html.DisplayNameFor(model => model.AddDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastLogin)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Active)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>         
+            <td>
+                @Html.DisplayFor(modelItem => item.AddDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastLogin)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.Fullname)
+            </td>
+            <td>
+                @{
+                    if (item.Active == true)
+                    {
+                        <a class="btn btn-info btn-sm" title="Deactivate" asp-action="Deactivate" asp-route-id="@item.Id"><i class="bi bi-check2-circle"></i> </a>
+                    }
+                    else
+                    {
+                            <a class="btn btn-default btn-sm" title="Activate" asp-action="Activate" asp-route-id="@item.Id"><i class="bi bi-check2-circle"></i> </a>
+                    }
+                }
+                    </td>
+
+                    <td>
+                    @if (Functions.CheckAccess("Index", "Projects", "Control", HttpContextAccessor.HttpContext))
+                    {
+                        <a class="btn btn-primary btn-sm" target="_blank" asp-controller="Projects" asp-action="Index" asp-area="Control" asp-route-donor="@item.Id" target="_blank" title="Related Projects" alt="Related Projects"> <i class="fas fa-chalkboard-teacher"></i></a>
+                    }
+                    @if (Functions.CheckAccess("Edit", "Donors", "Control", HttpContextAccessor.HttpContext))
+                    {
+        <a class="btn btn-primary btn-sm" title="Edit" asp-action="Edit" asp-route-id="@item.Id"><i class="fas fa-pencil-alt"></i> </a>
+                    }
+                    @if (Functions.CheckAccess("Details", "Donors", "Control", HttpContextAccessor.HttpContext))
+                    {
+    <a class="btn btn-info btn-sm" title="Details" asp-action="Details" asp-route-id="@item.Id"><i class="fas fa-folder"></i> </a>
+                    }
+                    @if (Functions.CheckAccess("Delete", "Donors", "Control", HttpContextAccessor.HttpContext))
+                    {
+                        <a asp-route-id="@item.Id" title="Delete" class="btn btn-danger btn-sm" asp-action="Delete"><i class="fas fa-trash"></i> </a>
+                    }
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+</div>
+</section>

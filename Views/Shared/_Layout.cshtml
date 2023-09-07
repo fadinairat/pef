@@ -1,0 +1,253 @@
+﻿@inject IHttpContextAccessor HttpContextAccessor
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var currentUrl = Context.Request.Scheme + "://" + Context.Request.Host + Context.Request.Path + Context.Request.QueryString;
+
+}
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+	<!-- Required meta tags -->
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+	<link rel="stylesheet" href="~/res/css/owl.carousel.min.css">	
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
+
+    <link rel="stylesheet" href="~/res/css/shared.css">
+    <link rel="stylesheet" href="~/res/css/styles.css">
+    <link rel="stylesheet" href="~/res/css/style.css">
+    <link rel="stylesheet" href="~/res/css/jobs.css">
+    <link rel="stylesheet" href="~/res/css/animate.css">
+    <link rel="stylesheet" href="~/res/css/animate.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <link rel="stylesheet" href="~/fastselect/dist/ar_fastselect.css">
+
+	<META name="description" HTTP-EQUIV="Description" CONTENT="PEF">
+	<META name="keywords" HTTP-EQUIV="Keywords" CONTENT="PEF">
+    <link rel="icon" href="~/frontend/images/log-icon.png" type="image/png" />
+    <link rel="shortcut icon" href="~/frontend/images/log-icon.png" type="image/png" />
+    
+
+	<title>@ViewData["title"] - PEF</title>
+    <meta property="og:url" content="@currentUrl">
+	<meta property="og:type" content="article" />
+	<meta property="og:title" content="@ViewData["Title"]" />
+	<meta property="og:description" content="" />
+    @{
+        if(ViewBag.OgImage!=null){
+            <meta property="og:image" content="@Url.Content(ViewBag.OgImage)">
+            <link rel="image_src" type="image/PNG" href="@Url.Content(ViewBag.OgImage)" />
+        }
+        else
+        {
+            <meta property="og:image" content="~/res/images/footer-logo.png">
+            <link rel="image_src" type="image/PNG" href="~/res/images/footer-logo.png" />
+        }
+    }
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6R15GWHR8K"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-6R15GWHR8K');
+    </script>
+    <style>
+        .fstToggleBtn{
+            font-size:0.8em !important;
+            padding: 7px;
+            padding-right: 27px;
+        }
+
+        .fstSingleMode .fstQueryInput{
+            font-size: 0.8em !important;
+        }
+    </style>
+</head>
+<body class="">
+	<header>
+		<section class="page-top fixed_header">
+			<div class="container">
+				<div class="header_div2">
+					<nav class="navbar navbar-expand-xl">
+						<div class="container-fluid">
+							<a class="navbar-brand" href="@Url.Content("/")"><img src="~/res/images/header-logo.png" class="img-fluid top_logo" alt="@ViewData["title"]"></a>
+							<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+								<span class="navbar-toggler-icon"></span>
+							</button>
+							<div class="collapse navbar-collapse" id="navbarSupportedContent">
+                                @await Component.InvokeAsync("TopMenu")
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    <div class="dropdown header_drop">
+                                        <button class="btn login_btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" data-bs-target="#dropdownMenuButton1" aria-expanded="false">
+                                            <i class="fa-solid fa-user"></i> مرحبا @User.Identity.Name
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                            @{
+                                                if (@HttpContextAccessor.HttpContext?.Session.GetString("type") == "Employer")
+                                                {
+                                                    <li><a class="dropdown-item" href="~/Control/Users/Profile">الملف الشخصي</a></li>
+                                                    <li><a class="dropdown-item" href="~/Control/Home">لوحة التحكم</a></li>
+                                                }
+                                                else if(@HttpContextAccessor.HttpContext?.Session.GetString("type") == "Member")
+                                                {
+                                                    <li><a class="dropdown-item" asp-action="Details" asp-controller="Members">الملف الشخصي</a></li>
+                                                    <li><a class="dropdown-item" asp-action="Applied" asp-controller="Jobs">فرص تقدمت لها</a></li>
+                                                    <li><a class="dropdown-item" asp-action="Details" asp-controller="Pages" asp-route-id="5">دليل المستخدم</a></li>
+                                                    <li><a class="dropdown-item" asp-action="Details" asp-controller="Pages" asp-route-id="6">آلية التسجيل فيديو</a></li>
+                                                    <li><a class="dropdown-item" asp-action="Profile" asp-controller="Members">تعديل البيانات الشخصية</a></li>
+                                                    <li><a class="dropdown-item" asp-action="ProfDetails" asp-controller="Members">تفاصيل الحساب الاضافية</a></li>
+                                                    <li><a class="dropdown-item" asp-action="Change" asp-controller="Members">تغيير كلمة المرور</a></li>
+                                                }
+                                            }                                                 
+                                        </ul>
+                                    </div>
+                                    @*<div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Dropdown button
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#">Action</a></li>
+                                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                        </ul>
+                                    </div>*@
+                                    <a class="btn subscribe_btn" asp-action="Logout" asp-controller="Home"> <i class="fa-solid fa-right-from-bracket"></i> <p class="d-inline">تسجيل الخروج</p></a>
+                                    
+                                }
+                                else
+                                {
+                                    <a class="btn login_btn" asp-action="Login" asp-controller="Home"><i class="fa fa-plus-square d-inline" aria-hidden="true"></i><p class="d-inline">تسجيل الدخول </p></a>
+                                    <a class="btn subscribe_btn" asp-action="Signup" asp-controller="Home"> <i class="fa fa-user-plus d-inline" aria-hidden="true"></i><p class="d-inline">إشتراك</p></a>
+                                }
+							</div>
+						</div>
+					</nav>
+
+				</div>
+				<div></div>
+			</div>
+		</section>
+
+	</header>
+	
+	
+	@RenderBody()
+
+    <!--FOOTER-->
+
+    <div class="footer">
+        @await Component.InvokeAsync("FooterMenu")
+    </div>
+   
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="~/res/bootstrap/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="~/res/js/jquery.sticky.js"></script>
+    <script src="~/fastselect/dist/ar_fastselect.standalone.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('.searchSelect').fastselect();
+        });
+
+        var position = $(window).scrollTop();
+        if (position > 30) {
+            $(".page-top").addClass("fixed_header").removeClass("fadeInUp").addClass("fadeInDown");
+            $(".page-top").css("position", "fixed");
+        }
+        else {
+            $(".page-top").removeClass("fixed_header").removeClass("fadeInDown").addClass("fadeInUp");
+            $(".page-top").css("position", "initial");
+        }
+        $(window).scroll(function () {
+            var position = $(window).scrollTop();
+            if (position > 30) {
+                $(".page-top").addClass("fixed_header").removeClass("fadeInUp").addClass("fadeInDown");
+                $(".page-top").css("position", "fixed");
+            }
+            else {
+                $(".page-top").removeClass("fixed_header").removeClass("fadeInDown").addClass("fadeInUp");
+                $(".page-top").css("position", "initial");
+            }
+        });
+
+
+        //Get the button
+        let mybutton = document.getElementById("btn-back-to-top");
+
+        // When the user scrolls down 20px from the top of the document, show the button
+        window.onscroll = function () {
+            scrollFunction();
+        };
+
+        function scrollFunction() {
+            if (
+                document.body.scrollTop > 20 ||
+                document.documentElement.scrollTop > 20
+            ) {
+                mybutton.style.display = "block";
+            } else {
+                mybutton.style.display = "none";
+            }
+        }
+        // When the user clicks on the button, scroll to the top of the document
+        mybutton.addEventListener("click", backToTop);
+
+        function backToTop() {
+            // document.body.scrollTop = 0;
+            // document.documentElement.scrollTop = 0;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+    <script>
+        filterSelection("all")
+        function filterSelection(c) {
+            var x, i;
+            x = document.getElementsByClassName("filterDiv");
+            if (c == "all") c = "";
+            // Add the "show" class (display:block) to the filtered elements, and remove the "show" class from the elements that are not selected
+            for (i = 0; i < x.length; i++) {
+                w3RemoveClass(x[i], "show");
+                if (x[i].className.indexOf(c) > -1) w3AddClass(x[i], "show");
+            }
+        }
+
+        // Show filtered elements
+        function w3AddClass(element, name) {
+            var i, arr1, arr2;
+            arr1 = element.className.split(" ");
+            arr2 = name.split(" ");
+            for (i = 0; i < arr2.length; i++) {
+                if (arr1.indexOf(arr2[i]) == -1) {
+                    element.className += " " + arr2[i];
+                }
+            }
+        }
+
+        // Hide elements that are not selected
+        function w3RemoveClass(element, name) {
+            var i, arr1, arr2;
+            arr1 = element.className.split(" ");
+            arr2 = name.split(" ");
+            for (i = 0; i < arr2.length; i++) {
+                while (arr1.indexOf(arr2[i]) > -1) {
+                    arr1.splice(arr1.indexOf(arr2[i]), 1);
+                }
+            }
+            element.className = arr1.join(" ");
+        }
+
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

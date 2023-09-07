@@ -1,0 +1,284 @@
+﻿@model IEnumerable<PEF.Models.Jobs>
+@using Microsoft.Extensions.Localization
+@using PEF.Areas.Control.Controllers
+@inject IStringLocalizer<HomeController> Localizer
+@inject IHttpContextAccessor HttpContextAccessor
+
+@using PEF.Models;
+@{
+    ViewData["Title"] = "Index";
+    var currentCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
+}
+<partial name="_validationMsg" />
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">@Localizer["Jobs"]</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-@Localizer["Float Rev"]">
+                    <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">@Localizer["Home"]</a></li>
+                    <li class="breadcrumb-item active">@Localizer["Jobs"]</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<section class="content">
+    <div class="container-fluid">
+        
+        <div class="row">
+            <div class="col-6 text-start">
+                <h1 class="form-title">
+                @Localizer["List All Jobs"]
+                @{
+                    if(ViewBag.EmployerDetails != null)
+                    {
+                        Employers emp = ViewBag.EmployerDetails;
+                        <span class="text-danger">(@(currentCulture=="ar-AE" ? emp.ArName: emp.Name))</span>
+                    }
+                }
+            </h1></div>
+            @if (Functions.CheckAccess("Create", "Jobs", "Control", HttpContextAccessor.HttpContext))
+            {
+                <div class="col-6 text-@Localizer["Float Rev"] mt-3 sm-link"><a asp-action="Create"><i class="bi bi-plus-circle"></i> @Localizer["Add New Job"]</a></div>
+            }
+        </div>
+       
+        <form asp-action="Index">
+            <div class="row mb-3">
+                <div class="col-6 col-md-3">
+                    <label for="keyword">@Localizer["Keyword"]:</label>
+                    <input type="text" placeholder="@Localizer["Keyword"]" class="form-control" name="keyword" id="keyword" value="@ViewBag.keyword" />
+                </div>
+                <div class="col-6 col-md-2">
+                    <label for="slang">@Localizer["City"]:</label>
+                    <select name="city" id="city" class="form-control">
+                        <option value="">:: @Localizer["Select City"] ::</option>
+                        @{
+                            List<City> cities = ViewBag.Cities;
+                            foreach (City temp in cities)
+                            {
+                                <!option value="@temp.Id" @(ViewBag.City!=null && ViewBag.City == temp.Id ? "SELECTED" : "")>@(currentCulture=="ar-AE" ? temp.ArName : temp.Name)</!option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-6 col-md-2">
+                    <label for="slang">@Localizer["Project"]:</label>
+                    <select name="project" id="project" class="form-control">
+                        <option value="">:: @Localizer["Select Project"] ::</option>
+                        @{
+                            List<Projects> projects = ViewBag.Projects;
+                            foreach (Projects temp in projects)
+                            {
+                                <!option value="@temp.Id" @(ViewBag.Project!=null && ViewBag.Project == temp.Id ? "SELECTED" : "")>@(currentCulture=="ar-AE" ? temp.ArName : temp.Name)</!option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-6 col-md-3">
+                    <label for="slang">@Localizer["Donor"]:</label>
+                    <select name="donor" id="donor" class="form-control">
+                        <option value="">:: @Localizer["Select Donor"] ::</option>
+                        @{
+                            List<Donors> donors = ViewBag.Donors;
+                            foreach (Donors temp in donors)
+                            {
+                                <!option value="@temp.Id" @(ViewBag.Donor!=null && ViewBag.Donor == temp.Id ? "SELECTED" : "")>@(currentCulture=="ar-AE" ? temp.ArName : temp.Name)</!option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-6 col-md-2"><br /><button type="submit" asp-action="Index" class="btn btn-primary mt-2">@Localizer["Search"]</button></div>
+            </div>
+        </form>
+
+        <table class="table table-bordered table-secondary">
+        <tbody>
+            <tr>
+                    <td style="width:25%;"><b>@Localizer["Total Jobs"]:</b> @ViewBag.TotalJobs</td>
+                    <td style="width:25%;"><b>@Localizer["Pending Jobs"]: </b> @ViewBag.PendingJobs</td>
+                    <td style="width:25%;"><b>@Localizer["Started Jobs"]: </b> @ViewBag.ActiveJobs</td>
+                    <td style="width:25%;"><b>@Localizer["Expired Jobs"]: </b> @ViewBag.ExpiredJobs</td>
+            </tr>
+            <tr>
+                    <td><b>@Localizer["Full Time Jobs"]: </b> @ViewBag.FullTime</td>
+                    <td><b>@Localizer["Part Time Jobs"]: </b> @ViewBag.PartTime</td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Localizer["Job #"]</th>
+
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.EmployerId)
+            </th>
+
+            
+            <th>
+                @Html.DisplayNameFor(model => model.ProjectId)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.BeneficiaryCount)
+            </th>
+
+            <th>@Localizer["Apps Count"]</th>
+            
+            <th>
+                @Html.DisplayNameFor(model => model.AddDate)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.ExpireDate)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Approved)
+            </th>
+           
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>@item.Id</td>
+            
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @(currentCulture == "ar-AE" ? item.Employer?.ArName : item.Employer?.Name)
+            </td>
+          
+            <td>
+                @(item.Project != null ? (currentCulture == "ar-AE" ? item.Project.ArName : item.Project.Name) : "")
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.BeneficiaryCount)
+            </td>
+
+            <td>
+                <a asp-action="AppliedJobs" asp-route-id="@item.Id" target="_blank">@item.JobsApplications?.Count()</a>
+            </td>
+           
+            <td>
+                @Html.DisplayFor(modelItem => item.AddDate)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.ExpireDate)
+            </td>
+
+            <td>
+                @{
+                    string disabled = "false";
+                    if (@HttpContextAccessor.HttpContext.Session.GetString("type") != "CMS_User") disabled = "true";
+
+                    if (@HttpContextAccessor.HttpContext.Session.GetString("type") == "CMS_User" && item.Approved == true)
+                    {
+                        @if (Functions.CheckAccess("Deactivate", "Jobs", "Control", HttpContextAccessor.HttpContext))
+                        {
+                        <a class="btn btn-info btn-sm" title="@Localizer["Deactivate"]" asp-action="Deactivate" asp-route-id="@item.Id"><i class="bi bi-check2-circle"></i> </a>
+                        }
+                    }
+                    else if (@HttpContextAccessor.HttpContext.Session.GetString("type") == "CMS_User")
+                    {
+                        @if (Functions.CheckAccess("Activate", "Jobs", "Control", HttpContextAccessor.HttpContext))
+                        {
+                         <a class="btn btn-default btn-sm" title="@Localizer["Activate"]" asp-action="Activate" asp-route-id="@item.Id"><i class="bi bi-check2-circle"></i> </a>
+                            }
+                        }
+                        else
+                        {
+                            if (Functions.CheckAccess("Deactivate", "Jobs", "Control", HttpContextAccessor.HttpContext))
+                            {
+                                if (item.Approved == true)
+                                {
+                                    <button class="btn btn-info btn-sm" asp-action="Deactivate" asp-route-id="@item.Id" disabled="@disabled"><i class="bi bi-check2-circle"></i> </button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-default btn-sm" asp-action="Deactivate" asp-route-id="@item.Id" disabled="@disabled"><i class="bi bi-check2-circle"></i> </button>
+                                }
+                            }
+                        }
+
+                }
+            </td>
+           
+            <td>
+                @if (Functions.CheckAccess("AppsList", "Jobs", "Control", HttpContextAccessor.HttpContext))
+                {
+                <a class="btn btn-primary btn-sm" target="_blank" asp-controller="Jobs" asp-action="AppsList" asp-area="Control" asp-route-job="@item.Id" target="_blank" title="@Localizer["Applied Jobs"]" alt="@Localizer["Applied Jobs"]"> <i class="fas fa-chalkboard-teacher"></i></a>
+                }
+                @if (Functions.CheckAccess("Edit", "Jobs", "Control", HttpContextAccessor.HttpContext))
+                {
+                <a class="btn btn-primary btn-sm" title="@Localizer["Edit"]" asp-action="Edit" asp-route-id="@item.Id"><i class="fas fa-pencil-alt"></i> </a>
+                }
+                @if (Functions.CheckAccess("Details", "Jobs", "Control", HttpContextAccessor.HttpContext))
+                {
+                <a class="btn btn-info btn-sm" title="@Localizer["Details"]" asp-action="Details" asp-route-id="@item.Id"><i class="fas fa-folder"></i> </a>
+                }
+                @if (Functions.CheckAccess("Delete", "Jobs", "Control", HttpContextAccessor.HttpContext))
+                {
+                    <a asp-route-id="@item.Id" title="@Localizer["Delete"]" class="btn btn-danger btn-sm" asp-action="Delete"><i class="fas fa-trash"></i> </a>
+                }
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@if (ViewBag.PagesCount != null && ViewBag.PagesCount > 0)
+{
+            <div class="text-center d-flex justify-content-center">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                        <li class="page-item"><a class="page-link" asp-action="Index" asp-route-PageNumber="1">@Localizer["First"]</a></li>
+                @{
+                    double pages = ViewBag.PagesCount;
+                    int current = ViewBag.CurrentPage;
+                    int start = 1;
+                    double end = pages;
+                    if (pages > 10)
+                    {
+                        if (pages >= (current + 5)) end = current + 5;
+                        else end = pages;
+
+                        if (current > 5) start = current - 5;
+                        else start = 1;
+                    }
+
+                    for (int i = start; i <= end; i++)
+                    {
+                        string active = "";
+                        if (ViewBag.CurrentPage != null && ViewBag.CurrentPage == i) active = " active";
+                        <li class="page-item @active"><a class="page-link" asp-action="Index" asp-route-PageNumber="@i">@i</a></li>
+                    }
+                }
+                        <li class="page-item"><a class="page-link" asp-action="Index" asp-route-PageNumber="@ViewBag.PagesCount">@Localizer["Last"]</a></li>
+            </ul>
+        </nav>
+    </div>
+}
+
+
+</div>
+</section>

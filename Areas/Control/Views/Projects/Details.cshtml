@@ -1,0 +1,367 @@
+﻿@model PEF.Models.Projects
+@using PEF.Models
+@inject IHttpContextAccessor HttpContextAccessor
+@using PEF.Areas.Control.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<HomeController> Localizer
+@{
+    var currentCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
+    ViewData["Title"] = "Details";
+}
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">@Localizer["Projects"]</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-@Localizer["Float Rev"]">
+                    <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">@Localizer["Home"]</a></li>
+                    <li class="breadcrumb-item active">@Localizer["Projects"]</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+<section class="content">
+    <div class="container-fluid">
+
+        <h1 class="form-title">@Localizer["Project Details"]</h1>
+
+      
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ProgramType)
+        </dt>
+        <dd class = "col-sm-4">
+            @(currentCulture == "ar-AE" ? Model.Program.ArName: Model.Program.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ProjectType)
+        </dt>
+        <dd class = "col-sm-4">
+            @(Model.ProjectType == 1 ? Localizer["Grant"]:Localizer["Loan"])
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class = "col-sm-4">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ArName)
+        </dt>
+        <dd class = "col-sm-4">
+            @Html.DisplayFor(model => model.ArName)
+        </dd>
+      
+        <dt class = "col-sm-12">            
+            <h5>@Html.DisplayNameFor(model => model.Description)</h5>            
+            @Html.Raw(Model.Description)
+        </dt>
+        <dt class = "col-sm-12">
+            <h5>@Html.DisplayNameFor(model => model.ArDescription)</h5>            
+            @Html.Raw(Model.ArDescription)
+        </dt>
+       
+         <dt class = "col-sm-12">
+            <h5>@Html.DisplayNameFor(model => model.Conditions)</h5>
+            @Html.Raw(Model.Conditions)
+        </dt>
+       
+         <dt class = "col-sm-12">
+            <h5>@Html.DisplayNameFor(model => model.ArConditions)</h5>
+            @Html.Raw(Model.ArConditions)
+        </dt>
+
+        <dt class="col-sm-2 col-6">
+            @Html.DisplayNameFor(model => model.DonorId)
+        </dt>
+        <dd class="col-sm-2 col-6">
+            @(Model.Donor != null ? Model.Donor.Name : "")
+        </dd>
+        
+        <dt class="col-6 col-sm-2">
+            @Html.DisplayNameFor(model => model.Budget)
+        </dt>
+        <dd class="col-sm-2 col-6">
+            @Html.DisplayFor(model => model.Budget)
+        </dd>
+        <dt class = "col-6 col-sm-2">
+            @Html.DisplayNameFor(model => model.CurrencyId)
+        </dt>
+        <dd class = "col-sm-2 col-6">
+            @(Model.Currency !=null ? (currentCulture == "ar-AE" ? Model.Currency.ArName : Model.Currency.Name):"")
+        </dd>
+
+        <dt class="col-sm-12 mt-3">
+            <h5>@Html.DisplayNameFor(model => model.Partners)</h5>
+            @Html.Raw(Model.Partners)
+        </dt>
+        <dt class = "col-sm-12 mt-3">
+            <h5>@Html.DisplayNameFor(model => model.ArPartners)</h5>
+            @Html.Raw(Model.ArPartners)
+        </dt>
+        <dt class = "col-sm-12 mt-3">
+            <h5>@Html.DisplayNameFor(model => model.ProjectActivities)</h5>
+            @Html.Raw(Model.ArProjectActivities)
+        </dt>
+        <dt class = "col-sm-12 mt-3">
+            <h5>@Html.DisplayNameFor(model => model.ArProjectActivities)</h5>
+            @Html.Raw(Model.ArProjectActivities)
+        </dt>
+        <dt class = "col-sm-2 mt-3">
+            @Html.DisplayNameFor(model => model.TargetGroup)
+        </dt>
+        <dd class = "col-sm-4 mt-3">
+            @Html.DisplayFor(model => model.TargetGroup)
+        </dd>
+        <dt class = "col-sm-2 mt-3">
+            @Html.DisplayNameFor(model => model.ArTargetGroup)
+        </dt>
+        <dd class="col-sm-4 mt-3">
+            @Html.DisplayFor(model => model.ArTargetGroup)
+        </dd>
+       
+        <dt class = "col-sm-2 mt-3">
+            @Html.DisplayNameFor(model => model.BeneficiaryNumbers)
+        </dt>
+        <dd class = "col-sm-4 mt-3">
+            @Html.DisplayFor(model => model.BeneficiaryNumbers)
+        </dd>
+        <dt class = "col-sm-2 mt-3">
+            @Html.DisplayNameFor(model => model.District)
+        </dt>
+        <dd class = "col-sm-4 mt-3">
+            @{
+                if (Model.District != "Both")
+                {
+                    <span>@Model.District</span>
+                }
+                else
+                {
+                    <span>@Localizer["Westbank & Gaza"]</span>
+                }
+            }
+        </dd>
+        <dt class="col-sm-2 mt-3">
+            @Html.DisplayNameFor(model => model.TargetLocations)
+        </dt>
+        <dd class="col-sm-4 mt-3">
+            @Html.DisplayFor(model => model.TargetLocations)
+        </dd>
+        <dt class = "col-sm-2 mt-3">
+            @Html.DisplayNameFor(model => model.Duration)
+        </dt>
+        <dd class = "col-sm-4 mt-3">
+            @Html.DisplayFor(model => model.Duration)
+        </dd>
+        <dt class = "col-sm-2 mt-3">
+            @Html.DisplayNameFor(model => model.DurationUnit)
+        </dt>
+        <dd class = "col-sm-4 mt-3">
+            @Html.DisplayFor(model => model.DurationUnit)
+        </dd>
+                <dt class="col-sm-2 mt-3">
+            @Html.DisplayNameFor(model => model.StartDate)
+        </dt>
+        <dd class = "col-sm-4 mt-3">
+            @Html.DisplayFor(model => model.StartDate)
+        </dd>
+        <dt class = "col-sm-2 mt-3">
+            @Html.DisplayNameFor(model => model.EndDate)
+        </dt>
+        <dd class = "col-sm-4 mt-3">
+            @Html.DisplayFor(model => model.EndDate)
+        </dd>
+        <dt class = "col-sm-2 mt-3">
+            @Html.DisplayNameFor(model => model.ProjectCoordinator)
+        </dt>
+        <dd class = "col-sm-4 mt-3">
+            @Html.Raw(Model.ProjectCoordinator)
+        </dd>
+        <dt class = "col-sm-2 mt-3">
+            @Html.DisplayNameFor(model => model.ArProjectCoordinator)
+        </dt>
+                <dd class="col-sm-4 mt-3">
+            @Html.Raw(Model.ArProjectCoordinator)
+        </dd>
+        <dt class = "col-sm-12 mt-3">
+            <h5>@Html.DisplayNameFor(model => model.Outputs)</h5>
+            @Html.Raw(Model.Outputs)
+        </dt>
+        <dt class="col-sm-12 mt-3">
+            <h5>@Html.DisplayNameFor(model => model.ArOutputs)</h5>
+            @Html.Raw(Model.ArOutputs)
+        </dt>
+        <dt class = "col-sm-12 mt-3">
+            <h5>@Html.DisplayNameFor(model => model.Conditions)</h5>
+            @Html.Raw(Model.Conditions)
+        </dt>
+       
+        <dt class = "col-sm-12 mt-3">
+            <h5>@Html.DisplayNameFor(model => model.ArConditions)</h5>
+            @Html.Raw(Model.ArConditions)
+        </dt>
+        <dt class = "col-sm-2 mt-3">
+            @Html.DisplayNameFor(model => model.ProjectImage)
+        </dt>
+        <dd class = "col-sm-10 mt-3">
+            @if (Model.ProjectImage != null)
+            {
+                <img src="@Url.Content(Model.ProjectImage)" style="width:120px;">
+            }
+        </dd>
+        <dt class = "col-sm-12 mt-3">
+            <h5>@Html.DisplayNameFor(model => model.Standards)</h5>
+            @Html.Raw(Model.Standards)
+        </dt>
+        <dt class = "col-sm-12 mt-3">
+            <h5>@Html.DisplayNameFor(model => model.ArStandards)</h5>
+            @Html.Raw(Model.ArStandards)
+        </dt>
+        
+        <dt class = "col-sm-12 mt-3">
+            <h5>@Html.DisplayNameFor(model => model.Notes)</h5>
+            
+            @Html.Raw(Model.Notes)
+        </dt>
+       
+        <dt class="col-sm-12 mt-3">
+            <h5>@Html.DisplayNameFor(model => model.ArNotes)</h5>
+            @Html.Raw(Model.ArNotes)
+        </dt>
+
+        @{
+            if (@HttpContextAccessor.HttpContext.Session.GetString("type") == "CMS_User")
+            {
+                <dt class="col-sm-2 mt-3">
+                    @Html.DisplayNameFor(model => model.User)
+                </dt>
+                <dd class="col-sm-10 mt-3">
+                    @Html.DisplayFor(model => model.User.Fullname)
+                </dd>
+                <dt class="col-sm-2 mt-3">
+                    @Html.DisplayNameFor(model => model.AddedTime)
+                </dt>
+                <dd class="col-sm-10 mt-3">
+                    @Html.DisplayFor(model => model.AddedTime)
+                </dd>
+
+                <dt class="col-sm-12" id="empsCont">
+                    <table class='table table-bordered table-striped'>
+                        <thead><tr><th>@Localizer["Name"]</th><th>@Localizer["Email"]</th><th>@Localizer["Mobile"]</th><th></th></tr></thead>
+                        <tbody>
+                            @{
+                                if (ViewBag.Employers != null)
+                                {
+                                    foreach (ProjectsEmployers item in ViewBag.Employers)
+                                    {
+                                        <tr>
+                                            <td>@(currentCulture == "ar-AE" ? item.Employer?.ArName: item.Employer?.Name)</td>
+                                            <td>@item.Employer?.Email</td>
+                                            <td>@item.Employer?.Mobile</td>
+                                            <td>
+                                                <span class='btn btn-danger btn-sm remEmp' data-project='@item.ProjectId' data-id='@item.Id' data-name='@(currentCulture == "ar-AE" ? item.Employer?.ArName: item.Employer?.Name)'><i class='fas fa-trash-alt'></i></span>
+                                                <a class="btn btn-info btn-sm" title="@Localizer["Details"]" target="_blank" asp-action="Details" asp-controller="Members" asp-route-id="@item.EmployerId"><i class="fas fa-folder"></i> </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </dt>
+            }
+        }
+        
+
+       
+        @*<dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.EditedBy)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.EditedBy)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.LastEdit)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.LastEdit)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Active)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Active)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Deleted)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Deleted)
+        </dd>*@
+    </dl>
+</div>
+<div class="text-left">
+    @{
+        if(HttpContextAccessor.HttpContext.Session.GetString("type") == "CMS_User"){
+            <a asp-action="Edit" asp-route-id="@Model?.Id">@Localizer["Edit"]</a>
+        }
+    }
+    | 
+    <a asp-action="Index">@Localizer["Back To List"]</a>
+</div>
+</section>
+
+@section Scripts{
+    <script type="text/javascript" >
+    $(document).ready(function(){
+        $(document).on("click", ".remEmp",function(){
+            var item = $(this).data("id");
+            var project = $(this).data("project");
+            var url = "@Url.Action("removeProjectEmployer", "Projects")?item=" + item;
+            if(confirm("@Localizer["Delete Employer Msg"]")){
+                $.ajax({
+                url: url,
+                dataType: "json"
+
+                }).done(function (data) {
+                    if (data.result) {
+                        reloadEmployers(project);
+                    }
+                    else {
+                        //$("#msg_cont").html("<div class='alert alert-danger'>Failed to remove employer!</div>");
+                    }
+                });
+            }
+        });
+    });
+
+    function reloadEmployers(project){
+        var url = "@Url.Action("loadEmployers", "Projects")?project=" + project;
+        $.ajax({
+            url: url,
+            dataType: "json"
+
+        }).done(function (data) {
+            var html_result = "<table class='table table-bordered table-striped' ><thead><tr><th>@Localizer["Name"]</th><th>@Localizer["Email"]</th><th>@Localizer["Mobile"]</th><th></th></tr></thead><tbody>";
+            if (data.result) {
+                $("#empsCont").html("");
+                for (var i = 0; i < data.employers.length; i++) {
+                    var row = data.employers[i];
+                    html_result += "<tr><td>" + row.employer.name + "</td><td>" + row.employer.email + "</td><td>" + row.employer.mobile + "</td>";
+                    html_result += "<td><span class='btn btn-danger btn-sm remEmp' data-project='" + row.projectId + "' data-id='" + row.id + "' data-name='" + row.employer.name + "' ><i class='fas fa-trash-alt'></i></span></td>";
+                    html_result += "</tR>";
+                }
+            }
+            else {
+                //$("#msg_cont").html("<div class='alert alert-danger' >" + data.msg + "</div>");
+            }
+            html_result += "</tbody></table>";
+            $("#empsCont").html(html_result);
+        });
+    }
+        </script>
+}

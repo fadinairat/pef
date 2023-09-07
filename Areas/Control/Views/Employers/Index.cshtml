@@ -1,0 +1,318 @@
+﻿@model IEnumerable<PEF.Models.Employers>
+@using PEF.Models
+@{
+    ViewData["Title"] = "Index";
+}
+<partial name="_validationMsg" />
+
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Employers/Institutions</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home</a></li>
+                    <li class="breadcrumb-item active">Employer/Institutions</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<section class="content">
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-6 text-start"><h1 class="form-title">List All Employers/Institutions</h1></div>
+        <div class="col-6 text-right mt-3 sm-link">
+            @if (Functions.CheckAccess("Create", "Employers", "Control", HttpContextAccessor.HttpContext))
+            {
+                <a asp-action="Create"><i class="bi bi-plus-circle"></i> Add New Employer/Institutions</a><Br />
+            }
+            @if (Functions.CheckAccess("ExportToExcel", "Employers", "Control", HttpContextAccessor.HttpContext))
+            {
+                <a asp-action="ExportToExcel" asp-route-keyword="@ViewBag.keyword" asp-route-type="@ViewBag.Type" asp-route-sector="@ViewBag.Sector" asp-route-worksector="@ViewBag.WorkSector" asp-route-city="@ViewBag.City" asp-route-Districtarea="@ViewBag.Area"><i class="fas fa-file-excel"></i> Export to Excel</a>
+            }
+        </div>
+    </div>
+    <form asp-action="Index">
+        <div class="row mb-3">
+            <div class="col-6 col-md-2">
+                <label for="keyword">Keyword:</label>
+                <input type="text" placeholder="Keyword" class="form-control" name="keyword" id="keyword" value="@ViewBag.keyword" />
+            </div>
+            <div class="col-6 col-md-2">
+                <label for="slang">Type:</label>
+                <select name="type" id="type" class="form-control">
+                    <option value="">:: SELECT TYPE ::</option>
+                    <!option value="1" @(ViewBag.Type!=null && ViewBag.Type==1 ? "SELECTED":"") >Company</!option>
+                    <!option value="2" @(ViewBag.Type!=null && ViewBag.Type==2 ? "SELECTED":"") >Institution</!option>
+                </select>
+            </div>
+            <div class="col-6 col-md-2">
+                <label for="slang">Sector:</label>
+                    <select name="sector" id="sector" class="form-control">
+                    <option value="">:: SELECT SECTOR ::</option>
+                    @{
+                        if (ViewBag.Sectors != null)
+                        {
+                            foreach (LookupEmployersSectors item in ViewBag.Sectors)
+                            {
+                                <!option value="@item.Id" @(ViewBag.Sector!=null && ViewBag.Sector == item.Id ? "SELECTED" :"") >@item.ArName</!option>
+                            }
+                        }
+                    }
+                   @* <!-- for Associations -->
+                    <!option value="1" @(ViewBag.Sector!=null && ViewBag.Sector==1 ? "SELECTED":"") >Private Sector</!option>
+                    <!option value="2" @(ViewBag.Sector!=null && ViewBag.Sector==2 ? "SELECTED":"") >Public Sector</!option>
+                    <!option value="3" @(ViewBag.Sector!=null && ViewBag.Sector==3 ? "SELECTED":"") >NGO</!option>
+                    <!option value="4" @(ViewBag.Sector!=null && ViewBag.Sector==4 ? "SELECTED":"") >Government/Municipalities</!option>
+
+                    <!-- for Companies -->
+                    <!option value="5" @(ViewBag.Sector!=null && ViewBag.Sector==5 ? "SELECTED":"") >General Ordinary Company</!option>
+                    <!option value="6" @(ViewBag.Sector!=null && ViewBag.Sector==6 ? "SELECTED":"") >Ordinary Company Limited</!option>
+                    <!option value="7" @(ViewBag.Sector!=null && ViewBag.Sector==7 ? "SELECTED":"") >Limited liability company</!option>
+                    <!option value="8" @(ViewBag.Sector!=null && ViewBag.Sector==8 ? "SELECTED":"") >Private joint stock company</!option>
+                    <!option value="9" @(ViewBag.Sector!=null && ViewBag.Sector==9 ? "SELECTED":"") >The public shareholding company</!option>*@
+                </select>
+            </div>
+            <div class="col-6 col-md-2">
+                <label for="slang">Work Sector:</label>
+                <select name="worksector" id="worksector" class="form-control">
+                    <option value="">:: SELECT Work Sector ::</option>
+                    @{
+                        List<LookupWorkSectors> worksectors = ViewBag.WorkSectors;
+                        foreach (LookupWorkSectors temp in worksectors)
+                        {
+                            <!option value="@temp.Id" @(ViewBag.WorkSector!=null && ViewBag.WorkSector == temp.Id ? "SELECTED" : "")>@temp.Name</!option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-6 col-md-2">
+                <label for="slang">Governorate:</label>
+                <select name="city" id="city" class="form-control">
+                        <option value="">:: SELECT Governorate ::</option>
+                    @{
+                        List<City> cities = ViewBag.Cities;
+                        foreach (City temp in cities)
+                        {
+                            <!option value="@temp.Id" @(ViewBag.City!=null && ViewBag.City == temp.Id ? "SELECTED" : "")>@temp.Name</!option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-6 col-md-2">
+                <label for="slang">Area/City:</label>
+                <select name="area" id="area" class="form-control">
+                    <option value="">:: SELECT Area/City ::</option>
+                    @{
+                        if(ViewBag.Areas != null)
+                        {
+                            List<Villages> areas = ViewBag.Areas;
+                            foreach (Villages temp in areas)
+                            {
+                                <!option value="@temp.Id" @(ViewBag.Area!=null && ViewBag.Area == temp.Id ? "SELECTED" : "")>@temp.Name</!option>
+                            }
+                        }
+                    }
+                </select>
+            </div>
+            
+            <div class="col-6 col-md-2"><br /><button type="submit" asp-action="Index" class="btn btn-primary mt-2">Search</button></div>
+        </div>
+    </form>
+    <table class="table table-bordered table-secondary">
+        <tbody>
+            <tr>
+                <td style="width:33%;"><b>Total Employers/Institutions:</b> @ViewBag.TotalEmployers</td>
+                <td style="width:33%;"><b>Companies: </b> @ViewBag.TotalCompanies</td>
+                <td style="width:33%;"><b>Institutions: </b> @ViewBag.TotalInstitutions</td>
+            </tr>
+        </tbody>
+    </table>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Shortcut)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Sector)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WorkSector)
+            </th>
+               
+            <th>
+                @Html.DisplayNameFor(model => model.Mobile)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Tel)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Active)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Shortcut)
+            </td>
+            <td>                
+                @{
+                    if (item.Type == 1)
+                    {
+                        <span>Company</span>
+                    }
+                    else
+                    {
+                        <span>Institution</span>
+                    }
+                }
+
+            </td>
+            <td>
+            @item.EmployerSector?.Name
+            </td>
+            <td>
+                <span>@(item.WorkSector!=null ? item.WorkSector.Name : "")</span>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Mobile)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tel)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @{
+                    if (item.Active == true)
+                    {
+                        <a class="btn btn-info btn-sm" title="Deactivate" asp-action="Deactivate" asp-route-id="@item.Id"><i class="bi bi-check2-circle"></i> </a>
+                    }
+                    else
+                    {
+                                    <a class="btn btn-default btn-sm" title="Activate" asp-action="Activate" asp-route-id="@item.Id"><i class="bi bi-check2-circle"></i> </a>
+                                }
+                            }
+                        </td>
+                        <td>
+                        @if (Functions.CheckAccess("Index", "Jobs", "Control", HttpContextAccessor.HttpContext))
+                        {
+                            <a class="btn btn-primary btn-sm" target="_blank" asp-controller="Jobs" asp-action="Index" asp-area="Control" asp-route-employer="@item.Id" target="_blank" title="Submitted Jobs" alt="Submitted Jobs"> <i class="fas fa-chalkboard-teacher"></i></a>
+                        }
+                        @if (Functions.CheckAccess("Edit", "Employers", "Control", HttpContextAccessor.HttpContext))
+                        {
+            <a class="btn btn-primary btn-sm" title="Edit" asp-action="Edit" asp-route-id="@item.Id"><i class="fas fa-pencil-alt"></i> </a>
+                        }
+                        @if (Functions.CheckAccess("Details", "Employers", "Control", HttpContextAccessor.HttpContext))
+                        {
+            <a class="btn btn-info btn-sm" title="Details" asp-action="Details" asp-route-id="@item.Id"><i class="fas fa-folder"></i> </a>
+                        }
+                        @if (Functions.CheckAccess("Delete", "Employers", "Control", HttpContextAccessor.HttpContext))
+                        {
+                            <a asp-route-id="@item.Id" title="Delete" class="btn btn-danger btn-sm" asp-action="Delete"><i class="fas fa-trash"></i> </a>
+                        }
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+@if (ViewBag.PagesCount != null && ViewBag.PagesCount > 0)
+{
+            <div class="text-center d-flex justify-content-center">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item"><a class="page-link" asp-action="Index" asp-route-PageNumber="1">First</a></li>
+                @{
+                    double pages = ViewBag.PagesCount;
+                    int current = ViewBag.CurrentPage;
+                    int start = 1;
+                    double end = pages;
+                    if (pages > 10)
+                    {
+                        if (pages >= (current + 5)) end = current + 5;
+                        else end = pages;
+
+                        if (current > 5) start = current - 5;
+                        else start = 1;
+                    }
+
+                    for (int i = start; i <= end; i++)
+                    {
+                        string active = "";
+                        if (ViewBag.CurrentPage != null && ViewBag.CurrentPage == i) active = " active";
+                        <li class="page-item @active"><a class="page-link" asp-action="Index" asp-route-PageNumber="@i">@i</a></li>
+                    }
+                }
+                <li class="page-item"><a class="page-link" asp-action="Index" asp-route-PageNumber="@ViewBag.PagesCount">Last</a></li>
+            </ul>
+        </nav>
+    </div>
+}
+</div>
+</section>
+
+@section Scripts{
+    <script type="text/javascript" >
+    $(document).ready(function(){
+        $("#city").change(function () {
+            var city = $("#city").val();
+
+            var url = "@Url.Action("getAreas", "Home")?cityId=" + city
+            $("#area").empty();
+            $.ajax({
+                url: url,
+                dataType: "json",
+                beforeSend: function () {
+                    $("#area").hide();
+                    $("#area").before($('<i class="fa fa-spinner fa-spin fa-3x fa-fw" style="font-size:15px;" id="loader"></i> '));
+                },
+                success: function (data) {
+                    var areas = data.areas;
+                    $("#area").append($('<option></option>').val("").html(":: SELECT Area/City ::"));
+                    for (var i = 0; i < areas.length; i++) {
+                        $("#area").append($('<option></option>').val(areas[i].id).html(areas[i].arName));
+                    }
+                },
+                error: function (jqXhr, json, errorThrown) {
+                    try {
+                        var errors = jqXhr.responseJSON.errors;
+                        console.log(errors);
+                    }
+                    catch (eee) {
+                        console.log(eee.message);
+                    }
+                },
+                complete: function () {
+                    //alert("complete");
+                    $("#loader").remove();
+                    $("#area").show();
+                }
+            });
+
+        });
+    });
+    </script>
+}

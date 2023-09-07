@@ -1,0 +1,1139 @@
+﻿@model PEF.Models.Members
+@using PEF.Models
+@using System.Globalization
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "تعديل بيانات الملف الشخصي";
+}
+
+<div class="container">
+    <div class="row d-flex justify-content-center mt-4 mb-5 prof-details">
+        <div class="text-center mb-3"><h2>الملف الشخصي (تعديل البيانات)</h2></div>
+        <div class="col-12 col-md-10 col-sm-10 form-box p-3">
+            <form asp-action="SaveProfDetails" id="MembersForm" asp-controller="Members" method="post" enctype="multipart/form-data" novalidate="novalidate">
+                <div class="row">
+                    <div class="col-12 mb-3 text-left"><a asp-action="Profile" asp-controller="Members" class="btn subscribe_btn">الملف الشخصي <i class="fa-solid fa-angles-right"></i></a></div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        @{
+                            if (ViewBag.Msg != null)
+                            {
+                                <div class="alert alert-success text-center" ><span class="">@ViewBag.Msg</span></div>
+                            }
+                        }
+                    </div>
+                </div>
+
+                <!-- ############### Start of Family ##################-->
+                <div class="row">
+                    <div class="col-12"><h5 class="sep-header text-danger">بيانات الاسرة</h5></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12" id="famItemsCont">
+                        <div class="text-left">
+                            <span class="link-sp addFamItem"><i class="fa-solid fa-plus"></i></span>&nbsp;
+                            <span class="link-sp remFamItem"><i class="fa-solid fa-minus"></i></span>&nbsp;
+                            <div id="famEdItems" style="display:none;">
+                                @{
+                                    List<LookupEducation> educations1 = ViewBag.EducationLookup;
+                                    foreach (LookupEducation edItem in educations1)
+                                    {
+                                        if (edItem.Type == 0)
+                                        {
+                                            <option value="@edItem.Id">@edItem.ArName</option>
+                                        }
+                                    }
+                                }
+                            </div>
+                        </div>
+                        <input type="hidden" name="famItemsCount" id="famItemsCount" value="0" />
+                        <table class="table table-bordered" style="width:100%;">
+                            <thead>
+                            <th>الاسم الكامل</th>
+                            <th>صلة القرابة</th>
+                            <th>الجنس</th>
+                            <th>تاريخ الميلاد</th>
+                            <th>رقم الهوية</th>
+                            <th>المستوى التعليمي</th>
+                            <th>الوضع الصحي</th>
+                            <th></th>
+                            </thead>
+                            <tbody>
+                                @{
+                                    List<MembersFamily> family = ViewBag.Family;
+                                    foreach (MembersFamily famItem in family)
+                                    {
+                                        var rowId = "famRow" + famItem.Id;
+                                        <tr id=@rowId>
+                                            <td>@famItem.FullName</td>
+                                            <td>
+                                                @{
+                                                    if (famItem.Relation == 1)
+                                                    {
+                                                        <span>ابن</span>
+                                                    }
+                                                    else if (famItem.Relation == 2)
+                                                    {
+                                                        <span>بنت</span>
+                                                    }
+                                                    else if (famItem.Relation == 3)
+                                                    {
+                                                        <span>أخ</span>
+                                                    }
+                                                    else if (famItem.Relation == 4)
+                                                    {
+                                                        <span>أخت</span>
+                                                    }
+                                                    else if (famItem.Relation == 5)
+                                                    {
+                                                        <span>زوج</span>
+                                                    }
+                                                    else if (famItem.Relation == 6)
+                                                    {
+                                                        <span>زوجة</span>
+                                                    }
+                                                    else if (famItem.Relation == 7)
+                                                    {
+                                                        <span>أب</span>
+                                                    }
+                                                    else if (famItem.Relation == 8)
+                                                    {
+                                                        <span>أم</span>
+                                                    }
+                                                }
+                                            </td>
+                                            <td>
+                                                @{
+                                                    if (famItem.Gender == 1)
+                                                    {
+                                                        <span>ذكر</span>
+                                                    }
+                                                    else if (famItem.Gender == 2)
+                                                    {
+                                                        <span> أنثى</span>
+                                                    }
+                                                }
+                                            </td>
+                                            <td>
+                                                @{
+                                                    DateTime? dt = famItem.BirthDate;
+                                                    <span>@dt?.ToString("dd MMM yyyy", new CultureInfo("ar-AE"))</span>
+                                                }
+                                            </td>
+                                            <td>@famItem.IdNum</td>
+                                            <td>@famItem.Education.ArName</td>
+
+                                            <td>
+                                                @{
+                                                    if (famItem.HealthStatus == 1)
+                                                    {
+                                                        <span>سليم</span>
+                                                    }
+                                                    else if (famItem.HealthStatus == 2)
+                                                    {
+                                                        <span> مريض</span>
+                                                    }
+                                                    else if (famItem.HealthStatus == 3)
+                                                    {
+                                                        <span> ذوي اعاقة</span>
+                                                    }
+                                                }
+                                            </td>
+                                            <td><span class="link-sp remFamRec" data-row="@famItem.Id" title="حذف العنصر"> <i class="fa-solid fa-xmark"></i></span></td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+
+                        <!-- Start the dyanamic content of Family -->
+                        <table class="table table-bordered" style="width:100%;">
+                            <tbody id="famItemsList">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ############### Start of Eduction ##################-->
+                <div class="row">
+                    <div class="col-12"><h5 class="sep-header text-danger">التحصيل العلمي</h5></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12" id="edItemsCont">
+                        <div class="text-left">
+                            <span class="link-sp addEdItem"><i class="fa-solid fa-plus"></i></span>&nbsp;
+                            <span class="link-sp remEdItem"><i class="fa-solid fa-minus"></i></span>&nbsp;
+                            <div id="edItems0" style="display:none;">
+                                @{
+                                    List<LookupEducation> educations2 = ViewBag.EducationLookup;
+                                    foreach (LookupEducation edItem in educations2)
+                                    {
+                                        if (edItem.Type == 0 && edItem.ArName!="طالب" && edItem.ArName!="غير ذلك")
+                                        {
+                                            <option value="@edItem.Id">@edItem.ArName</option>
+                                        }
+                                    }
+                                }
+                            </div>
+                            <div id="edItems1" style="display:none;">
+                                @{
+                                    foreach (LookupEducation edItem in educations2)
+                                    {
+                                        if (edItem.Type == 1)
+                                        {
+                                            <option value="@edItem.Id">@edItem.ArName</option>
+                                        }
+                                    }
+                                }
+                            </div>
+                            <div id="edItems2" style="display:none;">
+                                @{
+                                    foreach (LookupEducation edItem in educations2)
+                                    {
+                                        if (edItem.Type == 2)
+                                        {
+                                            <option value="@edItem.Id">@edItem.ArName</option>
+                                        }
+                                    }
+                                }
+                            </div>
+                            <div id="edItems3" style="display:none;">
+                                @{
+                                    foreach (LookupEducation edItem in educations2)
+                                    {
+                                        if (edItem.Type == 3)
+                                        {
+                                            <option value="@edItem.Id">@edItem.ArName</option>
+                                        }
+                                    }
+                                }
+                            </div>
+                            <div id="countriesList" style="display:none;">
+                                @{
+                                    List<LookupCountries> countries = ViewBag.Countries;
+                                    foreach (LookupCountries con in countries)
+                                    {
+                                        <option value="@con.Id">@con.ArName</option>
+                                    }
+                                }
+                            </div>
+                            <div id="specializeList2" style="display:none;">
+                                @{
+                                    if (ViewBag.Specializations != null)
+                                    {
+                                        List<LookupSpecialize> specs = ViewBag.Specializations;
+                                        foreach (LookupSpecialize sp in specs)
+                                        {
+                                            if(sp.Type==0){
+                                                <option value="@sp.Id">@sp.ArName</option>
+                                            }                                            
+                                        }
+                                    }
+                                }
+                            </div>
+                            <div id="specializeList3" style="display:none;">
+                                @{
+                                    if (ViewBag.Specializations != null)
+                                    {
+                                        List<LookupSpecialize> specs = ViewBag.Specializations;
+                                        foreach (LookupSpecialize sp in specs)
+                                        {
+                                            if(sp.Type==1){
+                                                <option value="@sp.Id">@sp.ArName</option>
+                                            }   
+                                        }
+                                    }
+                                }
+                            </div>
+                        </div>
+                        <input type="hidden" name="edItemsCount" id="edItemsCount" value="0" />
+                        <table class="table table-bordered" style="width:100%;">
+                            <thead>
+                            <th>نوع المستوى التعليمي</th>
+                            <th>المستوى التعليمي</th>
+                            <th>الجامعة</th>
+                            <th>الدولة</th>
+                            <th>تاريخ التخرج</th>
+                            <th>المعدل التراكمي</th>
+                            <th>التخصص</th>
+                            <th>مرفقات</th>
+                            <th></th>
+                            </thead>
+                            <tbody>
+                                @{
+                                    List<MembersEducation> education = ViewBag.Education;
+                                    foreach (MembersEducation edItem in education)
+                                    {
+                                        var rowId = "edRow" + edItem.Id;
+                                        <tr id=@rowId>
+                                            <td>
+                                                @{
+                                                    if (edItem.EducationLevelType == 1)
+                                                    {
+                                                        <span>عامل</span>
+                                                    }
+                                                    else if (edItem.EducationLevelType == 2)
+                                                    {
+                                                        <span>مهني</span>
+                                                    }
+                                                    else if (edItem.EducationLevelType == 3)
+                                                    {
+                                                        <span>خريج</span>
+                                                    }
+                                                }
+                                            </td>
+                                            <td>@edItem.Education?.ArName</td>
+                                            <td>@edItem.University</td>
+                                            <td>@(!string.IsNullOrEmpty(edItem.CountryName) ? edItem.CountryName : edItem.Country?.Name)</td>
+                                            <td>
+                                                @{
+                                                    DateTime? dt = edItem.GradDate;
+                                                    <span>@dt?.ToString("dd MMM yyyy", new CultureInfo("ar-AE"))</span>
+                                                }
+                                            </td>
+                                            <td>@edItem.Grade</td>
+                                            <td>@edItem.Specialize?.ArName</td>
+                                            <td>
+                                                @{
+                                                    if (!String.IsNullOrEmpty(edItem.Attachment))
+                                                    {
+                                                        <a href="@Url.Content(edItem.Attachment)" target="_blank">تحميل</a>
+                                                    }
+                                                }
+                                            </td>
+                                            <td><span class="link-sp remEdRec" data-row="@edItem.Id" title="حذف العنصر"> <i class="fa-solid fa-xmark"></i></span></td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+
+                        <!-- Start the dynamic content of Education -->
+                        <table class="table table-bordered" style="width:100%;">
+                            <tbody id="edItemsList">
+                                @* <tr class="EdItem1">
+                                <td colspan="4">
+                                <div style="float:right;"><b class="text-danger">التعليم (1)</b></div>
+                                </td>
+                                </tr>
+
+
+                                <tr class="EdItem1">
+                                <td width="25%">
+                                <b>نوع المستوى التعليمي</b><br />
+                                <select class="form-control" name="EdLevelType1" id="EdLevelType1" >
+                                <option value="">:: حدد نوع المستوى التعليمي ::</option>
+                                @{
+                                foreach (LookupEducation edLItem in educations2)
+                                {
+                                if (edLItem.Type == 0)
+                                {
+                                <option value="@edLItem.Id">@edLItem.ArName</option>
+                                }
+                                }
+                                }
+                                </select>
+                                </td>
+                                <td width="25%">
+                                <b>المستوى التعليمي</b><br />
+                                <select class="form-control" name="EdEducation1" id="EdEducation1">
+                                <option value="">:: حدد المستوى التعليمي ::</option>
+                                @{
+                                foreach (LookupEducation edItem in educations2)
+                                {
+                                <option value="@edItem.Id" >@edItem.ArName</option>
+                                }
+                                }
+                                </select>
+                                </td>
+                                <td width="25%">
+                                <b>الجامعة</b><br />
+                                <input type="text" required='required' class="form-control" maxlength="50" name="EdUniversity1" id="EdUniversity1" />
+                                </td>
+                                <td width="25%">
+                                <b>الدولة</b><br />
+                                <select class="form-control" name="EdCountry1" id="EdCountry1">
+                                <option value="">:: حدد الدولة ::</option>
+
+                                </select>
+                                </td>
+                                </tr>
+                                <tr>
+                                <td>
+                                <b>تاريخ التخرج</b><br />
+                                <input type="date" required='required' class="form-control" name="EdGradeDate1" id="EdGradeDate1" />
+                                </td>
+                                <td>
+                                <b>المعدل التراكمي</b><br />
+                                <input type="text" required='required' class="form-control" name="EdGrade1" id="EdGrade1" />
+                                </td>
+                                <td>
+                                <b>التخصص</b><br />
+                                <select class="form-control" name="EdSpecialize1" id="EdSpecialize1">
+                                <option value="">:: حدد التخصص ::</option>
+
+                                </select>
+                                </td>
+                                </tr>
+                                <tr class="EdItem1">
+                                <td colspan="4">
+                                <b>مرفقات</b>
+                                <input type="file" accept=".pdf,.doc,.docx" class="form-control" name="EdFile1" id="EdFile1" />
+                                </td>
+                                </tr>*@
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ############### Start of Training ##################-->
+                <div class="row">
+                    <div class="col-12"><h5 class="sep-header text-danger">الدورات</h5></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12" id="trainItemsCont" >
+                        <div class="text-left">
+                            <span class="link-sp addTrainItem"><i class="fa-solid fa-plus"></i></span>&nbsp;
+                            <span class="link-sp remTrainItem"><i class="fa-solid fa-minus"></i></span>&nbsp;
+                        </div>
+                        <input type="hidden" name="trainItemsCount" id="trainItemsCount" value="0" />
+                        <table class="table table-bordered" style="width:100%;">
+                            <thead>
+                                <th>اسم الدورة</th>
+                                <th>عدد ساعات الدورة</th>
+                                <th>تاريخ بدء الدورة</th>
+                                <th>تاريخ انتهاء الدورة</th>
+                                <th>جهة الحصول على الدورة</th>
+                                <th>مرفقات</th>
+                                <th></th>
+                            </thead>
+                            <tbody>
+                                @{
+                                    List<MembersTraining> trainings = ViewBag.Training;
+                                    foreach (MembersTraining item in trainings)
+                                    {
+                                        var rowId = "trainRow" + item.Id;
+                                        <tr id=@rowId>
+                                            <td>@item.Name</td>
+                                            <td>@item.Hours</td>
+                                             <td>@{
+                                            DateTime? dt = item.StartDate;
+                                            <span>@dt?.ToString("dd MMM yyyy", new CultureInfo("ar-AE"))</span>
+                                            }</td>
+                                             <td>@{
+                                            dt = item.EndDate;
+                                            <span>@dt?.ToString("dd MMM yyyy", new CultureInfo("ar-AE"))</span>
+                                            }</td>
+                                            <td>@item.TrainingSupplier</td>
+                                            <td>
+                                                @{
+                                                    if (!String.IsNullOrEmpty(item.Attachment))
+                                                    {
+                                                        <a href="@Url.Content(item.Attachment)" target="_blank">تحميل</a>
+                                                    }
+                                                }
+                                            </td>
+                                            <td><span class="link-sp remTrainRec" data-row="@item.Id" title="حذف العنصر"> <i class="fa-solid fa-xmark"></i></span></td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                        <!-- Start the dyanamic content of Experts -->
+                        <table class="table table-bordered" style="width:100%;">
+                            <tbody id="trainItemsList">
+                              
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                
+
+               
+
+                <!-- ############### Start of Experts ##################-->
+                <div class="row">
+                    <div class="col-12"><h5 class="sep-header text-danger">الخبرات والمهن</h5></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <label>هل يوجد لديك خبرات سابقة ( نعم / لا) اذا نعم عليك استكمال البيانات التالية:</label>&nbsp;&nbsp;
+                        <input type="checkbox" name="have_experts" id="have_experts" @(ViewBag.haveExperts ? " checked='checked'":"") />
+                        <input type="hidden" name="expItemsCount" id="expItemsCount" value="@(ViewBag.haveExperts ? "0": "1")" />
+                    </div>
+                </div>
+
+                <div class="row">                   
+                    <div class="col-12" id="expItemsCont" style="display:@(ViewBag.haveExperts ? "block":"none");">
+                        <div class="text-left">
+                            <span class="link-sp addExpItem"><i class="fa-solid fa-plus"></i></span>&nbsp;
+                            <span class="link-sp remExpItem"><i class="fa-solid fa-minus"></i></span>&nbsp;
+                        </div>
+                        <table class="table table-bordered" style="width:100%;">
+                            <thead>
+                                <th>المسمى الوظيفي</th>
+                                <th>مكان العمل</th>
+                                <th>تاريخ البداية</th>
+                                <th>تاريخ الانهاء</th>
+                                <th>مجال الخبرة</th>
+                                <th>مرفقات</th>
+                                <th></th>
+                            </thead>
+                            <tbody>
+                                @{
+                                    List<MembersExpert> experts = ViewBag.Experts;
+                                    foreach (MembersExpert item in experts)
+                                    {
+                                        var rowId = "expRow" + item.Id;
+                                        <tr id=@rowId>
+                                            <td>@item.JobTitle</td>
+                                            <td>@item.JobLocation</td>
+                                             <td>@{
+                                                DateTime? dt = item.StartDate;
+                                                <span>@dt?.ToString("dd MMM yyyy", new CultureInfo("ar-AE"))</span>
+                                            }</td>
+                                            <td>@{
+                                                dt = item.EndDate;
+                                                    <span>@dt?.ToString("dd MMM yyyy", new CultureInfo("ar-AE"))</span>
+                                            }</td>
+                                            <td>@item.ExpDescription</td>
+                                            <td>
+                                                @{
+                                                    if (!String.IsNullOrEmpty(item.Attachment))
+                                                    {
+                                                        <a href="@Url.Content(item.Attachment)" target="_blank">تحميل</a>
+                                                    }
+                                                }
+                                            </td>
+                                            <td><span class="link-sp remExpRec" data-row="@item.Id" title="حذف العنصر"> <i class="fa-solid fa-xmark"></i></span></td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                        <!-- Start the dyanamic content of Experts -->
+                        <table class="table table-bordered" style="width:100%;" >                           
+                            <tbody id="expItemsList">
+                                @{
+                                    if (!ViewBag.haveExperts)
+                                    {
+                                        <tr class="ExpItem1">
+                                            <td colspan="4">
+                                                <div style="float:right;"><b class="text-danger">الخبرة (1)</b></div>
+                                                @* <div style="float:left;"><span class="link-sp remItem" data-row="1" title="حذف العنصر"> <i class="fa-solid fa-xmark"></i> )</span></div>*@
+                                            </td>
+                                        </tr>
+                                
+                                    
+                                        <tr class="ExpItem1">
+                                            <td>
+                                                <b>اسم الوظيفة</b><br /><input type="text" required='required' class="form-control" name="JobTitle1" id="JobTitle1" placeholder="المسمى الوظيفي" />
+                                            </td>
+                                            <td>
+                                                <b>مكان العمل</b><br />
+                                                <input type="text" class="form-control" required='required' name="JobLocation1" id="JobLocation1" placeholder="مكان العمل" />
+                                            </td>
+                                            <td>
+                                                <b>تاريخ بداية العقد</b><br /><input type="date" required='required' class="form-control" name="StartDate1" id="StartDate1" />
+                                            </td>
+                                            <td>
+                                                <b>تاريخ نهاية العقد</b><br /><input type="date" required='required' class="form-control" name="EndDate1" id="EndDate1" />
+                                            </td>
+                                        </tr>
+                                        <tr class="ExpItem1">
+                                            <td colspan="4">
+                                                <b>وصف مجال الخبرة</b>
+                                                <textarea rows="3" style="width:100%;" class="form-control" name="ExpDescription1" id="ExpDescription1"></textarea>
+                                            </td>
+                                        </tr>
+                                        <tr class="ExpItem1">
+                                            <td colspan="4">
+                                                <b>مرفقات</b>
+                                                <input type="file" accept=".pdf,.doc,.docx" class="form-control" name="JobFile1" id="JobFile1" />
+                                            </td>
+                                        </tr>
+                                    }
+                                }                                
+                            </tbody>
+                        </table>
+                    </div>                    
+                </div>
+                <div class="row mt-5">
+                    <div class="form-group">
+                        <input type="checkbox"  id="Agreement" name="Agreement" />
+                        <label for="Agreement" class="control-label">اقر بصحة البيانات المسجلة في البوابة الفلسطينية للتشغيل واوافق على استخدام البيانات ومشاركتها مع الجهات ذات الاختصاص ضمن الإطار القانوني</label>
+                        <label id="Agreement-error" class="error" for="IdNum" style="display: none;"></label>
+                        <span class="text-danger field-validation-valid" data-valmsg-for="Agreement" data-valmsg-replace="true"></span>
+                    </div>
+                </div>
+
+                <div class="form-group mt-3 text-center">
+                    <input type="submit" value="حفظ التغييرات" class="btn subscribe_btn" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" >
+    <script type="text/javascript" >
+    $(document).ready(function(){
+        //$("#MembersForm").validate({
+        //    debug: false
+        //});
+        $(".addExpItem").click(function(){
+            var itemsCount = parseInt($("#expItemsCount").val());
+            itemsCount++;
+
+            var item = "<tr class='ExpItem"+ itemsCount +"'><td colspan='4'><b class='text-danger'>الخبرة (" + itemsCount + ")</b></td></tr>" +
+            "<tr class= 'ExpItem"+itemsCount+"' >" +
+            "<td>" +
+            "<b>اسم الوظيفة </b><br / > <input type='text' data-val='true' data-val-required='الحقل اجباري*' data-val-length-max='50' data-val-length='يسمح ب 50 حرف فقط' class= 'form-control' maxlength=50 name = 'JobTitle" + itemsCount + "' id = 'JobTitle" + itemsCount + "' placeholder = 'المسمى الوظيفي' />" +
+            '<span class="text-danger field-validation-valid" data-valmsg-for="JobTitle'+itemsCount+'" data-valmsg-replace="true"></span>'+
+            "</td>" +
+            "<td> " +
+            "<b>مكان العمل </b><br / > " +
+            "<input type='text' class= 'form-control'  data-val='true' data-val-required='الحقل اجباري*' data-val-length-max='50' data-val-length='يسمح ب 50 حرف فقط' maxlength=50 name = 'JobLocation" + itemsCount + "' id = 'JobLocation" + itemsCount + "' placeholder = 'مكان العمل' />" +
+            '<span class="text-danger field-validation-valid" data-valmsg-for="JobLocation'+itemsCount+'" data-valmsg-replace="true"></span>'+
+            "</td>" +
+            "<td> " +
+            "<b>تاريخ بداية العقد </b><br / > <input type='date' data-val='true' data-val-required='الحقل اجباري*' data-val-date='تاريخ خاطئ!' class= 'form-control' name = 'StartDate" + itemsCount + "' id = 'StartDate" + itemsCount + "' />" +
+            '<span class="text-danger field-validation-valid" data-valmsg-for="StartDate'+itemsCount+'" data-valmsg-replace="true"></span>'+
+            "</td>" +
+            "<td> " +
+            "<b> تاريخ نهاية العقد </b><br / > <input type='date' data-val='true' data-val-required='الحقل اجباري*' data-rule-greaterThan='#StartDate" + itemsCount + "' data-msg-greaterThan='تاريخ نهاية العقد غير صحيح!' data-val-date='تاريخ خاطئ!' class= 'form-control' name = 'EndDate" + itemsCount + "' id = 'EndDate" + itemsCount + "' /> " +
+            '<span class="text-danger field-validation-valid" data-valmsg-for="EndDate'+itemsCount+'" data-valmsg-replace="true"></span>'+
+            "</td>" +
+            "</tr>" +
+            "<tr  class= 'ExpItem"+itemsCount+"' > " +
+            "<td  colspan = '4' > " +
+            "<b> وصف مجال الخبرة </b>" +
+            "<textarea rows = '3' data-val='true' data-val-length-max='300' data-val-length='يسمح ب 300 حرف فقط' style = 'width:100%;' class= 'form-control' name = 'ExpDescription"+itemsCount+"' id = 'ExpDescription"+itemsCount+"' > </textarea>" +
+            '<span class="text-danger field-validation-valid" data-valmsg-for="ExpDescription'+itemsCount+'" data-valmsg-replace="true"></span>'+
+            "</td>" +
+            "</tr>" +
+            
+            "<tr  class= 'ExpItem"+itemsCount+"' >" +
+            "<td colspan='4' >" +
+            "<b> مرفقات </b>" +
+            "<input type = 'file' accept = '.pdf,.doc,.docx' class= 'form-control' name = 'JobFile"+itemsCount+"' id = 'JobFile"+itemsCount+"' />" +
+            "</td>" +
+            "</tr>";
+
+            $("#expItemsCount").val(itemsCount);
+            $("#expItemsList").append(item);
+                    $('#MembersForm').removeData('validator').removeData('unobtrusiveValidation');
+                    $.validator.unobtrusive.parse('#MembersForm');
+        });
+
+        $(".remExpItem").click(function () {
+            var itemsCount = parseInt($("#expItemsCount").val());
+            if (itemsCount > @(ViewBag.haveExperts ? "0":"1")) {
+                $("#expItemsCount").val((itemsCount - 1));
+                $(".ExpItem" + itemsCount).remove();
+                itemsCount--;
+            }
+            else {
+                alert("يجب ان يكون لديك خبرة  واحدة على الأقل!");
+            }
+        });
+
+         $(document).on("click", ".remItem", function () {
+            var item = $(this).data("row");
+            $(".ExpItem"+item).remove();
+        });
+
+        $(document).on("click", ".remExpRec", function () {
+            if (confirm("هل أنت متأكد من رغبتك بحذف العنصر؟")) {
+                var item = $(this).data("row");
+                var url = "@Url.Action("removeExpert", "Members")?item=" + item;
+                $.ajax({
+                    url: url,
+                    dataType: "json",
+                    beforeSend: function () {
+                        //$("#ParentId").before($('<i class="fa fa-spinner fa-spin fa-3x fa-fw k_loader" id="m_loader"></i> '));
+                    },
+                    success: function (data) {
+
+                    },
+                    error: function (jqXhr, json, errorThrown) {
+                        try {
+                            var errors = jqXhr.responseJSON.errors;
+                            console.log(errors);
+                        }
+                        catch (eee) {
+                            console.log(eee.message);
+                        }
+                    },
+                    complete: function () {
+                    }
+                });
+                $("#expRow" + item).remove();
+            }
+        });
+
+            $("#have_experts").click(function () {
+                if ($("#have_experts").is(":checked")) {
+                    $("#expItemsCont").show();
+                }
+                else {
+                    $("#expItemsCont").hide();
+                }
+            });
+
+        //////////////////  Training Code ///////////////////////
+        $(document).on("click",".addTrainItem",function(){
+            var itemsCount = parseInt($("#trainItemsCount").val());
+            itemsCount++;
+
+            var item = "<tr class='TrainItem"+itemsCount+"'>"+
+                    "<td colspan='4' > "+
+                    "<div style='float:right;'><b class='text-danger'>الدورة ("+itemsCount+")</b></div>"+
+                "</td>"+
+            "</tr>"+
+                    "<tr class='TrainItem"+itemsCount+"'>" +
+                "<td>"+
+                    "<b>اسم الدورة</b><br /><input type='text' data-val='true' data-val-required='الحقل اجباري*' data-val-length-max='50' data-val-length='يسمح ب 50 حرف فقط' class='form-control' maxlength=50 name='TrainTitle" + itemsCount + "' id='TrainTitle" + itemsCount + "' placeholder='اسم الدورة' />" +
+                    '<span class="text-danger field-validation-valid" data-valmsg-for="TrainTitle'+itemsCount+'" data-valmsg-replace="true"></span>'+
+                "</td>"+
+                "<td>"+
+                    "<b>عدد ساعات الدورة</b><br />"+
+                        "<input type='number'  data-val='true' data-val-required='الحقل اجباري*' data-val-number='عدد الساعات يجب ان يكون ارقام فقط' data-val-range='عدد ساعات غير صحيح' data-val-range-min='0' min=0 class='form-control' name='TrainHours" + itemsCount + "' id='TrainHours" + itemsCount + "' placeholder='عدد ساعات الدورة' />" +
+                        '<span class="text-danger field-validation-valid" data-valmsg-for="TrainHours'+itemsCount+'" data-valmsg-replace="true"></span>'+
+                "</td>"+
+                "<td>"+
+                    "<b>تاريخ بداية الدورة</b><br /><input type='date' data-val='true' data-val-required='الحقل اجباري*' data-val-date='تاريخ خاطئ!' class='form-control' name='TrainStartDate" + itemsCount + "' id='TrainStartDate" + itemsCount + "' />" +
+                    '<span class="text-danger field-validation-valid" data-valmsg-for="TrainStartDate'+itemsCount+'" data-valmsg-replace="true"></span>'+
+                "</td>"+
+                    "<td>" +
+                        "<b>تاريخ نهاية الدورة</b><br /><input type='date' data-val='true' data-val-required='الحقل اجباري*' class='form-control' name='TrainEndDate" + itemsCount + "' data-val-date='تاريخ خاطئ!' id='TrainEndDate" + itemsCount + "' data-rule-greaterthan='#TrainStartDate"+ itemsCount +"' data-msg-greaterthan='تاريخ نهاية الدورة غير صحيح!'  />" +
+                    '<span class="text-danger field-validation-valid" data-valmsg-for="TrainEndDate'+itemsCount+'" data-valmsg-replace="true"></span>'+
+                "</td>"+
+            "</tr>"+
+            "<tr class='TrainItem"+itemsCount+"' >"+
+                    "<td> " +
+                        "<b>جهة الحصول على الدورة</b><br /><input type='text' data-val='true' data-val-required='الحقل اجباري*' data-val-length-max='50' data-val-length='يسمح ب 50 حرف فقط' class='form-control' maxlength=50 name='TrainSupplier" + itemsCount + "' id='TrainSupplier" + itemsCount + "' placeholder='جهة الحصول على الدورة' />" +
+                        '<span class="text-danger field-validation-valid" data-valmsg-for="TrainSupplier'+itemsCount+'" data-valmsg-replace="true"></span>'+
+                "</td>"+
+                "<td colspan='3' ></td>"+
+            "</tr>"+
+            "<tr class='TrainItem"+itemsCount+"'>"+
+                    "<td colspan='4'>" +
+                    "<b>مهام الدورة</b>"+
+                    "<textarea rows='3' style='width:100%;' data-val='true' data-val-required='الحقل اجباري*' data-val-length-max='300' data-val-length='يسمح ب 300 حرف فقط' class='form-control' maxlength=300 name='TrainTask"+itemsCount+"' id='TrainTask"+itemsCount+"'></textarea>"+
+                    '<span class="text-danger field-validation-valid" data-valmsg-for="TrainTask'+itemsCount+'" data-valmsg-replace="true"></span>'+
+                "</td>"+
+            "</tr>"+
+            "<tr class='TrainItem"+itemsCount+"'>"+
+                    "<td colspan='4'>" +
+                    "<b>مرفقات</b>"+
+                    "<input type='file' accept='.pdf,.doc,.docx,.png,.jpg,.jpeg' data-val='true' data-val-accept='الرجاء تحميل ملف بالامتداد الصحيح!' data-val-accept-allowed='pdf,doc,docx,png,jpg,jpeg' class='form-control' name='TrainFile"+itemsCount+"' id='TrainFile"+itemsCount+"' />"+
+                    "</td>" +
+            "</tr>";
+
+            $("#trainItemsCount").val(itemsCount);
+            $("#trainItemsList").append(item);
+            $('#MembersForm').removeData('validator').removeData('unobtrusiveValidation');
+            $.validator.unobtrusive.parse('#MembersForm');
+        });
+
+        $(".remTrainItem").click(function () {
+            var itemsCount = parseInt($("#trainItemsCount").val());
+            if (itemsCount > 0) {
+                $("#trainItemsCount").val((itemsCount - 1));
+                $(".TrainItem" + itemsCount).remove();
+                itemsCount--;
+            }
+        });
+
+        $(document).on("click", ".remTrainRec", function () {
+            if (confirm("هل أنت متأكد من رغبتك بحذف العنصر؟")) {
+                var item = $(this).data("row");
+                var url = "@Url.Action("removeTraining", "Members")?item=" + item;
+                $.ajax({
+                    url: url,
+                    dataType: "json",
+                    beforeSend: function () {
+                        //$("#ParentId").before($('<i class="fa fa-spinner fa-spin fa-3x fa-fw k_loader" id="m_loader"></i> '));
+                    },
+                    success: function (data) {
+
+                    },
+                    error: function (jqXhr, json, errorThrown) {
+                        try {
+                            var errors = jqXhr.responseJSON.errors;
+                            console.log(errors);
+                        }
+                        catch (eee) {
+                            console.log(eee.message);
+                        }
+                    },
+                    complete: function () {
+                    }
+                });
+                $("#trainRow" + item).remove();
+            }
+        });
+
+        ///////////////////// Family //////////////////
+        $(document).on("click",".addFamItem",function(){
+            var itemsCount = parseInt($("#famItemsCount").val());
+            itemsCount++;
+
+            var FamEdItems = $("#famEdItems").html();
+
+            var item = "<tr class='FamItem"+itemsCount+"'>" +
+                "<td colspan='4'>" +
+                    "<div style='float:right;'><b class='text-danger'>فرد العائلة ("+itemsCount+")</b></div>" +
+            "</td>" +
+                            "< /tr>" +
+                "<tr class='FamItem"+itemsCount+"'>" +
+                "<td>" +
+                "<b>الاسم الرباعي</b><br /><input type='text' class='form-control' data-val='true' data-val-required='الحقل اجباري'   data-val-regex='الاسم يجب ان يكون باللغة العربية' data-val-regex-pattern='^[\u0600-\u06FF\ ]+$' name='FamFullName" + itemsCount + "' id='FamFullName" + itemsCount + "' placeholder='الاسم الرباعي' />" +
+                 '<span class="text-danger field-validation-valid" data-valmsg-for="FamFullName'+itemsCount+'" data-valmsg-replace="true"></span>'+
+                "</td>" +
+                "<td>" +
+                "<b>الجنس</b><br />" +
+                "<select type='text' class='form-control' name='FamGender"+itemsCount+"' id='FamGender"+itemsCount+"' data-val='true' data-val-required='الحقل اجباري'>" +
+                    "<option value='' >:: حدد الجنس ::</option>" +
+                    "<option value='1'>ذكر</option>" +
+                    "<option value='2'>أنثى</option>" +
+                "</select>" +
+                '<span class="text-danger field-validation-valid" data-valmsg-for="FamGender'+itemsCount+'" data-valmsg-replace="true"></span>'+
+                "</td>" +
+                "<td>" +
+                    "<b>صلة القرابة</b><br />" +
+                    "<select type='text' class='form-control' name='FamRelation" + itemsCount + "' id='FamRelation" + itemsCount + "'  data-val='true' data-val-required='الحقل اجباري'>" +
+                        "<option value=''>:: حدد صلة القرابة ::</option>" +
+                        "<option value='1'>ابن</option>" +
+                        "<option value='2'>بنت</option>" +
+                        "<option value='3'>أخ</option>" +
+                        "<option value='4'>أخت</option>" +
+                        "<option value='5'>زوج</option>" +
+                        "<option value='6'>زوجة</option>" +
+                        "<option value='7'>أب</option>" +
+                        "<option value='8'>أم</option>" +
+                    "</select>" +
+                    '<span class="text-danger field-validation-valid" data-valmsg-for="FamRelation'+itemsCount+'" data-valmsg-replace="true"></span>'+
+                "</td>" +
+                "<td>" +
+                    "<b>تاريخ الميلاد</b><br /><input type='date' class='form-control' data-val='true' data-val-date='التاريخ يجب ان يكون صحيح' data-val-required='الحقل اجباري' name='BirthDate" + itemsCount + "' id='BirthDate" + itemsCount + "'  />" +
+                    '<span class="text-danger field-validation-valid" data-valmsg-for="BirthDate'+itemsCount+'" data-valmsg-replace="true"></span>'+
+                "</td>" +
+            "</tr>" +
+            "<tr class='FamItem"+itemsCount+"' >" +
+                "<td>" +
+                    "<b>رقم الهوية</b><br /><input type='number' class='form-control' data-val='true' data-val-required='الحقل اجباري' data-val-length='رقم الهوية يجب ان يتكون من 9 خانات' data-val-length-min='9' data-val-length-max='9' data-val-number='رقم الهوية يجب ان يتألف من أرقام فقط' name='IdNum" + itemsCount + "' id='IdNum" + itemsCount + "' minlength=9 maxlength=9 placeholder='رقم الهوية' />" +
+                    '<span class="text-danger field-validation-valid" data-valmsg-for="IdNum'+itemsCount+'" data-valmsg-replace="true"></span>'+
+                "</td>" +
+                "<td>" +
+                    "<b>المستوى التعليمي</b><br />" +
+                    "<select type='text' class='form-control' name='EdLevel"+itemsCount+"' id='EdLevel"+itemsCount+"' data-val='true' data-val-required='الحقل اجباري'>" +
+                        "<option value=''>:: حدد المستوى التعليمي ::</option>" + FamEdItems +
+                    "</select>" +
+                    '<span class="text-danger field-validation-valid" data-valmsg-for="EdLevel'+itemsCount+'" data-valmsg-replace="true"></span>'+
+                "</td>" +
+                    "<td>" +
+                    "<b>هل يعمل/تعمل</b><br />" +
+                    "<label for='IsWork"+itemsCount+"' >نعم</label> <input type='radio' checked='checked' data-item='"+itemsCount+"' name='IsWork"+itemsCount+"' id='IsWork1"+itemsCount+"' value='"+itemsCount+"' />&nbsp;&nbsp;" +
+                    "<label for='IsWork"+itemsCount+"2'>لا</label> <input type='radio' data-item='"+itemsCount+"' name='IsWork"+itemsCount+"' id='IsWork12' value='0' />" +
+                "</td>" +
+                "<td>" +
+                    "<b>الوظيفة</b><br /><input type='text' class='form-control' name='Job"+itemsCount+"' id='Job"+itemsCount+"' placeholder='الوظيفة' />" +
+                "</td>" +
+            "</tr>" +
+            "<tr class='FamItem"+itemsCount+"'>" +
+                "<td>" +
+                    "<b>الحالة الصحية</b><br />" +
+                    "<select class='HealthStatus form-control' data-row='" + itemsCount + "' name='HealthStatus" + itemsCount + "' id='HealthStatus" + itemsCount + "' data-val='true' data-val-required='الحقل اجباري'>" +
+                        "<option value=''>:: حدد الوضع الصحي ::</option>" +
+                        "<option value='1' >سليم</option>" +
+                        "<option value='2' >مريض</option>" +
+                        "<option value='3' >ذوي اعاقة</option>" +
+                    "</select>" +
+                    '<span class="text-danger field-validation-valid" data-valmsg-for="HealthStatus'+itemsCount+'" data-valmsg-replace="true"></span>'+
+                "</td>" +
+                "<td style='display:none;' id='HealthCont"+itemsCount+"' ><b>حدد المرض:</b><br><input type='text' class='form-control' name='Disease"+itemsCount+"' id='Disease"+itemsCount+"' ></td>"+
+                "<td colspan='2' ></td>" +
+            "</tr>";
+
+            $("#famItemsCount").val(itemsCount);
+            $("#famItemsList").append(item);
+            $('#MembersForm').removeData('validator').removeData('unobtrusiveValidation');
+            $.validator.unobtrusive.parse('#MembersForm');
+        });
+
+        $(document).on("change", ".HealthStatus", function () {
+             var status = $(this).val();
+             var row = $(this).data("row");
+
+             if(status ==2) $("#HealthCont"+row).show();
+             else{
+                 $("#HealthCont"+row).hide();
+             }
+             
+        });
+
+        $(".remFamItem").click(function () {
+            var itemsCount = parseInt($("#famItemsCount").val());
+            if (itemsCount > 0) {
+                $("#famItemsCount").val((itemsCount - 1));
+                $(".FamItem" + itemsCount).remove();
+                itemsCount--;
+            }
+        });
+
+        $(document).on("click", ".remFamRec", function () {
+            if (confirm("هل أنت متأكد من رغبتك بحذف العنصر؟")) {
+                var item = $(this).data("row");
+                var url = "@Url.Action("removeFamily", "Members")?item=" + item;
+                $.ajax({
+                    url: url,
+                    dataType: "json",
+                    beforeSend: function () {
+                        //$("#ParentId").before($('<i class="fa fa-spinner fa-spin fa-3x fa-fw k_loader" id="m_loader"></i> '));
+                    },
+                    success: function (data) {
+
+                    },
+                    error: function (jqXhr, json, errorThrown) {
+                        try {
+                            var errors = jqXhr.responseJSON.errors;
+                            console.log(errors);
+                        }
+                        catch (eee) {
+                            console.log(eee.message);
+                        }
+                    },
+                    complete: function () {
+                    }
+                });
+                $("#famRow" + item).remove();
+            }
+        });
+
+        ///////////////////// Education //////////////////
+        $(document).on("click",".addEdItem",function(){
+            var itemsCount = parseInt($("#edItemsCount").val());
+            itemsCount++;
+            var edLevelsTypes = $("#edItems0").html();
+            var edLevels = $("#edItems1").html();
+            var countries = $("#countriesList").html();
+            var specialize = $("#specializeList").html();
+
+            var item = "<tr class='EdItem"+itemsCount+"'>"+
+                "<td colspan='4'>"+
+                    "<div style='float:right;'><b class='text-danger'>التعليم ("+itemsCount+")</b></div>"+
+                "</td>"+
+            "</tr>"+
+
+
+            "<tr class='EdItem"+itemsCount+"'>"+
+                "<td width='25%'>"+
+                    "<b>نوع المستوى التعليمي</b><br />"+
+                    "<select class='form-control EdLevelType' data-val='true' data-val-required='الحقل اجباري*' data-row='"+itemsCount+"' name='EdLevelType"+itemsCount+"' id='EdLevelType"+itemsCount+"' >"+
+                        "<option value=''>:: حدد نوع المستوى التعليمي ::</option>"+edLevelsTypes+"</select>"+
+                        '<span class="text-danger field-validation-valid" data-valmsg-for="EdLevelType'+itemsCount+'" data-valmsg-replace="true"></span>'+
+                "</td>"+
+                "<td width='25%'>"+
+                    "<b>المستوى التعليمي</b><br />"+
+                    "<select class='form-control' data-val='true' data-val-required='الحقل اجباري*' name='EdEducation"+itemsCount+"' id='EdEducation"+itemsCount+"'>"+
+                    "<option value=''>:: حدد المستوى التعليمي ::</option>" + edLevels + "</select>" +
+                    '<span class="text-danger field-validation-valid" data-valmsg-for="EdEducation'+itemsCount+'" data-valmsg-replace="true"></span>'+
+                "</td>"+
+                "<td width='25%' class='edDetailsCont" + itemsCount + "'>"+
+                    "<b>الجامعة</b><br />"+
+                    "<input type='text' required='required' data-val='true' data-val-required='الحقل اجباري*' class='form-control' maxlength='50' name='EdUniversity"+itemsCount+"' id='EdUniversity"+itemsCount+"' />"+
+                    '<span class="text-danger field-validation-valid" data-valmsg-for="EdUniversity'+itemsCount+'" data-valmsg-replace="true"></span>'+
+                "</td>"+
+                        "<td width='25%' class='edDetailsCont" + itemsCount + "'>" +
+                    "<b>الدولة</b><br />"+
+                        "<input type='text' class='form-control' name='EdCountry" + itemsCount + "' data-val='true' data-val-required='الحقل اجباري*' id='EdCountry" + itemsCount + "'>" +
+                        //"<option value=''>:: حدد الدولة ::</option>"+countries+"</select>"+
+                        //'<span class="text-danger field-validation-valid" data-valmsg-for="EdCountry'+itemsCount+'" data-valmsg-replace="true"></span>'+
+                "</td>"+
+            "</tr>"+
+            "<tr class='EdItem" + itemsCount + " edDetailsCont" + itemsCount + "'>" +
+                "<td>"+
+                    "<b>تاريخ التخرج</b><br />"+
+                        "<input type='date' required='required' class='form-control' data-val='true' data-val-date='تاريخ خاطئ!' data-val-required='الحقل اجباري*' name='EdGradeDate" + itemsCount + "' id='EdGradeDate" + itemsCount + "' />" +
+                    '<span class="text-danger field-validation-valid" data-valmsg-for="EdGradeDate'+itemsCount+'" data-valmsg-replace="true"></span>'+
+                "</td>"+
+                "<td>"+
+                    "<b>المعدل التراكمي</b><br />"+
+                    "<input type='text' required='required' class='form-control' data-val='true' data-val-required='الحقل اجباري*' name='EdGrade"+itemsCount+"' id='EdGrade"+itemsCount+"' />"+
+                    '<span class="text-danger field-validation-valid" data-valmsg-for="EdGrade'+itemsCount+'" data-valmsg-replace="true"></span>'+
+                "</td>"+
+                "<td>"+
+                    "<b>التخصص</b><br />"+
+                        "<select class='form-control searchSelect' name='EdSpecialize" + itemsCount + "' data-val='true' data-val-required='الحقل اجباري*' id='EdSpecialize" + itemsCount + "'>" +
+                        "<option value=''>:: حدد التخصص ::</option>"+specialize+"</select>"+
+                    '<span class="text-danger field-validation-valid" data-valmsg-for="EdSpecialize'+itemsCount+'" data-valmsg-replace="true"></span>'+
+                "</td>"+
+            "</tr>"+
+            "<tr class='EdItem"+itemsCount+" edDetailsCont"+itemsCount+"'>"+
+                "<td colspan='4'>"+
+                    "<b>مرفقات</b>"+
+                    "<input type='file' accept='.pdf,.doc,.docx,.jpg,.png,.jpeg' data-val='true' data-val-required='الحقل اجباري*' data-val-accept='الرجاء تحميل ملف بالامتداد الصحيح!' data-val-accept-allowed='pdf,doc,docx,png,jpg,jpeg' class='form-control' name='EdFile"+itemsCount+"' id='EdFile"+itemsCount+"' />"+
+                    '<span class="text-danger field-validation-valid" data-valmsg-for="EdFile'+itemsCount+'" data-valmsg-replace="true"></span>'+
+                "</td>"+
+            "</tr>";
+
+            $("#edItemsCount").val(itemsCount);
+            $("#edItemsList").append(item);
+            $('#MembersForm').removeData('validator').removeData('unobtrusiveValidation');
+            $.validator.unobtrusive.parse('#MembersForm');
+
+            //$('#EdSpecialize' + itemsCount).data('fastselect').destroy();
+            $('#EdSpecialize' + itemsCount).fastselect({
+                placeholder: ":: حدد تخصصك ::"
+            });
+        });
+
+        $(document).on("change",".EdLevelType",function(){
+            var item = $(this).val();
+            var row = $(this).data("row");
+            if(item != ""){
+                console.log("ISNIDE");
+                var items = "<option value=''>:: حدد المستوى التعليمي ::</option>";
+                items += $("#edItems"+item).html();
+                $("#EdEducation"+row).html(items);
+
+                $('#EdSpecialize' + row +' option').remove();
+                if(item == "2" || item=="3"){
+                    var speItems = "<option value=''>:: حدد التخصص ::</option>";
+                    speItems += $("#specializeList"+item).html();
+                    $("#EdSpecialize" + row).html(speItems);
+                }
+                else{   
+                    $("#EdSpecialize" + row).html("<option value=''>:: حدد التخصص ::</option>");
+                }
+                $('#EdSpecialize' + row).data('fastselect').destroy();
+                $('#EdSpecialize' + row).fastselect({
+                    placeholder: ":: حدد تخصصك ::"
+                });
+
+                if(item == "1"){
+                    $("#EdUniversity"+row).removeAttr("data-val");
+                    $("#EdCountry"+row).removeAttr("data-val");
+                    $("#EdGradeDate"+row).removeAttr("data-val");
+                    $("#EdGrade"+row).removeAttr("data-val");
+                    $("#EdSpecialize"+row).removeAttr("data-val");
+                    $("#EdFile"+row).removeAttr("data-val");
+
+                    $(".edDetailsCont"+row).hide();
+                }
+                else{
+                    $("#EdUniversity"+row).attr("data-val","true");
+                    $("#EdCountry"+row).attr("data-val","true");
+                    $("#EdGradeDate"+row).attr("data-val","true");
+                    $("#EdGrade"+row).attr("data-val","true");
+                    $("#EdSpecialize"+row).attr("data-val","true");
+                    $("#EdFile"+row).attr("data-val","true");
+
+                    $(".edDetailsCont"+row).show();
+                }
+            }
+            else{
+                console.log("Outside");
+                $("#EdEducation"+row).html("");
+            }
+        });
+
+        $(".remEdItem").click(function () {
+            var itemsCount = parseInt($("#edItemsCount").val());
+            if (itemsCount > 0) {
+                $("#edItemsCount").val((itemsCount - 1));
+                $(".EdItem" + itemsCount).remove();
+                itemsCount--;
+            }
+        });
+
+        $(document).on("click", ".remEdRec", function () {
+            if (confirm("هل أنت متأكد من رغبتك بحذف العنصر؟")) {
+                var item = $(this).data("row");
+                var url = "@Url.Action("removeEducation", "Members")?item=" + item;
+                $.ajax({
+                    url: url,
+                    dataType: "json",
+                    beforeSend: function () {
+                        //$("#ParentId").before($('<i class="fa fa-spinner fa-spin fa-3x fa-fw k_loader" id="m_loader"></i> '));
+                    },
+                    success: function (data) {
+
+                    },
+                    error: function (jqXhr, json, errorThrown) {
+                        try {
+                            var errors = jqXhr.responseJSON.errors;
+                            console.log(errors);
+                        }
+                        catch (eee) {
+                            console.log(eee.message);
+                        }
+                    },
+                    complete: function () {
+                    }
+                });
+                $("#edRow" + item).remove();
+            }
+        });
+    });
+    </script>
+    <partial name="_validationMsg" />
+
+    <script type="text/javascript" >
+        
+
+        $(document).ready(function(){
+            //$("#MembersForm").validate({
+            //    rules: {
+            //        Agreement: {
+            //            required: true
+            //        }
+            //    },
+            //    messages: {
+            //        Agreement: {
+            //            required:  " يتوجب عليك التأكيد على صحة البيانات المدخلة! "
+            //        }
+            //    },
+            //    errorPlacement: function(error, element) {
+            //        if (element.attr("type") == "checkbox") {
+            //            error.insertAfter(element.next());
+            //        } else {
+            //            error.insertAfter(element);
+            //        }
+            //    }
+            //});
+
+            $(document).on("submit","#MembersForm",function(event){
+                console.log("submitted");
+               //event.preventDefault();
+               //return false;
+                //alert("Submitted");
+                if(!$("#Agreement").is(":checked")){
+                    event.preventDefault();
+                    $("#Agreement-error").css("display","inline-block");
+                    $("#Agreement-error").html(" يتوجب عليك التأكيد على صحة البيانات المدخلة! ");
+                    return false;
+                }
+                else{
+                    $("#Agreement-error").css("display", "none");
+                }
+
+                if (!$("#MembersForm").valid()) {
+                    
+                    event.preventDefault();
+                    return false;
+                }
+            });
+        });
+    </script>
+}

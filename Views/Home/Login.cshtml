@@ -1,0 +1,59 @@
+﻿@model PEF.Models.Members
+@using PEF.Models
+@{
+    ViewData["Title"] = "تسجيل الدخول";
+}
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+<div class="container justify-content-center">
+    <div class="row">
+        <div class="col-12 text-center"><div class="text-center mb-3" ><h2>نموذج تسجيل الدخول</h2></div></div>
+        <div class="col-12 d-flex justify-content-center">
+            <div style="max-width:700px;width:100%;" >
+                <div class="row d-flex justify-content-center mt-4">
+                        <div class="col-12 col-sm-12 col-md-6">
+                            <form asp-action="LoginMember" asp-controller="Home" method="post">
+                                <div asp-validation-summary="All" class="text-danger"></div>
+                                <div class="row mb-3">
+                                    <div class="col-12">
+                                        <p class="text-center text-danger">
+                                        @if (ViewBag.Msg != null)
+                                            @ViewBag.msg
+
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="form-group col-12 col-md-12">                                       
+                                        <input name="Username" id="Username" placeholder="البريد الالكتروني / رقم الموبايل" class="form-control" required="required" />
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="form-group col-12 col-md-12">                                        
+                                        <input name="Password" id="Password" type="password" placeholder="كلمة المرور" required="required" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="form-group mb-1 text-center" style="padding:0px;">
+                                    <input type="submit" value="تسجيل الدخول" class="btn subscribe_btn" style="width:100%;margin-right:0px;" />
+                                </div>
+                                <div class="form-group mb-3 text-center"><a asp-action="Forget" asp-controller="Home" class="register">نسيت اسم المستخدم / كلمة المرور</a></div>
+                                <div class="form-group mb-3 text-center"><a asp-action="Signup" asp-controller="Home" class="register">لا يوجد لديك حساب! سجل الآن...</a></div>
+                            </form>
+                        </div>
+                        <div class="col-12 col-sm-12 col-md-6 justify-content-center pt-5 pb-5">
+                            <div style="border:solid 1px #ccc;border-radius:50%;padding:80px;height:250px;width:250px;background-color: #fbfbfb;margin-right:auto;margin-left:auto;"><i class="fa-solid fa-arrow-right-to-bracket" style="font-size:100px;"></i></div>
+                        </div>
+
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    {
+        <partial name="_ValidationScriptsPartial" >
+        <partial name="_validationMsg" />
+    }
+}

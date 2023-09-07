@@ -1,0 +1,47 @@
+﻿@using PEF.Models
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@*<ul class="navbar-nav m-auto mb-2 mb-lg-0">
+	<li class="nav-item "><a target="_parent" class="nav-link " href="#">تصفح الوظائف</a></li>
+	<li class="nav-item dropdown"><a target="_parent" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">المشاريع</a><ul class="dropdown-menu"><li><a target="_self" class="dropdown-item" href="#">مشروع 1</a></li><li><a target="_self" class="dropdown-item" href="#">مشروع 2</a></li></ul></li>
+	<li class="nav-item "><a target="_parent" class="nav-link " href="#">التشغيل الذاتي</a></li>
+	<li class="nav-item "><a target="_parent" class="nav-link " href="#">صندوق الشكاوي</a></li>
+</ul>*@
+<ul class="navbar-nav m-auto mb-2 mb-lg-0">
+	@if (ViewBag.ParentMenus != null)
+	{
+		
+		foreach (Menu item in ViewBag.ParentMenus)
+		{
+			string dropdown = "";
+			string url = Url.Content("~/" + item.Link.Replace("~/", ""));
+			if (item.Link.Contains("http")) url = System.Web.HttpUtility.HtmlEncode(item.Link);
+			string menuLink = "<a class=\"nav-link\" target=\"" + System.Web.HttpUtility.HtmlEncode(item.Target) + "\" href=\"" + url + "\" id=\"navbarDropdown\">" + System.Web.HttpUtility.HtmlEncode(item.Name) + "</a>";
+			if (ViewBag.SubMenus != null)
+			{
+				foreach (Menu sub in ViewBag.SubMenus)
+				{
+					if (sub.ParentId == item.Id)
+					{
+						if (dropdown == "") dropdown = "<ul class=\"dropdown-menu\" aria-labelledby=\"navbarDropdown\" >";
+						dropdown += "<li><a class=\"dropdown-item\" target=\"" + System.Web.HttpUtility.HtmlEncode(sub.Target) + "\" href=\"" + Url.Content("~/" + sub.Link.Replace("~/", "")) + "\">" + System.Web.HttpUtility.HtmlEncode(sub.Name) + "</a></li>";
+
+					}
+				}
+				if (dropdown != "")
+				{
+					dropdown += "</ul>";
+					menuLink = "<a class=\"nav-link dropdown-toggle\" href=\"#\" id=\"navbarDropdown\" role=\"button\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\">" + System.Web.HttpUtility.HtmlEncode(item.Name) + "</a>";
+				}
+			}
+			<li class="nav-item ">
+				@Html.Raw(menuLink)
+				@Html.Raw(dropdown)
+			</li>
+		}
+	}
+	
+</ul>		

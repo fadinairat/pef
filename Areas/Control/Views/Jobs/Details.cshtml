@@ -1,0 +1,273 @@
+﻿@model PEF.Models.Jobs
+@using PEF.Models;
+@using Microsoft.Extensions.Localization
+@using PEF.Areas.Control.Controllers
+@inject IStringLocalizer<HomeController> Localizer
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    ViewData["Title"] = "Details";
+    var currentCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
+}
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">@Localizer["Jobs"]</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-@Localizer["Float Rev"]">
+                    <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">@Localizer["Home"]</a></li>
+                    <li class="breadcrumb-item active">@Localizer["Jobs"]</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+<section class="content">
+    <div class="container-fluid">
+
+    <h1 class="form-title">@Localizer["Job Details"]</h1>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-12 mb-3">
+        @{
+            if (Model.Approved)
+            {
+                <div class="bg-success p-2 mt-2 mb-2 d-inline">@Localizer["Approved"]</div>
+            }
+            else
+            {
+                <div class="bg-danger p-2 mt-2 mb-2 d-inline">@Localizer["Pending"]</div>
+            }
+        }
+        </dt>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.EmployerId)
+        </dt>
+        <dd class = "col-sm-10">
+            @(currentCulture == "ar-AE" ? Model.Employer?.ArName : Model.Employer?.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class = "col-sm-4">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ArName)
+        </dt>
+        <dd class = "col-sm-4">
+            @Html.DisplayFor(model => model.ArName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ProjectId)
+        </dt>
+        <dd class = "col-sm-4">
+            @(currentCulture == "ar-AE" ? Model.Project?.ArName : Model.Project?.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.BeneficiaryCount)
+        </dt>
+        <dd class = "col-sm-4">
+            @Html.DisplayFor(model => model.BeneficiaryCount)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CityId)
+        </dt>
+        <dd class="col-sm-10">
+            @(currentCulture == "ar-AE" ? Model.City?.Name : Model.City?.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.WorkNature)
+        </dt>
+        <dd class="col-sm-4">
+            @{
+                if(Model.WorkNature ==1)
+                {
+                    <span>@Localizer["Full Time"]</span>
+                }
+                else if(Model.WorkNature == 0)
+                {
+                    <span>@Localizer["Part Time"]</span>
+                }
+            }
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SalaryType)
+        </dt>
+        <dd class="col-sm-4">
+            @{
+                if (Model.SalaryType == 1)
+                {
+                    <span>@Localizer["Monthly"]</span>
+                }
+                else if (Model.SalaryType == 0)
+                {
+                    <span>@Localizer["Daily"]</span>
+                }
+            }
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Salary)
+        </dt>
+        <dd class = "col-sm-4">
+            @Html.DisplayFor(model => model.Salary)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CurrencyId)
+        </dt>
+        <dd class="col-sm-4">
+                @(currentCulture == "ar-AE" ? Model.Currency?.Name : Model.Currency?.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.Raw(Model.Description)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ArDescription)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.Raw(Model.ArDescription)
+        </dd>
+       
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Tasks)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.Raw(Model.Tasks)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ArTasks)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.Raw(Model.ArTasks)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Conditions)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.Raw(Model.Conditions)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ArConditions)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.Raw(Model.ArConditions)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Contacts)
+        </dt>
+        <dd class = "col-sm-4">
+            @Html.DisplayFor(model => model.Contacts)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ArContacts)
+        </dt>
+        <dd class = "col-sm-4">
+            @Html.DisplayFor(model => model.ArContacts)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.AddDate)
+        </dt>
+        <dd class = "col-sm-4">
+            @Html.DisplayFor(model => model.AddDate)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ExpireDate)
+        </dt>
+        <dd class = "col-sm-4">
+            @Html.DisplayFor(model => model.ExpireDate)
+        </dd>
+
+       
+
+        <div class="col-12"><h5 class="text-danger">@Localizer["Selection Creteria"]</h5></div>
+        <dt class="col-sm-2">
+                @Localizer["Job Fields"]
+        </dt>
+        <dd class="col-sm-10">
+            @{
+                foreach (JobsFields j_field in ViewBag.JobFields)
+                {
+                    <span class="tag_item" >@(currentCulture=="ar-AE" ? j_field.Field?.ArName : j_field.Field?.Name)</span>
+                }
+            }
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SelFromAge)
+        </dt>
+        <dd class="col-sm-2">
+            @Html.DisplayFor(model => model.SelFromAge)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.SelToAge)
+        </dt>
+        <dd class = "col-sm-2">
+            @Html.DisplayFor(model => model.SelToAge)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.SelSocialId)
+        </dt>
+        <dd class = "col-sm-2">
+            @(currentCulture == "ar-AE" ? Model.SocialStatus?.ArName : Model.SocialStatus?.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.SelGender)
+        </dt>
+        <dd class = "col-sm-2">
+            @{
+                if (Model.SelGender == 1)
+                {
+                    <span >@Localizer["Male"]</span>
+                }
+                else
+                {
+                    <span>@Localizer["Female"]</span>
+                }
+            }
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SelDistrict)
+        </dt>
+        <dd class="col-sm-2">
+        @{
+            if (Model.SelDistrict != "Both")
+            {
+                <span>@Model.SelDistrict</span>
+            }
+            else
+            {
+                <span>@Localizer["Westbank & Gaza"]</span>
+            }
+        }
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SelCityId)
+        </dt>
+        <dd class="col-sm-2">
+            @{
+                foreach (JobsCities city in Model.JobsCities)
+                {
+                    <span class="tag_item" >@(currentCulture == "ar-AE" ? city.City?.ArName : city.City?.Name)</span>
+                }
+            }
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SelVillageId)
+        </dt>
+        <dd class="col-sm-2">
+                @(currentCulture == "ar-AE" ? Model.Village?.ArName : Model.Village?.Name)
+        </dd>
+      
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">@Localizer["Edit"]</a> |
+    <a asp-action="Index">@Localizer["Back To List"]</a>
+</div>
+</div>
+</section>

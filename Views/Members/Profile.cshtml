@@ -1,0 +1,889 @@
+﻿@model PEF.Models.Members
+@using PEF.Models
+@{
+    ViewData["Title"] = "تعديل بيانات الملف الشخصي";
+}
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+<link rel="stylesheet" href="~/fastselect/dist/ar_fastselect.css">
+<div class="container">
+    <div class="row d-flex justify-content-center mt-4 mb-5 prof-details">
+    <div class="text-center mb-3" ><h2>الملف الشخصي (تعديل البيانات)</h2></div>
+    <div class="col-12 col-md-10 col-sm-10 form-box">
+        
+        <form asp-action="UpdateProfile" id="MembersForm" asp-controller="Members" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="row">
+                <div class="col-12 mb-3 text-left"><a asp-action="ProfDetails" asp-controller="Members" class="btn subscribe_btn">البيانات التفصيلية (الاضافية) <i class="fa-solid fa-angles-left"></i></a></div>
+                <div class="col-12"><h5 class="sep-header text-danger">البيانات الشخصية</h5></div>
+                <div class="form-group col-6 col-md-3 mb-3">
+                    <label for="FirstName" class="control-label">الأسم الأول</label>
+                    <input asp-for="FirstName" class="form-control" disabled="disabled" />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 col-md-3 mb-3">
+                    <label for="FatherName" class="control-label">اسم الأب</label>
+                        <input asp-for="FatherName" class="form-control" disabled="disabled" />
+                    <span asp-validation-for="FatherName" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 col-md-3  mb-3">
+                    <label for="GrandName" class="control-label">اسم الجد</label>
+                        <input asp-for="GrandName" class="form-control" disabled="disabled" />
+                    <span asp-validation-for="GrandName" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 col-md-3 mb-3">
+                    <label for="FamilyName" class="control-label">اسم العائلة</label>
+                        <input asp-for="FamilyName" class="form-control" disabled="disabled" />
+                    <span asp-validation-for="FamilyName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-6 col-md-3 mb-3">
+                    <label for="IdNum" class="control-label">رقم الهوية</label>
+                        <input asp-for="IdNum" maxlength="9" minlength="9" disabled="disabled" class="form-control" />
+                    <span asp-validation-for="IdNum" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 col-md-3  mb-3">
+                    <label for="Gender" class="control-label">الجنس</label>
+                        <select name="gender" id="gender" disabled="disabled" class="form-control">
+                        <option value="">:: حدد الجنس ::</option>
+                        <!option value="1" @(Model.Gender == 1 ? "SELECTED":"") >ذكر</!option>
+                        <!option value="2" @(Model.Gender == 2 ? "SELECTED":"") >أنثى</!option>
+                    </select>
+                    <span asp-validation-for="Gender" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 col-md-3  mb-3">
+                    <label for="SocialId" class="control-label">الحالة الاجتماعية</label>
+                        <select asp-for="SocialId" disabled="disabled" class="form-control">
+                        <option value="">:: حدد الحالة الاجتماعية ::</option>
+                        @{
+                            if (ViewBag.SocialId != null)
+                            {
+                                foreach (LookupSocialStatus item in ViewBag.SocialId)
+                                {
+                                    <!option value="@item.Id" @(Model.SocialId == item.Id ? "SELECTED":"") >@item.ArName</!option>
+                                }
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="form-group col-6 col-md-3  mb-3">
+                    <label for="BirthDate" class="control-label">تاريخ الميلاد</label>
+                        <input type="date" asp-for="BirthDate" disabled="disabled" class="form-control" />
+                    <span asp-validation-for="BirthDate" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-6 col-md-3 mb-3">
+                    <label for="FamilyMembersCount" class="control-label">عدد أفراد الأسرة</label>
+                    <input asp-for="FamilyMembersCount" class="form-control" />
+                    <span asp-validation-for="FamilyMembersCount" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-6 col-md-3 mb-3">
+                    <label for="FatherIdNum" class="control-label">رقم هوية الأب</label>
+                    <input asp-for="FatherIdNum" maxlength="9" minlength="9" class="form-control" />
+                    <span asp-validation-for="FatherIdNum" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 col-md-3 mb-3">
+                    <label for="MotherIdNum" class="control-label">رقم هوية الأم</label>
+                    <input asp-for="MotherIdNum" maxlength="9" minlength="9" class="form-control" />
+                    <span asp-validation-for="MotherIdNum" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 col-md-3 mb-3" id="partnerIdCont" style="@(Model!=null && Model.SocialId == 2 ? "display:block;" : "display:none;")">
+                    <label for="PartnerIdNum" class="control-label">رقم هوية الزوج/الزوجة</label>
+                    <input asp-for="PartnerIdNum" maxlength="9" minlength="9" class="form-control" />
+                    <span asp-validation-for="PartnerIdNum" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12"><h5 class="sep-header text-danger">العنوان والتواصل</h5></div>
+                <div class="form-group col-6 col-md-3  mb-3">
+                    <label for="CityId" class="control-label">المحافظة</label>
+                    <select asp-for="CityId" disabled="disabled" class="form-control">
+                        <option value="">:: حدد المحافظة ::</option>
+                        @{
+                            if (ViewBag.CityId != null)
+                            {
+                                foreach (City item in ViewBag.CityId)
+                                {
+                                    <!option value="@item.Id" @(Model!=null && Model.CityId == item.Id ? "SELECTED":"")>@item.ArName</!option>
+                                }
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="form-group col-6 col-md-3  mb-3">
+                        <label for="AreaId" class="control-label">المدينة</label>
+                    <select asp-for="AreaId" class="form-control" disabled="disabled">
+                        <option value="">:: حدد المنطقة / المدينة ::</option>
+                        @{
+                            if(ViewBag.Villages != null)
+                            {
+                                foreach(Villages item in ViewBag.Villages)
+                                {
+                                    <!option value="@item.Id" @(item.Id == Model.AreaId ? "SELECTED":"") >@item.ArName</!option>
+                                }
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="AreaId" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 col-md-3  mb-3">
+                    <label for="District" class="control-label">الحي</label>
+                    <input asp-for="District" class="form-control" />
+                    <span asp-validation-for="District" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-6  mb-3">
+                    <label for="Street" class="control-label">الشارع</label>
+                    <input asp-for="Street" class="form-control" />
+                    <span asp-validation-for="Street" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6  mb-3">
+                    <label for="NearTo" class="control-label">بالقرب من</label>
+                    <input asp-for="NearTo" class="form-control" />
+                    <span asp-validation-for="NearTo" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-6 col-md-3  mb-3">
+                    <label for="Mobile" class="control-label">الهاتف الخلوي</label>
+                    <input asp-for="Mobile" class="form-control" required="required" />
+                    <span asp-validation-for="Mobile" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 col-md-3  mb-3">
+                    <label for="Mobile2" class="control-label">الهاتف الخلوي 2</label>
+                    <input asp-for="Mobile2" class="form-control" />
+                    <span asp-validation-for="Mobile2" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 col-md-3  mb-3">
+                    <label for="Tel" class="control-label">الهاتف الأرضي</label>
+                    <input asp-for="Tel" class="form-control" />
+                    <span asp-validation-for="Tel" class="text-danger"></span>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-12"><h5 class="sep-header text-danger">تفاصيل الدخول</h5></div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-6 col-md-6 mb-3">
+                    <label for="Email" class="control-label">البريد الالكتروني (اسم المستخدم)</label>
+                    <input asp-for="Email" class="form-control" disabled="disabled" required="required" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-6  mb-3">
+                    <label for="Password" class="control-label">كلمة المرور</label>
+                    <input type="password" asp-for="Password" value="******" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6  mb-3">
+                    <label for="ConfirmPassword" class="control-label">تأكيد كلمة المرور</label>
+                        <input type="password" asp-for="ConfirmPassword" value="******" class="form-control" required="required" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-12  mb-3">
+                    <label for="Interests" class="control-label">طبيعة الاهتمام <span class="required">*</span></label>
+                    <select class="multipleSelect" multiple name="Interests[]" id="Interests">
+                        <option value="">:: حدد طبيعة الاهتمام ::</option>
+                        <!option value="1" @(Model!=null && (Model?.Interest?.Contains("1") ?? false) ? "SELECTED":"")>فرصة توظيف</!option>
+                        <!option value="2" @(Model!=null && (Model?.Interest?.Contains("2") ?? false) ? "SELECTED":"")>تدريب على راس العمل</!option>
+                        <!option value="3" @(Model!=null && (Model?.Interest?.Contains("3") ?? false) ? "SELECTED":"")>تدريب غير مدفوع</!option>
+                        <!option value="4" @(Model!=null && (Model?.Interest?.Contains("4") ?? false) ? "SELECTED":"")>تمويل مشاريع صغيرة</!option>
+                    </select>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12"><h5 class="sep-header text-danger">الوضع الصحي والدخل</h5></div>
+                <div class="form-group col-6  mb-3">
+                    <label for="HealthStatus" class="control-label">الحالة الصحية</label>
+                    <select asp-for="HealthStatus" class="form-control" required="required">
+                        <option value="">:: حدد الوضع الصحي ::</option>
+                        <!option value="1" @(Model?.HealthStatus == 1 ? "SELECTED":"") >سليم</!option>
+                        <!option value="2" @(Model?.HealthStatus == 2 ? "SELECTED":"") >مريض</!option>
+                        <!option value="3" @(Model?.HealthStatus == 3 ? "SELECTED":"") >ذوي اعاقة</!option>
+                    </select>
+                    <span asp-validation-for="HealthStatus" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-6 disFormCont mb-3" style="@(Model!=null && Model.HealthStatus == 3 ? "display:block;":"display:none;" )">
+                    <label for="DisabilityType" class="control-label">نوع الاعاقة</label>
+                    <select asp-for="DisabilityType" class="form-control" required="required">
+                        <option value="">:: حدد نوع الاعاقة ::</option>
+                        <!option value="1" @(Model!=null && Model.DisabilityType == 1 ? "SELECTED" : "") >اعاقة حركية</!option>
+                        <!option value="2" @(Model!=null && Model.DisabilityType == 2 ? "SELECTED" : "") >اعاقة سمعية</!option>
+                        <!option value="3" @(Model!=null && Model.DisabilityType == 3 ? "SELECTED" : "") >اعاقة بصرية</!option>
+                        <!option value="4" @(Model!=null && Model.DisabilityType == 4 ? "SELECTED" : "") >اعاقة عقلية</!option>
+                        <!option value="5" @(Model!=null && Model.DisabilityType == 5 ? "SELECTED" : "") >اعاقة نطقية</!option>
+                    </select>
+                </div>
+
+                <div class="form-group col-6 disFormCont mb-3" style="@(Model!=null && Model.HealthStatus == 3 ? "display:block;":"display:none;" )">
+                    <label for="DisabilitySize" class="control-label">حجم الاعاقة</label>
+                    <select asp-for="DisabilitySize" class="form-control" required="required">
+                        <option value="">:: حجم حجم الاعاقة ::</option>
+                        <!option value="1" @(Model!=null && Model.DisabilitySize == 1 ? "SELECTED" : "") >جزئي</!option>
+                        <!option value="2" @(Model!=null && Model.DisabilitySize == 2 ? "SELECTED" : "") >كلي</!option>
+                    </select>
+                </div>
+
+                <div class="form-group col-6 healthSickNature mb-3" style="@(Model!=null && Model.HealthStatus == 2 ? "display:block;":"display:none;" )" >
+                    <label for="SickNature" class="control-label" >طبيعة المرض</label>
+                    <select asp-for="SickNature" class="form-control" required="required">
+                        <option value="">:: حدد طبيعة المرض ::</option>
+                        <!option value="1" @(Model!=null && Model.SickNature == 1 ? "SELECTED" : "") >أمراض  قلب</!option>
+                        <!option value="2" @(Model!=null && Model.SickNature == 2 ? "SELECTED" : "") >الضغط</!option>
+                        <!option value="3" @(Model!=null && Model.SickNature == 3 ? "SELECTED" : "") >السكري</!option>
+                        <!option value="4" @(Model!=null && Model.SickNature == 4 ? "SELECTED" : "") >امراض المفاصل</!option>   
+                    </select>
+                </div>
+
+                <div class="form-group col-6 mb-3" id="healthAttCont" style="@(Model!=null && (Model.HealthStatus == 3 || Model.HealthStatus==2) ? "display:block;":"display:none;" )">
+                    
+                    <label for="HealthAtt1" class="control-label">مرفقات طبية</label>
+                    @if (!String.IsNullOrEmpty(Model.HealthAtt1))
+                    {
+                        <a href="@Url.Content(Model.HealthAtt1)" target="_blank"><i class="fas fa-download"></i></a>
+                    }
+                    <input asp-for="HealthAtt1" type="file" accept=".jpg,.pdf,.doc,.docx" class="form-control" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-6  mb-3">
+                    <label for="PropertyType" class="control-label">نوع الملكية</label>
+                    <select asp-for="PropertyType" class="form-control" required="required">
+                        <option value="">:: حدد نوع الملكية ::</option>
+                        <!option value="0" @(Model.PropertyType == 0 ? "SELECTED":"")>أجار</!option>
+                        <!option value="1" @(Model.PropertyType == 1 ? "SELECTED":"")>ملك</!option>
+                            <!option value="2" @(Model!=null && Model.PropertyType==2 ? "SELECTED":"")>استخدام</!option>
+                    </select>
+                    <span asp-validation-for="PropertyType" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6  mb-3">
+                    <label for="HouseNature" class="control-label">طبيعة المسكن</label>
+                    <select asp-for="HouseNature" class="form-control" required="required">
+                        <option value="">:: حدد طبيعة المسكن ::</option>
+                        <!option value="0" @(Model!=null && Model.HouseNature == 0 ? "SELECTED" : "") >شقة</!option>
+                        <!option value="1" @(Model!=null && Model.HouseNature == 1 ? "SELECTED" : "") >منزل مستقل</!option>
+                        <!option value="2" @(Model!=null && Model.HouseNature == 2 ? "SELECTED" : "") >أخرى</!option>
+                    </select>
+                    <span asp-validation-for="HouseNature" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6  mb-3">
+                <label for="HouseType" class="control-label">شكل المسكن <span class="required" >*</span></label>
+                <select asp-for="HouseType" class="form-control" required="required">
+                    <option value="">:: حدد شكل المسكن ::</option>
+                    <!option value="0" @(Model!=null && Model.HouseType == 0 ? "SELECTED" : "") >باطون</!option>
+                    <!option value="1" @(Model!=null && Model.HouseType == 1 ? "SELECTED" : "") >زينكو</!option>
+                    <!option value="2" @(Model!=null && Model.HouseType == 2 ? "SELECTED" : "") >خيمة</!option>
+                    <!option value="3" @(Model!=null && Model.HouseType == 3 ? "SELECTED" : "") >كرفان</!option>
+                </select>
+                <span asp-validation-for="HouseType" class="text-danger"></span>
+            </div>
+                <div class="form-group col-6  mb-3">
+                    <label for="HouseSize" class="control-label">مساحة السكن (م2)</label>
+                    <input asp-for="HouseSize" type="number" class="form-control" />
+                    <span asp-validation-for="HouseSize" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row">
+
+                <div class="form-group col-12 mb-3">
+                    <label for="IncomeExist" class="control-label">هل يوجد مصدر دخل</label>
+                    <select asp-for="IncomeExist" class="form-control" style="width:120px;">
+                        <!option value="" ></!option>
+                        <!option value="false" @(Model!=null && Model.IncomeExist == false ? "SELECTED" : "")>لا</!option>
+                        <!option value="true" @(Model!=null && Model.IncomeExist == true ? "SELECTED" : "")>نعم</!option>
+                    </select>
+                </div>
+
+                <div class="form-group col-6 mb-3 IncomeDet" style="@(Model!=null && Model.IncomeExist == true ? "display:block;":"display:none;" )">
+                    <label for="BreedWinnder" class="control-label">اسم معيل الأسرة</label>
+                    <input asp-for="BreedWinnder" class="form-control" />
+                    <span asp-validation-for="BreedWinnder" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 mb-3 IncomeDet" style="@(Model!=null && Model.IncomeExist == true ? "display:block;":"display:none;" )">
+                    <label for="BreedWinnderType" class="control-label">صفة معيل الأسرة <span class="required" >*</span></label>
+                    <select asp-for="BreedWinnderType" class="form-control" >
+                        <option value="" >:: حدد صفة المعيل ::</option>
+                        <!option @(Model!=null && Model.BreedWinnderType!=null && Model.BreedWinnderType == 0 ? "SELECTED":"") value="0">نفسه</!option>
+                        <!option @(Model!=null && Model.BreedWinnderType!=null && Model.BreedWinnderType == 1 ? "SELECTED":"") value="1">زوج / زوجة</!option>
+                        <!option @(Model!=null && Model.BreedWinnderType!=null && Model.BreedWinnderType == 2 ? "SELECTED":"") value="2">أخ / أخت</!option>
+                        <!option @(Model!=null && Model.BreedWinnderType!=null && Model.BreedWinnderType == 3 ? "SELECTED":"") value="3">ابن</!option>
+                        <!option @(Model!=null && Model.BreedWinnderType!=null && Model.BreedWinnderType == 4 ? "SELECTED":"") value="4">أب</!option>
+                        <!option @(Model!=null && Model.BreedWinnderType!=null && Model.BreedWinnderType == 5 ? "SELECTED":"") value="5">أم</!option>
+                        <!option @(Model!=null && Model.BreedWinnderType!=null && Model.BreedWinnderType == 6 ? "SELECTED":"") value="6">غير ذلك</!option>                    
+                    </select>
+                    <span asp-validation-for="BreedWinnderType" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 mb-3 IncomeDet" style="@(Model!=null && Model.IncomeExist == true ? "display:block;":"display:none;" )">
+                    <label for="IncomeSource" class="control-label">مصدر الدخل</label>
+                    <input asp-for="IncomeSource" class="form-control" />
+                    <span asp-validation-for="IncomeSource" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 mb-3 IncomeDet" style="@(Model!=null && Model.IncomeExist == true ? "display:block;":"display:none;" )">
+                    <label for="IncomeIdNumber" class="control-label">رقم الهوية</label>
+                    <input asp-for="IncomeIdNumber" class="form-control" />
+                    <span asp-validation-for="IncomeIdNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 mb-3 IncomeDet" style="@(Model!=null && Model.IncomeExist == true ? "display:block;":"display:none;" )">
+                    <label for="IncomeValue" class="control-label">قيمة الدخل</label>
+                    <input asp-for="IncomeValue" class="form-control" />
+                    <span asp-validation-for="IncomeValue" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12"><h5 class="sep-header text-danger">المرفقات</h5></div>
+                <div class="form-group col-12 mb-3"><span class="hint">(المرفق بصيغة .jpg,.pdf,.doc,.docx فقط وبحجم لا يتجاوز 2MB)</span></div>
+                <div class="form-group col-6 mb-3">
+                    <label for="AttachTitle1" class="control-label">عنوان المرفق الأول</label>
+                    @if (!String.IsNullOrEmpty(Model?.Attach1))
+                    {
+                        <a href="@Url.Content(Model.Attach1)" target="_blank"><i class="fas fa-download"></i></a>
+                    }
+                    <input asp-for="AttachTitle1" class="form-control" value="صورة الهوية الشخصية/ جواز السفر" disabled="disabled" />
+                    <span asp-validation-for="AttachTitle1" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 mb-3">
+                    <label for="Attach1" class="control-label">المرفق الأول</label>
+                    <input asp-for="Attach1" type="file" accept=".jpg,.pdf,.doc,.docx" class="form-control" />
+                    <span asp-validation-for="Attach1" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-6 mb-3">
+                    <label for="AttachTitle2" class="control-label">عنوان المرفق الثاني</label>
+                    @if (!String.IsNullOrEmpty(Model?.Attach2))
+                    {
+                        <a href="@Url.Content(Model.Attach2)" target="_blank"><i class="fas fa-download"></i></a>
+                    }
+                    <input asp-for="AttachTitle2" class="form-control" value="السيرة الذاتية" disabled="disabled" />
+                    <span asp-validation-for="AttachTitle2" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-6 mb-3">
+                    <label for="Attach2" class="control-label">المرفق الثاني</label>
+                    <input asp-for="Attach2" type="file" accept=".jpg,.pdf,.doc,.docx" class="form-control" />
+                    <span asp-validation-for="Attach2" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-6 mb-3">
+                    <label for="AttachTitle3" class="control-label">عنوان المرفق الثالث</label>
+                    @if (!String.IsNullOrEmpty(Model?.Attach3))
+                    {
+                        <a href="@Url.Content(Model.Attach3)" target="_blank"><i class="fas fa-download"></i></a>
+                    }
+                    <input asp-for="AttachTitle3" class="form-control" value="مرفقات أخرى" disabled="disabled" />
+                    <span asp-validation-for="AttachTitle3" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-6 mb-3">
+                    <label for="Attach3" class="control-label">المرفق الثالث</label>
+                    <input asp-for="Attach3" type="file" accept=".jpg,.pdf,.doc,.docx" class="form-control" />
+                    <span asp-validation-for="Attach3" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label for="Photo" class="control-label">الصورة الشخصية (الصورة بصيغة .jpg فقط وبحجم لا يتجاوز 2MB)</label>
+                    <input asp-for="Photo" type="file" accept=".jpg" class="form-control" />
+                    <span asp-validation-for="Photo" class="text-danger"></span>
+                    @if (!String.IsNullOrEmpty(Model?.Photo))
+                    {
+                        <img src="@Url.Content(Model.Photo)" style="width:120px;margin-top:10px;">
+                    }
+                </div>
+            </div>
+
+            <div class="row mt-5">
+                <div class="form-group">
+                        <input type="checkbox" id="Agreement" name="Agreement" />
+                        <label for="Agreement" class="control-label">اقر بصحة البيانات المسجلة في البوابة الفلسطينية للتشغيل واوافق على استخدام البيانات ومشاركتها مع الجهات ذات الاختصاص ضمن الإطار القانوني</label>
+                </div>
+            </div>
+
+            <div class="form-group mt-3 text-center">
+                    <input type="submit" value="حفظ التغييرات" class="btn subscribe_btn" />
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+@section Scripts{
+    {
+        <partial name="_ValidationScriptsPartial" >
+        <partial name="_validationMsg" />
+        <script src="~/fastselect/dist/ar_fastselect.standalone.js"></script>
+        <script type="text/javascript" >
+            $('.multipleSelect').fastselect();
+            $("#HealthStatus").change(function () {
+                var val = $(this).val();
+                if (val == 2) {//Sick
+                    $("#healthAttCont").show();
+                    $(".healthSickNature").show();
+                    $(".disFormCont").hide();
+                }
+                else if (val == 3) {//Handicapped
+                    $("#healthAttCont").show();
+                    $(".healthSickNature").hide();
+                    $(".disFormCont").show();
+                }
+                else {
+                    $("#healthAttCont").hide();
+                    $(".healthSickNature").hide();
+                    $(".disFormCont").hide();
+                }
+            });
+
+            $(document).on("change", "#IncomeExist", function () {
+                if ($(this).val() == "true") {
+                    $(".IncomeDet").show();
+                }
+                else {
+                    $(".IncomeDet").hide();
+                }
+            });
+
+            $("#MembersForm").validate({
+                rules: {
+                    //FirstName: {
+                    //    required: true,
+                    //    arabicOnly: true
+                    //},
+                    //FatherName: {
+                    //    required: true,
+                    //    arabicOnly: true
+                    //},
+                    //GrandName: {
+                    //    required: true,
+                    //    arabicOnly: true
+                    //},
+                    //FamilyName: {
+                    //    required: true,
+                    //    arabicOnly: true
+                    //},
+                    //IdNum: {
+                    //    required: true,
+                    //    digits: true,
+                    //    minlength: 9,
+                    //    maxlength: 9
+                    //},
+                    //BirthDate: {
+                    //    required: true,
+                    //    date: true,
+                    //    max: new Date().toISOString().split("T")[0]
+                    //},
+                    FamilyMembersCount: {
+                        required: true,
+                        number: true,
+                        digits: true,
+                        min: 0
+                    },
+                    FatherIdNum: {
+                        required: true,
+                        digits: true,
+                        minlength: 9,
+                        maxlength: 9,
+                        notEqualToList: "#IdNum,#MotherIdNum,#PartnerIdNum"
+                    },
+                    MotherIdNum: {
+                        required: true,
+                        digits: true,
+                        minlength: 9,
+                        maxlength: 9,
+                        notEqualToList: "#IdNum,#FatherIdNum,#PartnerIdNum"
+                    },
+                    PartnerIdNum: {
+                        required: {
+                            depends: function () {
+                                //If select of SocailStatus is Married (2)
+                                return ($("#SocialId").val() != "" && parseInt($("#SocialId").val()) == 2);
+                            }
+                        },
+                        digits: true,
+                        minlength: 9,
+                        maxlength: 9,
+                        notEqualToList: "#IdNum,#MotherIdNum,#FatherIdNum"
+                    },
+                    //CityId: {
+                    //    required: true,
+                    //},
+                    //AreaId: {
+                    //    required: true,
+                    //},
+                    District: {
+                        required: true,
+                    },
+                    Street: {
+                        required: true,
+                    },
+                    NearTo: {
+                        required: true,
+                    },
+                    Password: {
+                        required: true,
+                        minlength: 6,
+                    },
+                    ConfirmPassword: {
+                        required: true,
+                        minlength: 6,
+                        equalTo: "#Password"
+                    },
+                    Mobile: {
+                        required: true,
+                        digits: true,
+                        minlength: 10,
+                        maxlength: 10,
+                        pattern: /^05\d{8}$/
+                    },
+                    Mobile2: {
+                        digits: true,
+                        minlength: 10,
+                        maxlength: 10,
+                        pattern: /^05\d{8}$/
+                    },
+                    Tel: {
+                        digits: true,
+                        minlength: 9,
+                        maxlength: 9,
+                        pattern: /^0\d{8}$/
+                    },
+                    Email: {
+                        required: true,
+                        email: true
+                    },
+                    HealthStatus: {
+                        required: true,
+                    },
+                    DisabilityType: {
+                        required: {
+                            depends: function () {
+                                //If select of HealthStatus is Disability
+                                return ($("#HealthStatus").val() != "" && parseInt($("#HealthStatus").val()) == 3);
+                            }
+                        }
+                    },
+                    DisabilitySize: {
+                        required: {
+                            depends: function () {
+                                //If select of HealthStatus is Disability
+                                return ($("#HealthStatus").val() != "" && parseInt($("#HealthStatus").val()) == 3);
+                            }
+                        }
+                    },
+                    SickNature: {
+                        required: {
+                            depends: function () {
+                                return ($("#HealthStatus").val() != "" && parseInt($("#HealthStatus").val()) == 2);
+                            }
+                        }
+                    },
+                    HealthAtt1: {
+                        required: false,
+                        //required: {
+                        //    depends: function () {
+                        //        return ($("#HealthStatus").val() != "" && (parseInt($("#HealthStatus").val()) == 2 || parseInt($("#HealthStatus").val()) == 3));
+                        //    }
+                        //},
+                        accept: "image/jpeg,image/png,image/jpg,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,application/pdf"
+                    },
+                    PropertyType: {
+                        required: true,
+                    },
+                    HouseNature: {
+                        required: true,
+                    },
+                    HouseSize: {
+                        required: true,
+                        number: true,
+                        min: 0
+                    },
+                    IncomeExist: {
+                        required: true
+                    },
+                    BreedWinnder: {
+                        required: {
+                            depends: function () {
+                                return ($("#IncomeExist").val() != "" && $("#IncomeExist").val() == "true");
+                            }
+                        },
+                        arabicOnly: true,
+                        maxlength: 50
+                    },
+                    IncomeSource: {
+                        required: {
+                            depends: function () {
+                                return ($("#IncomeExist").val() != "" && $("#IncomeExist").val() == "true");
+                            }
+                        },
+                        maxlength: 50
+                    },
+                    IncomeIdNumber: {
+                        required: {
+                            depends: function () {
+                                return ($("#IncomeExist").val() != "" && $("#IncomeExist").val() == "true");
+                            }
+                        },
+                        number: true,
+                        minlength: 9,
+                        maxlength: 9
+                    },
+                    IncomeValue: {
+                        required: {
+                            depends: function () {
+                                return ($("#IncomeExist").val() != "" && $("#IncomeExist").val() == "true");
+                            }
+                        },
+                        number: true,
+                        min: 0,
+                    },
+                    Attach1: {
+                        
+                        accept: "image/jpeg,image/png,image/jpg,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,application/pdf"
+                    },
+                    Attach2: {
+                        
+                        accept: "image/jpeg,image/png,image/jpg,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,application/pdf"
+                    },
+                    Attach3: {
+                       
+                        accept: "image/jpeg,image/png,image/jpg,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,application/pdf"
+                    },
+                    Photo: {
+                        accept: "image/jpeg,image/png,image/jpg"
+                    },
+                    Agreement: {
+                        required: true,
+                    }
+                    // other rules...
+                },
+                messages: {
+                    //FirstName: {
+                    //    required: "الاسم اجباري *",
+                    //    arabicOnly: "الاسم يجب ان يكون باللغة العربية!"
+                    //},
+                    //FatherName: {
+                    //    required: "اسم الاب اجباري *",
+                    //    arabicOnly: "اسم الاب يجب ان يكون باللغة العربية!"
+                    //},
+                    //GrandName: {
+                    //    required: "اسم الجد اجباري *",
+                    //    arabicOnly: "اسم الجد يجب ان يكون باللغة العربية!"
+                    //},
+                    //FamilyName: {
+                    //    required: "اسم العائلة اجباري *",
+                    //    arabicOnly: "اسم العائلة يجب ان يكون باللغة العربية!"
+                    //},
+                    //IdNum: {
+                    //    required: "رقم الهوية اجباري",
+                    //    digits: "ادخل أرقام فقط",
+                    //    minlength: "ادخل 9 خانات فقط",
+                    //    maxlength: "ادخل 9 خانات فقط"
+                    //},
+                    //BirthDate: {
+                    //    required: "ادخل تاريخ صحيح",
+                    //    date: "ادخل تاريخ صحيح",
+                    //    max: "تاريخ الميلاد غير صحيح!"
+                    //},
+                    FamilyMembersCount: {
+                        required: "ادخل عدد افراد العائلة",
+                        number: "ادخل رقم صحيح",
+                        digits: "ادخل رقم صحيح",
+                        min: "ادخل عدد صحيح"
+                    },
+                    FatherIdNum: {
+                    required: "رقم الهوية اجباري",
+                    digits: "ادخل أرقام فقط",
+                    minlength: "ادخل 9 خانات فقط",
+                    maxlength: "ادخل 9 خانات فقط",
+                    notEqualToList: "رقم هوية الأب متشابه مع رقم هوية الباحث او الأم او الزوج/الزوجة!",
+                },
+                MotherIdNum: {
+                    required: "رقم الهوية اجباري",
+                    digits: "ادخل أرقام فقط",
+                    minlength: "ادخل 9 خانات فقط",
+                    maxlength: "ادخل 9 خانات فقط",
+                    notEqualToList: "رقم هوية الأم متشابه مع رقم هوية الباحث او الأب او الزوج/الزوجة!",
+                },
+                PartnerIdNum: {
+                    required: "رقم الهوية اجباري",
+                    digits: "ادخل أرقام فقط",
+                    minlength: "ادخل 9 خانات فقط",
+                    maxlength: "ادخل 9 خانات فقط",
+                    notEqualToList: "رقم هوية الزوج/الزوجة متشابه مع رقم هوية الباحث او الأب أو الام!",
+                },
+                    //CityId: {
+                    //    required: "الحقل اجباري",
+                    //},
+                    //AreaId: {
+                    //    required: "الحقل اجباري",
+                    //},
+                    District: {
+                        required: "الحقل اجباري",
+                    },
+                    Street: {
+                        required: "الحقل اجباري",
+                    },
+                    NearTo: {
+                        required: "الحقل اجباري",
+                    },
+                    Password: {
+                        required: "الحقل اجباري",
+                        minlength: "كلمة المرور يجب ان تكون 6 خانات على الاقل",
+
+                    },
+                    ConfirmPassword: {
+                        required: "الحقل اجباري",
+                        minlength: "كلمة المرور يجب ان تكون 6 خانات على الاقل",
+                        equalTo: "كلمة المرور وتأكيد كلمة المرور غير متطابقتين!",
+                    },
+                    Mobile: {
+                        required: "الحقل اجباري",
+                        digits: "رقم الهاتف الخلوي يجب ان يتكون من 10 خانات ويبدأ ب 05",
+                        minlength: "رقم الهاتف الخلوي يجب ان يتكون من 10 خانات ويبدأ ب 05",
+                        maxlength: "رقم الهاتف الخلوي يجب ان يتكون من 10 خانات ويبدأ ب 05",
+                        pattern: "رقم الهاتف الخلوي يجب ان يتكون من 10 خانات ويبدأ ب 05",
+                    },
+                    Mobile2: {
+                        digits: "رقم الهاتف الخلوي يجب ان يتكون من 10 خانات ويبدأ ب 05",
+                        minlength: "رقم الهاتف الخلوي يجب ان يتكون من 10 خانات ويبدأ ب 05",
+                        maxlength: "رقم الهاتف الخلوي يجب ان يتكون من 10 خانات ويبدأ ب 05",
+                        pattern: "رقم الهاتف الخلوي يجب ان يتكون من 10 خانات ويبدأ ب 05",
+                    },
+                    Tel: {
+                        digits: "رقم الهاتف يجب ان يتكون من 9 خانات ويبدأ ب 0",
+                        minlength: "رقم الهاتف يجب ان يتكون من 9 خانات ويبدأ ب 0",
+                        maxlength: "رقم الهاتف يجب ان يتكون من 9 خانات ويبدأ ب 0",
+                        pattern: "رقم الهاتف الخلوي يجب ان يتكون من 10 خانات ويبدأ ب 05",
+                    },
+                    Email: {
+                        required: "البريد الالكتروني اجباري",
+                        email: "البريد الالكتروني غير صحيح!",
+                    },
+                    HealthStatus: {
+                        required: "الحقل اجباري",
+                    },
+                    DisabilityType: {
+                        required: "الحقل اجباري",
+                    },
+                    DisabilitySize: {
+                        required: "الحقل اجباري",
+                    },
+                    SickNature: {
+                        required: "الحقل اجباري",
+                    },
+                    HealthAtt1: {
+                        required: "الحقل اجباري",
+                        accept: "امتداد المرفقات الطبية غير صحيحة! (يجب ان تكون بصيغة .jpg, .doc, .docx., .pdf)"
+                    },
+                    PropertyType: {
+                        required: "الحقل اجباري",
+                    },
+                    HouseNature: {
+                        required: "الحقل اجباري",
+                    },
+                    HouseSize: {
+                        required: "الحقل اجباري",
+                        number: "المساحة غير صحيحة",
+                        min: "المساحة غير صحيحة",
+                    },
+                    IncomeExist: {
+                        required: "الحقل اجباري",
+                    },
+                    BreedWinnder: {
+                        required: "الحقل اجباري",
+                        arabicOnly: "الاسم يجب ان يتكون من أحرف عربية فقط",
+                        maxlength: "الاسم يجب ان لا يتعدى 50 حرف"
+                    },
+                    IncomeSource: {
+                        required: "الحقل اجباري",
+                        maxlength: "مصدر الدخل يجب ان لا يتعدى 50 حرف"
+                    },
+                    IncomeIdNumber: {
+                        required: "الحقل اجباري",
+                        number: "رقم الهوية يجب ان يتكون من أرقام فقط",
+                        minlength: "رقم الهوية غير صحيح",
+                        maxlength: "رقم الهوية غير صحيح",
+                    },
+                    IncomeValue: {
+                        required: "الحقل اجباري",
+                        number: "قيمة الدخل غير صحيح",
+                        min: "قيمة الدخل غير صحيح",
+                    },
+                    Attach1: {
+                        required: "الحقل اجباري",
+                        accept: "امتداد المرفقات الطبية غير صحيحة! (يجب ان تكون بصيغة .jpg, .doc, .docx., .pdf)"
+                    },
+                    Attach2: {
+                        required: "الحقل اجباري",
+                        accept: "امتداد المرفقات الطبية غير صحيحة! (يجب ان تكون بصيغة .jpg, .doc, .docx., .pdf)"
+                    },
+                    Attach3: {
+                        required: "الحقل اجباري",
+                        accept: "امتداد المرفقات الطبية غير صحيحة! (يجب ان تكون بصيغة .jpg, .doc, .docx., .pdf)"
+                    },
+                    Photo: {
+                        accept: "امتداد المرفقات الطبية غير صحيحة! (يجب ان تكون بصيغة .jpg, .png, .jpeg)"
+                    },
+                  Agreement: {
+                        required: " يتوجب عليك التأكيد على صحة البيانات المدخلة! "
+                    }
+                    // other messages...
+                }
+            });
+        </script>   
+
+        <script type="text/javascript">
+        $(document).ready(function(){
+            $("#CityId").change(function () {
+            var city = $("#CityId").val();
+           
+            var url = "@Url.Action("getAreas", "Home")?cityId=" + city
+            $("#AreaId").empty();
+            $.ajax({
+                url: url,
+                dataType: "json",
+                beforeSend: function () {
+                    $("#AreaId").hide();
+                    $("#AreaId").before($('<i class="fa fa-spinner fa-spin fa-3x fa-fw" style="font-size:15px;" id="loader"></i> '));
+                },
+                success: function (data) {
+                    var areas = data.areas;
+                    $("#AreaId").append($('<option></option>').val("").html(":: حدد المنطقة / المدينة ::"));
+                    for (var i = 0; i < areas.length; i++) {
+                        $("#AreaId").append($('<option></option>').val(areas[i].id).html(areas[i].arName));
+                    }
+                },
+                error: function (jqXhr, json, errorThrown) {
+                    try {
+                        var errors = jqXhr.responseJSON.errors;
+                        console.log(errors);
+                    }
+                    catch (eee) {
+                        console.log(eee.message);
+                    }
+                },
+                complete: function () {
+                    //alert("complete");
+                    $("#loader").remove();
+                    $("#AreaId").show();
+                }
+            });
+
+        });
+        });
+        </script>
+    }
+}

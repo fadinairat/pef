@@ -1,0 +1,325 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - إي سوق</title>
+    <link rel="stylesheet" href="~/frontend/bootstrap/css/bootstrap.css" >
+    <link rel="stylesheet" href="~/frontend/css/styles.css">
+	<link rel="stylesheet" href="~/css/shared.css">
+	<link rel="stylesheet" href="~/frontend/css/custom.css">
+    <link href="~/frontend/fontawesome/css/fontawesome.min.css" rel="stylesheet">
+    <link href="~/frontend/fontawesome/css/solid.min.css" rel="stylesheet">
+    <link href="~/frontend/fontawesome/css/brands.min.css" rel="stylesheet">
+    <link href="~/frontend/fontawesome/css/regular.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;700;900&display=swap" rel="stylesheet">
+	<link rel="icon" type="image/png" href="~/frontend/images/log-icon.png" />
+    <link rel="stylesheet" href="~/frontend/owlcarousel/dist/assets/owl.carousel.min.css" />
+	<link rel="stylesheet" href="~/frontend/owlcarousel/dist/assets/owl.theme.default.min.css">
+	<link rel="stylesheet" href="~/frontend/css/animate.css">
+	<link rel="stylesheet" href="~/frontend/css/jquery.flipster.min.css">
+	<link rel="stylesheet" href="~/frontend/ticker/css/style.min.css">
+	<link rel="stylesheet" href="~/frontend/fonts/neosans/style.css">
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/css/bootstrap-select.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@fancyapps/ui@4.0/dist/fancybox.css">
+
+</head>
+<body dir="rtl" lang="ar">
+    <header class="">
+		<div class="top">
+			<div class="container container-cus">
+				<div class="row">
+					<div class="col-md-8">
+					</div>				
+					<div class="col-md-4 align-self-end">
+						
+						<div class="topnav">
+							<div class="top_icons">
+								@if (User.Identity.IsAuthenticated)
+								{
+									
+									<div class="dropdown">
+									  <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+										<i class="fa-solid fa-user"></i> مرحبا @User.Identity.Name
+									  </button>
+									  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+										<li><a class="dropdown-item" asp-action="Details" asp-controller="Members">الملف الشخصي</a></li>
+										<li><a class="dropdown-item" asp-action="Profile" asp-controller="Members">تعديل البيانات الشخصية</a></li>
+										<li><a class="dropdown-item" asp-action="Change" asp-controller="Members">تغيير كلمة المرور</a></li>
+										<li><a class="dropdown-item" asp-action="Products" asp-controller="Members">منتجاتي</a></li>
+									  </ul>
+									</div>
+									
+									<a asp-action="Logout" asp-controller="Home" class="btn mainBtn btn-sm">تسجيل الخروج</a>
+								}
+								else{
+									
+									<a asp-action="Login" asp-controller="Home" class="btn mainBtn btn-sm">تسجيل الدخول</a>
+								}
+								
+								<a href="#" alt="" class=""><i class="fa-brands fa-youtube"></i></a>
+								<a href="#" alt="" class=""><i class="fa-brands fa-twitter"></i></a>
+								<a href="#" alt="" class=""><i class="fa-brands fa-facebook"></i></a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="top_menu" >
+			<div class="" >
+				@await Component.InvokeAsync("TopMenu")
+			</div>
+		</div>
+    </header>
+	
+	
+	@RenderBody()
+
+	<footer>
+		@await Component.InvokeAsync("FooterMenu")
+		
+	</footer>
+
+
+    <script src="~/frontend/js/jquery-3.5.1.min.js" ></script>
+    <script src="~/frontend/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/frontend/owlcarousel/dist/owl.carousel.min.js"></script>
+	<script src="~/frontend/js/wow.min.js"></script>	
+	<script src="~/frontend/js/jquery.flipster.min.js"></script>
+	<script src="~/frontend/ticker/js/acmeticker.js"></script>
+	<script src="~/frontend/js/embed.videos.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/js/bootstrap-select.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@@fancyapps/ui@@4.0/dist/fancybox.umd.js"></script>
+	
+	<script>
+	$(function () {
+		$('.my-select').selectpicker();
+	});
+	var num1=3;
+	var num2=3;
+	var num3=3;
+	var circle1='<div class="case_progress_wrapper counts1 wow fadeInUp" data-wow-delay="0.2s" data-percent="100" style="width:10vw; height:10vh;float:right;"> <svg class="case_progress_circle" viewBox="0 0 140 140" style=""><defs><pattern id="image" x="0%" y="0%" height="100%" width="100%" viewBox="1 0 58 58"> <image x="0%" y="0%" width="60" height="60" xlink:href="~/frontend/images/point1.png"></image></pattern></defs><rect width="100%" height="100%" fill="" fill-opacity="0" /> <g class="circ1" transform="rotate(-0 70 70)" > <path id="case_progress__path" style="fill:none;stroke:#c9ab67;stroke-width:1" d="M 124,70 A 54,54 0 0 1 70,124 54,54 0 0 1 16,70 54,54 0 0 1 70,16 54,54 0 0 1 124,70 Z"/> <circle class="case_progress__value cccc1" stroke-dashoffset="0" stroke-dasharray="0" cx="70" cy="70" r="54" fill="none" stroke="#c9ab67" stroke-width="2" > <animate attributeName="stroke-dashoffset" begin="0s" dur="3s" values="339.5;0" fill="freeze" /> </circle> <circle class="case_progress__start" cx="124" cy="70" r="3" fill="#fff" stroke="#fff" stroke-width="1" /> <g id="case_progress__prog_fill" class="case_progress__prog" viewBox="1 0 58 58"> <circle transform="rotate(90 0 0)" fill="url(#image)" cx="0" cy="0" r="8" stroke-width="0.25" stroke="#fff" > <animateMotion begin="0s" dur="3s" fill="freeze" > <mpath xlink:href="#case_progress__path" /> </animateMotion> </circle> </g> </g> <circle class="case_progress__inner" cx="70" cy="70" r="44" fill="#fff" stroke="#808184" stroke-width="0.7" /> <text id="count" x="50%" y="50%" fill="#6a2e2e" text-anchor="middle" dy="7" font-size="20">03</text> </svg> <p class="text-center">تمت موائمتها</p></div>';
+	var circle2='<div class="case_progress_wrapper counts2 wow fadeInUp" data-wow-delay="0.4s" data-percent="80" style="width:10vw; height:10vh;float:right;"> <svg class="case_progress_circle" viewBox="0 0 140 140"><defs><pattern id="image2" x="0%" y="0%" height="100%" width="100%" viewBox="1 0 58 58"> <image x="0%" y="0%" width="60" height="60" xlink:href="~/frontend/images/point2.png"></image></pattern> </defs> <rect width="100%" height="100%" fill="" fill-opacity="0" /> <g transform="rotate(-90 70 70)" >  <path id="case_progress__path" style="fill:none;stroke:#be5c03;stroke-width:1" d="M 124,70 A 54,54 0 0 1 70,124 54,54 0 0 1 16,70 54,54 0 0 1 70,16 54,54 0 0 1 124,70 Z"/>  <circle class="case_progress__value" stroke-dashoffset="339.5" stroke-dasharray="339.5" cx="70" cy="70" r="54" fill="none" stroke="#be5c03" stroke-width="2" > <animate attributeName="stroke-dashoffset" begin="0s" dur="3s" values="339.5;0" fill="freeze" /> </circle> <circle class="case_progress__start" cx="124" cy="70" r="3" fill="#fff" stroke="#fff" stroke-width="1" /> <g id="case_progress__prog_fill" class="case_progress__prog" viewBox="1 0 58 58"> <circle transform="rotate(90 0 0)" fill="url(#image2)" cx="0" cy="0" r="8" stroke-width="0.25" stroke="#fff" > <animateMotion begin="0s" dur="3s" fill="freeze" > <mpath xlink:href="#case_progress__path" /> </animateMotion> </circle> </g> </g> <circle class="case_progress__inner" cx="70" cy="70" r="44" fill="#fff" stroke="#808184" stroke-width="0.7" /> <text id="count2" x="50%" y="50%" fill="#6a2e2e" text-anchor="middle" dy="7" font-size="20">'+num2+'</text> </svg> <p class="text-center">يجري العمل عليها</p></div> ';
+	var circle3='<div class="case_progress_wrapper counts3 wow fadeInUp" data-wow-delay="0.6s" data-percent="80" style="width:10vw; height:10vh;float:right;"> <svg class="case_progress_circle" viewBox="0 0 140 140"><defs><pattern id="image3" x="0%" y="0%" height="100%" width="100%" viewBox="1 0 58 58"> <image x="0%" y="0%" width="60" height="60" xlink:href="~/frontend/images/point3.png"></image></pattern> </defs> <rect width="100%" height="100%" fill="" fill-opacity="0" /> <g transform="rotate(-90 70 70)" ><path id="case_progress__path" style="fill:none;stroke:#8d0301;stroke-width:1" d="M 124,70 A 54,54 0 0 1 70,124 54,54 0 0 1 16,70 54,54 0 0 1 70,16 54,54 0 0 1 124,70 Z"/> <circle class="case_progress__value" stroke-dashoffset="339.5" stroke-dasharray="339.5" cx="70" cy="70" r="54" fill="none" stroke="#8d0301" stroke-width="2" > <animate attributeName="stroke-dashoffset" begin="0s" dur="3s" values="339.5;0" fill="freeze" /> </circle> <circle class="case_progress__start" cx="124" cy="70" r="3" fill="#fff" stroke="#fff" stroke-width="1" /> <g id="case_progress__prog_fill" class="case_progress__prog" viewBox="1 0 58 58"> <circle transform="rotate(90 0 0)" fill="url(#image3)" cx="0" cy="0" r="8" stroke-width="0.25" stroke="#fff" > <animateMotion begin="0s" dur="3s" fill="freeze" > <mpath xlink:href="#case_progress__path" /> </animateMotion> </circle> </g> </g> <circle class="case_progress__inner" cx="70" cy="70" r="44" fill="#fff" stroke="#808184" stroke-width="0.7" /> <text id="count3" x="50%" y="50%" fill="#6a2e2e" text-anchor="middle" dy="7" font-size="20">'+num3+'</text> </svg> <p class="text-center">تأجيل الاستكمال</p></div> ';
+	var crs1=false;
+	var a = 0;
+	$(window).scroll(startCounter);
+
+		function startCounter() {
+		  let scrollY = (window.pageYOffset || document.documentElement.scrollTop) + window.innerHeight;
+		  let divPos = document.querySelector('.sec4').offsetTop - 500;
+
+		  if (scrollY > divPos) {
+			$(window).off("scroll", startCounter);
+
+			$('.counter').each(function() {
+			  var $this = $(this);
+			  jQuery({
+				Counter: 0
+			  }).animate({
+				Counter: $this.text().replace(/,/g, '')
+			  }, {
+				duration: 1000,
+				easing: 'swing',
+				step: function() {
+				  $this.text(commaSeparateNumber(Math.floor(this.Counter)));
+				},
+				complete: function() {
+				  $this.text(commaSeparateNumber(this.Counter));
+				  //alert('finished');
+				}
+			  });
+			});
+
+			function commaSeparateNumber(num) {
+			  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+			}
+		  }
+		}
+
+
+	$(document).on('scroll', function() {
+		if( $(this).scrollTop() >= $('.sec1').position().top && crs1==false){
+			crs1=true;
+			var csc=339;
+			$("#crcls").append(circle1);
+			$("#crcls").append(circle2);
+			$("#crcls").append(circle3);
+			var count = $(('#count'));
+			$({ Counter: 0 }).animate({ Counter: count.text() }, {
+			  duration: 4000,
+			  easing: 'linear',
+			  step: function () {
+				count.text(Math.ceil(this.Counter)+ "");
+			  }
+			});
+			var count2 = $(('#count2'));
+			$({ Counter: 0 }).animate({ Counter: count2.text() }, {
+			  duration: 4000,
+			  easing: 'linear',
+			  step: function () {
+				count2.text(Math.ceil(this.Counter)+ "");
+			  }
+			});
+			var count3 = $(('#count3'));
+			$({ Counter: 0 }).animate({ Counter: count3.text() }, {
+			  duration: 4000,
+			  easing: 'linear',
+			  step: function () {
+				count3.text(Math.ceil(this.Counter)+ "");
+			  }
+			});
+			/*
+			setInterval(function(){
+			
+				$(".cccc1").attr("stroke-dasharray",csc);
+				$(".cccc1").attr("stroke-dashoffset",csc);
+				$("mpath").attr("xlink:href","#case_progress__path");
+				csc++;
+			},300)
+			*/
+		}
+	});
+
+	
+		
+		$('.embed-video').embedVideo({height:255});
+		 $('.my-news-ticker').AcmeTicker({
+            type:'marquee',/*horizontal/horizontal/Marquee/type*/
+            direction: 'right',/*up/down/left/right*/
+            speed: 0.05,/*true/false/number*/ /*For vertical/horizontal 600*//*For marquee 0.05*//*For typewriter 50*/
+            
+        });
+	
+
+	var carousel = $(".my-flipster").flipster({
+        style: 'carousel',
+        spacing: -0.4,
+        nav: false,
+        buttons:   false,
+		scrollwheel: false,
+		buttons: false
+    });
+	if($(window).width()>991){
+		/*
+	 $(window).scroll(function() {
+    if ($(this).scrollTop() > 80) {
+			$("header").addClass("scrolled");
+			$(".logo1").show();
+			$(".logo2").hide();
+			$(".hi2").show();
+			$(".hi1").hide();
+	}
+    if ($(this).scrollTop() < 80) {
+			$(".logo2").show();
+			$(".logo1").hide();
+			$(".hi1").show();
+			$(".hi2").hide();
+			$("header").removeClass("scrolled");
+	}
+	})
+	*/
+	}
+	Fancybox.bind("[data-fancybox]", {
+  // Your options go here
+});
+
+
+	new WOW().init();
+	$(document).ready(function(){
+		$(".sec4 .nav-link").click(function(){
+			if($(window).width()<767){
+				//var ifrArea=$(".sec4 .col-lg-8").html();
+				//var vidbtn=$(this).html();
+				//$(this).html(ifrArea);
+			}
+			var vid=$(this).data("vid");
+			$("#videoGal").attr("src","https://www.youtube.com/embed/"+vid);
+		})
+		if($(window).width()>991){
+			//$(".mainSld").height($(".servlists").height());
+			setTimeout(function(){
+				var navbarW=$("#navbarMain").width() - $("#navbarMain>ul > li:first-child").width();
+				var navbarulW = 0;
+				$("#navbarMain>ul > li:not(:first-child)").each(function(){
+					navbarulW=parseInt(navbarulW)+parseInt($(this).width());
+				})
+				if(navbarW > navbarulW){
+					var remW=navbarW-navbarulW;
+					var navslic=$("#navbarMain>ul>li:not(:first-child)").length;
+					var devW=remW/navslic;
+					//console.log(devW);
+					$("#navbarMain>ul>li:not(:first-child)").each(function(){
+						//$(this).width($(this).width()+devW)
+					})
+				}
+				$(".jerusalem").height(parseInt($("#news").height())+(parseInt($("#news").css("padding"))*2));
+			},500)
+			
+		}
+		if($(window).width()<991){
+		/*
+			$("header").addClass("scrolled");
+			$(".logo1").show();
+			$(".logo2").hide();
+			$(".hi2").show();
+			$(".hi1").hide();
+		*/
+		}
+		$(document).on("click",".activitiesmenu a",function(){
+			$(".activitiesmenu a").removeClass("active");
+			$(".panels").removeClass("active");
+			$(this).addClass("active");
+			var activePanel=$(this).attr("href").replace("#","");
+			$("."+activePanel).addClass("active");
+		})
+    $('.owl-carousel1').owlCarousel({
+			dots: false,
+			navigation : false,
+			items : 1,
+			  responsive : {
+					480 : { items : 1  }, // from zero to 480 screen width 4 items
+					768 : { items : 2  }, // from 480 screen widthto 768 6 items
+					1024 : { items : 4   // from 768 screen width to 1024 8 items
+					}
+				},
+			nav:true,
+			loop: true,
+			itemsDesktop : false,
+			margin: 0,
+			rtl: true,
+			itemsDesktopSmall : false,
+			autoplay: false,
+		});
+    $('.owl-carousel2').owlCarousel({
+			dots: false,
+			navigation : false,
+			items : 1,
+			nav:true,
+			loop: true,
+			rtl: true,
+			itemsDesktop : false,
+			margin: 60,
+			itemsDesktopSmall : false,
+			slideTransition: 'linear',
+			autoplayTimeout: 2000,
+			autoplay: false,
+			autoplaySpeed: 3000,
+			autoplayHoverPause: true,
+		});
+	});
+
+	</script>
+	@await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>

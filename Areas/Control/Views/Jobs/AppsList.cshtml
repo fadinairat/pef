@@ -1,0 +1,257 @@
+﻿@model IEnumerable<PEF.Models.JobsApplications>
+@using PEF.Models;
+@using Microsoft.Extensions.Localization
+@using PEF.Areas.Control.Controllers
+@inject IStringLocalizer<HomeController> Localizer
+@{
+    ViewData["Title"] = Localizer["Applications List"];
+    var currentCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
+}
+<partial name="_validationMsg" />
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">@Localizer["Jobs"]</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-@Localizer["Float Rev"]">
+                    <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">@Localizer["Home"]</a></li>
+                    <li class="breadcrumb-item active">@Localizer["Jobs"]</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-6 text-start">
+                <h1 class="form-title">
+                    @Localizer["List All Applications"]
+                    @{
+                        if (ViewBag.JobDetails != null)
+                        {
+                            Jobs job = ViewBag.JobDetails;
+                            <span class="text-danger">(@(currentCulture=="ar-AE" ? job.ArName : job.Name))</span>
+                        }
+                    }
+                    @{
+                        if (ViewBag.MemberDetails != null)
+                        {
+                            Members mem = ViewBag.MemberDetails;
+                            <span class="text-danger">(@(mem.FirstName + " " + mem.FamilyName))</span>
+                        }
+                    }
+
+                </h1>
+            </div>
+            @if (Functions.CheckAccess("ExportToExcel", "Jobs", "Control", HttpContextAccessor.HttpContext))
+            {
+            <div class="col-6 text-@Localizer["Float Rev"] mt-3 sm-link"><a asp-action="ExportToExcel" asp-route-id="@ViewBag.JobId" asp-route-Keyword="@ViewBag.Keyword" asp-route-city="@ViewBag.City" asp-route-startdate="@ViewBag.StartDate" asp-route-enddate="@ViewBag.EndDate" asp-route-member="@ViewBag.Member" asp-route-status="@ViewBag.Status"><i class="fas fa-file-excel"></i> @Localizer["Export To Excel"]</a></div>
+            }
+        </div>
+        <form asp-action="AppsList" asp-controller="Jobs" asp-area="Control" method="get">
+            <div class="row mb-3">
+                <div class="col-6 col-md-2">
+                    <label for="keyword">@Localizer["Keyword"]:</label>
+                    <input type="text" placeholder="@Localizer["Keyword"]" class="form-control" name="keyword" id="keyword" value="@ViewBag.Keyword" />
+                </div>
+                <div class="col-6 col-md-2">
+                    <label for="slang">@Localizer["Applicant City"]:</label>
+                    <select name="city" id="city" class="form-control">
+                        <option value="">:: @Localizer["Select City"] ::</option>
+                        @{
+                            List<City> cities = ViewBag.Cities;
+                            foreach (City temp in cities)
+                            {
+                                <!option value="@temp.Id" @(ViewBag.City!=null && ViewBag.City == temp.Id ? "SELECTED" : "")>@(currentCulture == "ar-AE" ? temp.ArName : temp.Name)</!option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-6 col-md-2">
+                    <label for="startdate">@Localizer["From Date"]:</label>
+                    <input type="date" placeholder="From Date" class="form-control" name="startdate" id="startdate" value="@ViewBag.StartDate" />
+                </div>
+                <div class="col-6 col-md-2">
+                    <label for="startdate">@Localizer["To Date"]:</label>
+                    <input type="date" placeholder="To Date" class="form-control" name="enddate" id="enddate" value="@ViewBag.EndDate" />
+                </div>
+                <div class="col-6 col-md-2">
+                    <label for="slang">@Localizer["Status"]:</label>
+                    <select name="status" id="status" class="form-control">
+                        <!option value="">:: @Localizer["Select Status"] ::</!option>
+                        <!option value="0" @(ViewBag.Status!=null && ViewBag.Status==0 ? "SELECTED":"") >@Localizer["Pending"]</!option>
+                        <!option value="1" @(ViewBag.Status!=null && ViewBag.Status==1 ? "SELECTED":"")>@Localizer["Approved"]</!option>
+                        <!option value="2" @(ViewBag.Status!=null && ViewBag.Status==2 ? "SELECTED":"")>@Localizer["Under Study"]</!option>
+                        <!option value="3" @(ViewBag.Status!=null && ViewBag.Status==3 ? "SELECTED":"")>@Localizer["Waiting List"]</!option>
+                        <!option value="4" @(ViewBag.Status!=null && ViewBag.Status==4 ? "SELECTED":"")>@Localizer["Interview"]</!option>
+                        <!option value="5" @(ViewBag.Status!=null && ViewBag.Status==5 ? "SELECTED":"")>@Localizer["Contracted/Employed"]</!option>
+                        <!option value="6" @(ViewBag.Status!=null && ViewBag.Status==6 ? "SELECTED":"")>@Localizer["Rejected"]</!option>
+                    </select>
+                </div>
+                <div class="col-6 col-md-2"><br /><button type="submit" class="btn btn-primary mt-2">@Localizer["Search"]</button></div>
+            </div>
+        </form>
+
+        <table class="table table-bordered table-secondary">
+            <tbody>
+                <tr>
+                    <td style="text-align:center;" ><b>@Localizer["Total Applications"]:</b> @ViewBag.TotalApps</td>
+                </tr>               
+            </tbody>
+        </table>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>@Localizer["App #"]</th>
+                    <th>
+                        @Localizer["Job Seeker"]
+                    </th>                    
+                    <th>
+                        @Html.DisplayNameFor(model => model.JobId)
+                    </th>
+                    <th>@Localizer["Employer"]</th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ApplyDate)
+                    </th>
+                    @{
+                        if (@HttpContextAccessor.HttpContext.Session.GetString("type") == "CMS_User")
+                        {
+                            <th>
+                                @Localizer["Forward"]
+                            </th>
+                        }
+                    }                  
+                    <th>
+                        @Html.DisplayNameFor(model => model.Status)
+                    </th>
+                    
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <th>@item.Id</th>
+
+                        <td>
+                            <a asp-action="Details" asp-controller="Members" asp-route-id="@item.MemberId" target="_blank">@(item.Member.FirstName + " " + item.Member.FamilyName)</a>
+                        </td>
+
+                        <td>
+                            <a asp-action="Details" asp-controller="Jobs" asp-route-id="@item.JobId" target="_blank">@(currentCulture == "ar-AE" ? item.Job?.ArName : item.Job?.Name)</a>
+                        </td>
+
+                        <td>
+                            <a asp-action="Details" asp-controller="Employers" asp-route-id="@item.Job?.Employer?.Id" target="_blank">@(currentCulture == "ar-AE" ? item.Job?.Employer?.ArName : item.Job?.Employer?.Name)</a>
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ApplyDate)
+                        </td>
+                        @{
+                            if (@HttpContextAccessor.HttpContext.Session.GetString("type") == "CMS_User")
+                            {
+                                if (item.Forwarded)
+                                {
+                                    <td><span class="btn btn-info btn-sm" title="Forwarded"><i class="bi bi-check2-circle"></i> </span></td>
+                                }
+                                else
+                                {
+                                    @if (Functions.CheckAccess("Forward", "Jobs", "Control", HttpContextAccessor.HttpContext))
+                                    {
+                                    <td><a class="btn btn-default btn-sm" title="Forward to Employer" asp-action="Forward" asp-route-id="@item.Id"><i class="bi bi-check2-circle"></i> </a></td>
+                                    }
+                                }
+                            }
+                        }      
+                        <td>
+                            @{
+                                if (item.Status == 1)
+                                {
+                                    <span class='brief brief-sm success'>@Localizer["Approved"]</span>
+                                }
+                                else if (item.Status == 0)
+                                {
+                                    <span class='brief brief-sm primary'>@Localizer["Pending"]</span>
+                                }
+                                else if (item.Status == 2)
+                                {
+                                    <span class='brief brief-sm info'>@Localizer["Under Study"]</span>
+                                }
+                                else if (item.Status == 3)
+                                {
+                                    <span class='brief brief-sm warning'>@Localizer["Waiting List"]</span>
+                                }
+                                else if (item.Status == 4)
+                                {
+                                    <span class='brief brief-sm secondary'>@Localizer["Interview"]</span>
+                                }
+                                else if (item.Status == 5)
+                                {
+                                    <span class='brief brief-sm success'>@Localizer["Contracted/Employed"]</span>
+                                }
+                                else if (item.Status == 6)
+                                {
+                                    <span class='brief brief-sm danger'>@Localizer["Rejected"]</span>
+                                }
+                            }
+                        </td>
+
+                        <td>  
+                            <a class="btn btn-info btn-sm" title="Details" asp-action="AppDetails" asp-route-id="@item.Id"><i class="fas fa-folder"></i> </a>
+                            @{
+                                if (item.Forwarded)
+                                {
+                                    @if (Functions.CheckAccess("AppDelete", "Jobs", "Control", HttpContextAccessor.HttpContext))
+                                    {
+                                        <a asp-route-id="@item.Id" title="Delete" onclick="return confirm('@Localizer["Delete Confirm Msg"]')" class="btn btn-danger btn-sm" asp-action="AppDelete"><i class="fas fa-trash"></i> </a>
+                                    }
+                                }
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @if (ViewBag.PagesCount != null && ViewBag.PagesCount > 0)
+        {
+            <div class="text-center d-flex justify-content-center">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        <li class="page-item"><a class="page-link" asp-action="AppsList" asp-route-keyword="@ViewBag.Keyword" asp-route-endate="@ViewBag.EndDate" asp-route-startdate="@ViewBag.StartDate" asp-route-action="@ViewBag.Status" asp-route-city="@ViewBag.City" asp-route-member="@ViewBag.Member" asp-route-job="@ViewBag.JobId" asp-route-PageNumber="1">@Localizer["First"]</a></li>
+                        @{
+                            double pages = ViewBag.PagesCount;
+                            int current = ViewBag.CurrentPage;
+                            int start = 1;
+                            double end = pages;
+                            if (pages > 10)
+                            {
+                                if (pages >= (current + 5)) end = current + 5;
+                                else end = pages;
+
+                                if (current > 5) start = current - 5;
+                                else start = 1;
+                            }
+
+                            for (int i = start; i <= end; i++)
+                            {
+                                string active = "";
+                                if (ViewBag.CurrentPage != null && ViewBag.CurrentPage == i) active = " active";
+                                <li class="page-item @active"><a class="page-link" asp-action="AppsList" asp-route-keyword="@ViewBag.Keyword" asp-route-endate="@ViewBag.EndDate" asp-route-startdate="@ViewBag.StartDate" asp-route-action="@ViewBag.Status" asp-route-city="@ViewBag.City" asp-route-member="@ViewBag.Member" asp-route-job="@ViewBag.JobId" asp-route-PageNumber="@i">@i</a></li>
+                            }
+                        }
+                        <li class="page-item"><a class="page-link" asp-action="AppsList" asp-route-keyword="@ViewBag.Keyword" asp-route-endate="@ViewBag.EndDate" asp-route-startdate="@ViewBag.StartDate" asp-route-action="@ViewBag.Status" asp-route-city="@ViewBag.City" asp-route-member="@ViewBag.Member" asp-route-job="@ViewBag.JobId" asp-route-PageNumber="@ViewBag.PagesCount">@Localizer["Last"]</a></li>
+                    </ul>
+                </nav>
+            </div>
+        }
+    </div>
+</section>

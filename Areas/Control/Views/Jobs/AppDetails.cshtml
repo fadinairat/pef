@@ -1,0 +1,683 @@
+﻿@model PEF.Models.JobsApplications
+@using PEF.Models;
+@using Microsoft.Extensions.Localization
+@using PEF.Areas.Control.Controllers
+@inject IStringLocalizer<HomeController> Localizer
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    ViewData["Title"] = Localizer["Application Details"];
+    var currentCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
+}
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">@Localizer["Jobs"]</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-@Localizer["Float Rev"]">
+                    <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">@Localizer["Home"]</a></li>
+                    <li class="breadcrumb-item active">@Localizer["Jobs"]</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row mb-3">
+            <div class="col-6 text-@Localizer["Float"]"></div>
+            <div class="col-6 text-@Localizer["Float Rev"] mt-3 sm-link"><a asp-action="AppsList"><i class="bi bi-list-ul"></i> @Localizer["List All Applications"]</a></div>
+        </div>
+
+        <div class="row">
+            <div class="col-6" >
+                <h1 class="form-title">
+                @Localizer["Application Details"]
+                @{
+                        <span class="text-danger">(@(currentCulture == "ar-AE" ? Model.Job?.ArName : Model.Job?.Name))</span>
+                }
+                </h1>
+            </div>
+            <div class="col-6 text-@Localizer["Float Rev"]">
+                @Localizer["Status"]:
+                @{
+                    if (Model.Status == 1)
+                    {
+                        <div class="bg-success p-2 mt-2 mb-2 d-inline">@Localizer["Approved"] @(Model.Forwarded ? Html.Raw("<span class='link-sp change-status' data-id='" + Model.Id + "'><i class='far fa-edit'></i></span>") : "")</div>
+                    }
+                    else if (Model.Status == 0)
+                    {
+                        <div class="bg-light p-2 mt-2 mb-2 d-inline">
+                            @Localizer["Pending"] @(Model.Forwarded ? Html.Raw("<span class='link-sp change-status' data-id='"+Model.Id+"'><i class='far fa-edit'></i></span>") : "")
+                        </div>
+                    }
+                    else if (Model.Status == 2)
+                    {
+                        <div class="bg-dark p-2 mt-2 mb-2 d-inline">@Localizer["Under Study"] @(Model.Forwarded ? Html.Raw("<span class='link-sp change-status' data-id='" + Model.Id + "'><i class='far fa-edit'></i></span>") : "")</div>
+                    }
+                    else if (Model.Status == 3)
+                    {
+                        <div class="bg-dark p-2 mt-2 mb-2 d-inline">@Localizer["Waiting List"] @(Model.Forwarded ? Html.Raw("<span class='link-sp change-status' data-id='"+Model.Id+"'><i class='far fa-edit'></i></span>") : "")</div>
+                    }
+                    else if (Model.Status == 4)
+                    {
+                        <div class="bg-warning p-2 mt-2 mb-2 d-inline">@Localizer["Interview"] @(Model.Forwarded ? Html.Raw("<span class='link-sp change-status' data-id='" + Model.Id + "'><i class='far fa-edit'></i></span>") : "")</div>
+                    }
+                    else if (Model.Status == 5)
+                    {
+                        <div class="bg-info p-2 mt-2 mb-2 d-inline">@Localizer["Contracted/Employed"]</div>
+                    }
+                    else if (Model.Status == 6)
+                    {
+                        <div class="bg-danger p-2 mt-2 mb-2 d-inline">@Localizer["Rejected"]</div>
+                    }
+                }
+            </div>
+        </div>
+    <div>
+    
+    <dl class="row">
+        <dt class="col-sm-4 mb-3">
+            @Localizer["Apply Date"]: <b>@Model.ApplyDate</b>
+        </dt>
+        <dt class="col-sm-4 mb-3">
+            @Localizer["Job Seeker Full Name"]: <b>@(Model.Member.FirstName + " " + Model.Member.FatherName + " " + Model.Member.GrandName + " " + Model.Member.FamilyName)</b>
+        </dt>
+        <dt class="col-sm-12 text-center">
+            @{
+                if(Model.Status == 6)
+                {
+                    <div class="alert alert-danger"><b>@Localizer["Reject Reason"]</b>: @Model.RejectReason</div>
+                }
+            }
+        </dt>
+        <dt class="col-sm-12">
+            <!-- Job Seeker Details -->
+                    @{
+                        Members member = ViewBag.Member;
+                    }
+                    <table class="table table-bordered" style="width:100%;">
+                        <tbody>                            
+                            <tr>
+                                <td style="width:20%;" class="text-danger"><b>@Localizer["Id Number"]:</b></td>
+                                <td>@member.IdNum</td>
+                                <td style="width:20%;" class="text-danger"><b>@Localizer["Gender"]:</b></td>
+                                <td>@(@member.Gender == 0 ? Localizer["Female"] : Localizer["Male"])</td>
+                            </tr>
+                            <tr>
+                                <td class="text-danger"><b>@Localizer["Social Status"]:</b></td>
+                                <td>@(currentCulture == "ar-AE" ? member.SocialStatus?.ArName : member.SocialStatus?.Name)</td>
+                                <td class="text-danger"><b>@Localizer["Birth Date"]:</b></td>
+                                <td>@member.BirthDate.ToString("dd/MM/yyyy")</td>
+                            </tr>
+                            <tr>
+                                <td class="text-danger"><b>@Localizer["Family Members Count"]:</b></td>
+                                <td>@member.FamilyMembersCount</td>
+                                <td class="text-danger"><b>@Localizer["Governorate"]:</b></td>
+                                <td>@(currentCulture == "ar-AE" ? member.City?.ArName : member.City?.Name)</td>
+                            </tr>
+                            <tr>
+                                <td class="text-danger"><b>@Localizer["City/Area"]:</b></td>
+                                <td>@(currentCulture == "ar-AE" ? member.Area?.ArName : member.Area?.Name)</td>
+                                <td class="text-danger"><b>@Localizer["District"]:</b></td>
+                                <td>@member.District</td>
+                            </tr>
+                            <tr>
+                                <td class="text-danger"><b>@Localizer["Street"]:</b></td>
+                                <td>@member.Street</td>
+                                <td class="text-danger"><b>@Localizer["Near To"]:</b></td>
+                                <td>@member.NearTo</td>
+                            </tr>
+                            <tr>
+                                <td class="text-danger"><b>@Localizer["Mobile Number"]:</b></td>
+                                <td>@member.Mobile</td>
+                                <td class="text-danger"><b>@Localizer["Mobile Number 2"]:</b></td>
+                                <td>@member.Mobile2</td>
+                            </tr>
+                            <tr>
+                                <td class="text-danger"><b>@Localizer["Telephone"]:</b></td>
+                                <td>@member.Tel</td>
+                                <td class="text-danger"><b>@Localizer["Email Address"]:</b></td>
+                                <td>@member.Email</td>
+                            </tr>
+
+                            <!-- Health Status and Property -->
+                            <tr style="border-top:solid 4px brown;">
+                                <td class="text-danger"><b> @Localizer["Health Status"]:</b></td>
+                                <td>
+                                    @{
+                                        if (member.HealthStatus == 1)
+                                        {
+                                            <span>@Localizer["Healthy"]</span>
+                                        }
+                                        else if (member.HealthStatus == 2)
+                                        {
+                                            <span>@Localizer["Sick"]</span>
+                                        }
+                                        else if (member.HealthStatus == 3)
+                                        {
+                                            <span>@Localizer["Handicapped"]</span>
+                                        }
+                                    }
+                                </td>
+                                @{
+                                    if (member.HealthStatus == 2 && member.SickNature != null)
+                                    {
+                                        <td class="text-danger"><b>@Localizer["Sick Nature"]</b></td>
+                                        if (member.SickNature == 1)
+                                        {
+                                            <td>@Localizer["Heart Disease"]</td>
+                                        }
+                                        else if (member.SickNature == 2)
+                                        {
+                                            <td>@Localizer["Pressure"]</td>
+                                        }
+                                        else if (member.SickNature == 3)
+                                        {
+                                            <td>@Localizer["Diabetes"]</td>
+                                        }
+                                        else if (member.SickNature == 4)
+                                        {
+                                            <td>@Localizer["Joint Diseases"]</td>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <td></td>
+                                        <td></td>
+                                    }
+                                }
+
+                            </tr>
+                            @{
+                                if (member.HealthStatus == 3)
+                                {
+                                    <tr>
+                                        <td class="text-danger"><b>@Localizer["Type of Disability"]:</b></td>
+                                        <td>
+                                            @{
+                                                if (member.DisabilityType == 1)
+                                                {
+                                                    <span>@Localizer["Impaired mobility"]</span>
+                                                }
+                                                else if (member.DisabilityType == 2)
+                                                {
+                                                    <span>@Localizer["Impaired hearing"]</span>
+                                                }
+                                                else if (member.DisabilityType == 3)
+                                                {
+                                                    <span>@Localizer["Visual Impairment"]</span>
+                                                }
+                                                else if (member.DisabilityType == 4)
+                                                {
+                                                    <span>@Localizer["Mental retardation"]</span>
+                                                }
+                                                else if (member.DisabilityType == 5)
+                                                {
+                                                    <span>@Localizer["Speech Impediment"]</span>
+                                                }
+                                            }
+                                        </td>
+                                        <td class="text-danger">@Localizer["Disability Size"]:</td>
+                                        <td>
+                                            @{
+                                                if (member.DisabilitySize == 1)
+                                                {
+                                                    <span>@Localizer["Partial"]</span>
+                                                }
+                                                else if (member.DisabilitySize == 2)
+                                                {
+                                                    <span>@Localizer["Total"]</span>
+                                                }
+                                            }
+                                        </td>
+                                    </tr>
+
+                                }
+                            }
+
+                            @{
+                                if (Model != null && (member.HealthStatus == 3 || member.HealthStatus == 2))
+                                {
+                                    <tr>
+                                        <td class="text-danger"><b>@Localizer["Medical Attachment"]:</b></td>
+                                        <td>
+                                            @if (!String.IsNullOrEmpty(member.HealthAtt1))
+                                            {
+                                                <a href="@Url.Content(member.HealthAtt1)" target="_blank" class="btn btn-primary"><i class="fas fa-download"></i> @Localizer["Download"]</a>
+                                            }
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                }
+                            }
+
+                            <tr>
+                                <td class="text-danger"><b>@Localizer["House Ownership"]:</b></td>
+                                <td>
+                                    @{
+                                        if (member.PropertyType == 0)
+                                        {
+                                            <span>@Localizer["Rent"]</span>
+                                        }
+                                        else
+                                        {
+                                            <span>@Localizer["Owner"]</span>
+                                        }
+                                    }
+                                </td>
+                                <td class="text-danger"><b>@Localizer["House Nature"]:</b></td>
+                                <td>
+                                    @{
+                                        if (member.HouseNature == 0)
+                                        {
+                                            <span>@Localizer["Batoon"]</span>
+                                        }
+                                        else
+                                        {
+                                            <span>@Localizer["Zeinko"]</span>
+                                        }
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-danger"><b>@Localizer["House Size"]:</b></td>
+                                <td>@member.HouseSize @Localizer["Square Meter"]</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            @{
+                                if (member.IncomeExist == true)
+                                {
+                                    <tr>
+                                        <td class="text-danger"><b>@Localizer["The name of the breadwinner"]:</b></td>
+                                        <td>@member.BreedWinnder</td>
+                                        <td class="text-danger"><b>@Localizer["Source of Income"]:</b></td>
+                                        <td>@member.IncomeSource</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-danger"><b>@Localizer["Breadwinner ID Number"]:</b></td>
+                                        <td>@member.IncomeIdNumber</td>
+                                        <td class="text-danger"><b>@Localizer["Income Value"]:</b></td>
+                                        <td>@member.IncomeValue</td>
+                                    </tr>
+                                }
+                            }
+                            <tr>
+                                <td class="text-danger"><b>@Localizer["Id/Passport Image"]:</b></td>
+                                <td>
+                                    @{
+                                        if (!string.IsNullOrEmpty(member.Attach1))
+                                        {
+                                            <a href="@Url.Content(member.Attach1)" target="_blank"><i class="fas fa-download"></i></a>
+                                        }
+                                    }
+                                </td>
+                                <td class="text-danger"><b>@Localizer["CV"]:</b></td>
+                                <td>
+                                    @{
+                                        if (!string.IsNullOrEmpty(member.Attach2))
+                                        {
+                                            <a href="@Url.Content(member.Attach2)" target="_blank"><i class="fas fa-download"></i></a>
+                                        }
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-danger"><b>@Localizer["Other Attachments"]:</b></td>
+                                <td colspan="3">
+                                    @{
+                                        if (!string.IsNullOrEmpty(member.Attach3))
+                                        {
+                                            <a href="@Url.Content(member.Attach3)" target="_blank"><i class="fas fa-download"></i></a>
+                                        }
+                                    }
+                                </td>
+                            </tr>
+
+                            <!-- end of health-->
+                        </tbody>
+                    </table>
+
+            <!-- End of Job seeker Details-->
+        </dt>
+        @{
+            if(ViewBag.Fields != null)
+            {
+                <dt class="col-sm-12">
+                    <h3>@Localizer["Application Answers"] (<span class="text-danger">@Localizer["From"]: </span> @(ViewBag.Form !=null ? ViewBag.Form.Title:"")):</h3>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="width:40%;">@Localizer["Question"]</th>
+                                <th>@Localizer["Answer"]</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @{
+                                if (ViewBag.Fields != null)
+                                {
+                                    foreach (FormsEntriesFields field in ViewBag.Fields)
+                                    {
+                                        if(field.Type == "file"){
+                                            <tr>
+                                                <td><b>@Html.Raw(field.Label)</b></td>
+                                                <td><span style="white-space: pre-line">@(field.Answer != "" ? Html.Raw("<a href='" + Url.Content(field.Answer) + "' target='_blank' class='btn btn-primary' >Download</a>") : "")</span></td>
+                                            </tr>
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td style="direction:rtl;"><b>@Html.Raw(field.Label)</b></td>
+                                                <td style="direction:rtl;"><span style="white-space: pre-line">@field.Answer </span></td>
+                                            </tr>
+                                        }
+
+                                    }
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </dt>
+            }
+        }
+        
+        <dt class="col-sm-12">
+            <div class="row">
+                        <div class="col-6 text-@Localizer["Float"]"><h3>@Localizer["Attachments"]:</h3></div>
+                        <div class="col-6 text-@Localizer["Float Rev"]"><span class='link-sp uploadAtt' data-id="@Model.Id">@Localizer["Upload Documents"] <i class="fas fa-upload"></i></span></div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>@Localizer["File Title"]</th>
+                                <th>@Localizer["Download"]</th>
+                            </tr>
+                        </thead>
+                        <tbody id="DocumentsList">
+                            @{
+                                if (ViewBag.Attachments != null)
+                                {
+                                    foreach (JobsAppsAttachments att in ViewBag.Attachments)
+                                    {
+                                        <tr>
+                                            <td>@att.FileName</td>
+                                            <td><a href="@Url.Content(att.FilePath)" target="_blank" class="btn btn-danger">@Localizer["Download"]</a></td>
+                                        </tr>
+                                    }
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+        </dt>
+    </dl>
+</div>
+<div class="text-left">
+    <a asp-action="AppsList" >@Localizer["Back To List"]</a>
+</div>
+</section>
+
+<!-- Modal -->
+<div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">@Localizer["Change Status"]</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="@Localizer["Close"]">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">                
+                @Localizer["Change Status Msg"]<br /><Br />
+                <div id="msg_cont" ></div>
+                <form id="chngForm" name="chngForm" enctype="multipart/form-data" method="post">
+                <div id="status_form" >
+                    <div class="row" >
+                        <div class="col-12">
+                            <input type="hidden" name="appId" id="appId" value="" />
+                            <b>@Localizer["Status"]:</b> <select name="newStatus" id="newStatus" class="form-control">
+                                <option value="">:: @Localizer["Select Status"] ::</option>
+                                <option value="0">@Localizer["Pending"]</option>
+                                <option value="1">@Localizer["Approved"]</option>
+                                <option value="2">@Localizer["Under Study"]</option>
+                                <option value="3">@Localizer["Waiting List"]</option>
+                                <option value="4">@Localizer["Interview"]</option>
+                                <option value="5">@Localizer["Contracted/Employed"]</option>
+                                <option value="6">@Localizer["Rejected"]</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row" id="contractCont">
+                        <div class="col-6" id="">
+                            <b>@Localizer["Start Date"]:</b><br /><input type="date" class="form-control" name="startDate" id="startDate" />
+                        </div>
+                        <div class="col-6" >
+                            <b>@Localizer["End Date"]:</b><br /><input type="date" class="form-control" name="endDate" id="endDate" />
+                        </div>
+                        <div class="col-12">
+                            <b>@Localizer["Contract Document"]:</b><br />
+                            <input type="file" name="contDocument" id="contDocument" accept=".doc,.docx,.pdf" /><Br />
+                        </div>
+
+                    </div>
+                    <div class="row" id="rejectCont">
+                        <div class="col-12">
+                            <b>@Localizer["Reject Reason"]:</b><br /><textarea type="date" rows="3" class="form-control" name="rejectReason" id="rejectReason"></textarea>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary" id="change_status">@Localizer["Change Status"]</button>&nbsp;&nbsp;
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">@Localizer["Close"]</button>
+                        </div>
+                    </div>
+                </div>
+                </form>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Close"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="AttModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">@Localizer["Upload Attachment"]</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="@Localizer["Close"]">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @Localizer["Choose Document to Upload"]<br /><Br />
+                <div id="att_msg"></div>
+                <div id="att_form">
+                    <form name="AttForm" id="AttForm" enctype="multipart/form-data" >
+                        <input type="hidden" name="att_app_id" id="att_app_id" value="" />
+                        <div class="row">
+                            <div class="col-12">
+                                <b>@Localizer["Document Title"]:</b><br />
+                                <input type="text" class="form-control" required="required" name="document_title" id="document_title" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <b>@Localizer["Document"]:</b><br />
+                                <input type="file" name="document" id="document" accept=".doc,.docx,.pdf" required="required" /><br /><Br />
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary" id="UploadBtn">@Localizer["Upload Document"]</button>&nbsp;&nbsp;
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">@Localizer["Close"]</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Close"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+
+    <script type="text/javascript">
+
+    function reloadDocuments(){
+        var app_id = $("#att_app_id").val();
+        //$("#DocumentsList").load("@Url.Action("ReloadDocuments","Jobs")" + "?app_id="+app_id);
+        
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("ReloadDocuments","Jobs")" + "?app_id=" + app_id,
+            dataType: "json",
+            success: function (data) {
+                // Handle the JSON data
+                if(data.result){
+                    $("#DocumentsList").html("");
+                    var documents = data.documents;
+                    for (var i = 0; i < documents.length; i++) {
+                            $("#DocumentsList").append('<tr><td>' + documents[i].fileName + '</td><td><a href="@Url.Content("~/files")' + documents[i].filePath.replace("~/files","") + '" target="_blank" class="btn btn-danger">@Localizer["Download"]</a></td></tr>');
+                    }
+                }
+                else{
+                    console.log("load failed!");
+                }
+            },
+            error: function (xhr, status, error) {
+                // Handle the error
+                console.log("Error: " + error);
+            }
+        });
+    }
+
+    $(document).ready(function(){
+        $('#AttForm').submit(function (e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+
+            $("#UploadBtn").append(' <i class="fa fa-spinner fa-spin fa-3x fa-fw" style="font-size:15px;" id="loader"></i>');
+            $.ajax({
+                url: '@Url.Action("UploadAppDocument","Jobs")', // The URL of the PHP script to handle the file upload
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                // Handle the successful upload
+                    $("#loader").remove();
+                    $("#att_form").hide();
+                    $("#att_msg").html("<div class='alert alert-success text-center'>@Localizer["Document Uploaded"]");
+                    $("#AttForm")[0].reset();
+                    reloadDocuments();
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                // Handle the failed upload
+                }
+            });
+        });
+
+
+        $(document).on("click",".uploadAtt",function(){
+            var app_id = $(this).data("id");
+            if (app_id != "") {
+                $("#att_app_id").val(app_id);
+                $("#att_form").show();
+                $("#att_msg").html("");
+                $("#AttModal").modal("show");
+            }
+        });
+
+        $(document).on("click", ".change-status",function(){
+            var app_id = $(this).data("id");
+            if(app_id !=""){
+                $("#appId").val(app_id);
+                $("#status_form").show();
+                $("#msg_cont").html("");
+                $("#statusModal").modal("show");
+            }
+        });
+
+        $(document).on("change","#newStatus",function(){
+            var status = $(this).val();
+            if(status =="5"){//Contracted
+                $("#contractCont").show();    
+                $("#rejectCont").hide();
+            }
+            else if(status == "6"){
+                $("#rejectCont").show();
+                $("#contractCont").hide();
+            }
+            else{
+                $("#contractCont").hide();
+                $("#rejectCont").hide();
+            }
+        });
+
+        $(document).on("submit","#chngForm",function(e){
+            e.preventDefault();
+            var formData = new FormData(this);
+                        
+            var status = $("#newStatus").val();
+            var app_id = $("#appId").val();
+            var startDate = $("#startDate").val();
+            var endDate = $("#endDate").val();
+            var rejectReason = $("#rejectReason").val();
+            $("msg_cont").html("");
+            $("#change_status").addClass("disabled","disabled");
+
+            if(status!="" && (status !="5" || startDate!="") && (status!="6" || rejectReason!="")){
+                    $("#msg_cont").html('<div class="text-center" ><i class="fa fa-spinner fa-spin fa-3x fa-fw" style="font-size:15px;" id="loader"></i></div>');
+                    //var url = "@Url.Action("changeAppStatus", "Jobs")?status="+status+"&appId="+appId+"&startDate="+startDate+"&endDate="+endDate;
+                    var url = "@Url.Action("changeAppStatus","Jobs")";
+                    console.log(url);
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        dataType: "json"
+                    }).done(function (data) {
+                        console.log("DONE");
+                        //var _html = '<p class="message">' + result + '</p>';
+                        //$(thisForm).find('#resultDiv').html(_html);
+                        if (data.result) {
+                            $("#status_form").hide();
+                            $("#appId").val("");
+                            $("#msg_cont").html("<div class='alert alert-success' >@Localizer["Status Changed"]</div>");
+                        }
+                        else{
+                            $("#msg_cont").html("<div class='alert alert-danger' >"+data.msg+"</div>");
+                        }
+                        $("#change_status").removeClass("disabled");
+                    });
+            }
+            else if(status ==""){
+                 alert("@Localizer["Set the new status"]");
+                 $("#change_status").removeClass("disabled");
+                return false;
+            }
+            else if(status =="5" && startDate==""){
+               alert("@Localizer["Select Emp Start Date"]");
+                    $("#change_status").removeClass("disabled");
+                return false;
+            }
+        });
+    });
+    </script>
+}
+

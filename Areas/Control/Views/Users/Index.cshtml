@@ -1,0 +1,271 @@
+﻿@model IEnumerable<PEF.Models.User>
+@using PEF.Models
+@inject IHttpContextAccessor HttpContextAccessor
+@using PEF.Areas.Control.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<HomeController> Localizer
+@{
+    ViewData["Title"] = "Users List";
+    Layout = "~/Areas/Control/Views/Shared/_Layout.cshtml";
+    var currentCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
+}
+<partial name="_validationMsg" />
+
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+            <h1 class="m-0">Menus</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home</a></li>
+                <li class="breadcrumb-item active">Users</li>
+            </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+      
+<section class="content">
+<div class="container-fluid">
+
+<div class="row">
+    <div class="col-6 text-start" ><h1 class="form-title">List All Users</h1></div>
+    @if (Functions.CheckAccess("Create", "Users", "Control", HttpContextAccessor.HttpContext))
+    {
+        <div class="col-6 text-right mt-3 sm-link" ><a asp-action="Create" ><i class="bi bi-plus-circle"></i> Add New User</a></div>
+    }
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Fullname)
+            </th>
+           
+            <th>
+                @Html.DisplayNameFor(model => model.Group)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LoginName)
+            </th>
+           
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Language)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastLogin)
+            </th>
+            
+            <th>
+                @Html.DisplayNameFor(model => model.Active)
+            </th>
+           
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Fullname)
+            </td>
+           
+            <td>
+                @Html.DisplayFor(modelItem => item.Group.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LoginName)
+            </td>
+            
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Language.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastLogin)
+            </td>
+           
+            <td>
+                @Html.DisplayFor(modelItem => item.Active)
+            </td>
+           
+            <td>
+                <span class="btn btn-info btn-sm show_projects" data-id="@item.Id" data-name="@item.Fullname"><i class="fas fa-clipboard-list"></i></span>
+                @if (Functions.CheckAccess("Edit", "Users", "Control", HttpContextAccessor.HttpContext))
+                {
+                <a class="btn btn-primary btn-sm" asp-action="Edit" asp-route-id="@item.Id"><i class="fas fa-pencil-alt"></i> </a> 
+                }
+                <a class="btn btn-info btn-sm" asp-action="Details" asp-route-id="@item.Id"><i class="fas fa-folder"></i> </a> 
+                @if (Functions.CheckAccess("Delete", "Users", "Control", HttpContextAccessor.HttpContext))
+                {
+                    <a asp-route-id="@item.Id" class="btn btn-danger btn-sm" asp-action="Delete"><i class="fas fa-trash"></i> </a>
+                }
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+</div>
+</section>
+
+<!-- Modal -->
+<div class="modal fade" id="projModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="userModalLabel"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-6"><b><h4>@Localizer["Projects List"]:</h4></b><br /><Br /></div>
+                    <div class="col-6 text-@Localizer["Float Rev"]"><span class="btn btn-primary btn-sm addProj"><i class="fas fa-user-plus"></i></span></div>
+                </div>
+                <div id="msg_cont"></div>
+                <div id="addProjCont">
+                    <form method="get" asp-action="createProject" asp-controller="Projects">
+                        <input type="hidden" name="User" id="User" value="" />
+                        <div class="row mb-2">
+                            <div class="col-12">
+                                <b>@Localizer["Select the Project"]</b><br>
+                                <select name="Projects" id="Projects" class="form-control">
+                                    <option value="">:: @Localizer["Select Project"] ::</option>
+                                    @{
+                                        if (ViewBag.Projects != null)
+                                        {
+                                            foreach (Projects item in ViewBag.Projects)
+                                            {
+                                                <option value="@item.Id">@(currentCulture == "ar-AE" ? item.ArName : item.Name)</option>
+                                            }
+
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-12 text-center">
+                                <button type="button" id="addProjBtn" class="btn btn-primary">@Localizer["Add Project"]</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div id="userCont"></div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Close"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(document).on("click", ".addProj", function () {
+                $("#addProjCont").slideToggle();
+            });
+
+            $(document).on("click", "#addProjBtn", function () {
+                var project = $("#Projects").val();
+                var user = $("#User").val();
+                console.log(user);
+                console.log(project);
+
+                if (project != "" && user != "") {
+                    var url = "@Url.Action("addProjectUser", "Users")?UserId=" + user + "&ProjectId=" + project;
+
+                    $.ajax({
+                        url: url,
+                        dataType: "json"
+
+                    }).done(function (data) {
+                        if (data.result) {
+                            $("#msg_cont").html('<div class="alert alert-success" >Project has been assigned to user!<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+                            reloadProjects(user);
+                        }
+                        else {
+                            $("#msg_cont").html("<div class='alert alert-danger' >@Localizer["Failed Assign Project"]</div>");
+                        }
+                    });
+
+                }
+                else {
+                    alert("@Localizer["Select Project Msg"]");
+                }
+            });
+
+            $(document).on("click", ".show_projects", function () {
+                $("#projModal").modal("show");
+                var user = $(this).data("id");
+                var userName = $(this).data("name");
+                $("#addProjCont").hide();
+                $("#User").val(user);
+                $("#userModalLabel").html(userName);
+                $("#userCont").html('<div class="text-center mt-4" ><i class="fas fa-spinner fa-spin"></i></div>');
+
+                reloadProjects(user);
+            })
+
+            $(document).on("click", ".remProject", function () {
+                var item = $(this).data("id");
+                var project = $(this).data("project");
+                var user = $(this).data("user");
+                var url = "@Url.Action("removeProjectUser", "Users")?item=" + item;
+                if (confirm("@Localizer["Delete Project Msg"]")) {
+                    $.ajax({
+                        url: url,
+                        dataType: "json"
+
+                    }).done(function (data) {
+                        if (data.result) {
+                            reloadProjects(user);
+                        }
+                        else {
+                            $("#msg_cont").html("<div class='alert alert-danger' >@Localizer["Failed To Delete"]</div>");
+                        }
+                    });
+                }
+            });
+        });
+
+        function reloadProjects(user) {
+            var url = "@Url.Action("loadProjects", "Users")?user=" + user;
+            $.ajax({
+                url: url,
+                dataType: "json"
+
+            }).done(function (data) {
+                var html_result = "<table class='table table-bordered table-striped' ><thead><tr><th>Name</th><th></th></tr></thead><tbody>";
+                if (data.result) {
+                    $("#userCont").html("");
+                    for (var i = 0; i < data.projects.length; i++) {
+                        var row = data.projects[i];
+                        html_result += "<tr><td>" + row.project.name + "</td>";
+                        html_result += "<td><span class='btn btn-danger btn-sm remProject' data-project='" + row.projectId + "' data-user='"+ row.userId +"' data-id='" + row.id + "' data-name='" + row.project.name + "' ><i class='fas fa-trash-alt'></i></span></td>";
+                        html_result += "</tR>";
+                    }
+                }
+                else {
+                    $("#msg_cont").html("<div class='alert alert-danger' >" + data.msg + "</div>");
+                }
+                html_result += "</tbody></table>";
+                $("#userCont").html(html_result);
+            });
+        }
+    </script>
+
+}

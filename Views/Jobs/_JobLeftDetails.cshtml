@@ -1,0 +1,249 @@
+﻿@model PEF.Models.Jobs
+@using PEF.Models
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="col-12 col-md-12">
+    @{
+        if (ViewBag.ApplyActive != null && ViewBag.ApplyActive == true && (ViewBag.ShowBtn==null || ViewBag.ShowBtn == true))
+        {
+            <a asp-action="Apply" asp-controller="Jobs" asp-route-id="@Model.Id" class="btn singlejob_btn mb-3">تقدم الان للفرصة <i class="fa-sharp fa-solid fa-arrow-left" style="font-size:21px ;"></i></a>
+        }        
+        else if (ViewBag.JobApplied != null && ViewBag.JobApplied == true && (ViewBag.ShowBtn == null || ViewBag.ShowBtn == true))
+        {
+            //
+            if (ViewBag.Application != null)
+            {
+                JobsApplications JobApp = ViewBag.Application;
+                var status = "في الانتظار";
+                var bgColor = "bg-info";
+                if (JobApp.Status == 1)
+                {
+                    status = "تم القبول";
+                    bgColor = "bg-success";
+                }
+                else if (JobApp.Status == 0)
+                {
+                    status = "في الانتظار";
+                    bgColor = "bg-info";
+                }
+                else if (JobApp.Status == 2)
+                {
+                    status = "قيد الدراسة";
+                    bgColor = "bg-dark";
+                }
+                else if (JobApp.Status == 3)
+                {
+                    status = "قائمة الانتظار";
+                    bgColor = "bg-light";
+                }
+                else if (JobApp.Status == 4)
+                {
+                    status = "مقابلة";
+                    bgColor = "bg-warning";
+                }
+                else if (JobApp.Status == 5)
+                {
+                    status = "تم التوظيف/التعاقد";
+                    bgColor = "bg-success";
+                }
+                else if (JobApp.Status == 6)
+                {
+                    status = "تم القبول";
+                    bgColor = "bg-danger";
+                }
+                <div class="mb-2 p-2 text-center @bgColor" style="border-radius:3px;"><b>حالة الطلب:</b> @status</div>
+            }
+            else{
+                <button type="button" class="btn singlejob_btn mb-3 disabled" >تقدم الان للفرصة <i class="fa-sharp fa-solid fa-arrow-left" style="font-size:21px ;"></i></button>
+            }
+        }
+        else if (ViewBag.HaveEducation!=null && ViewBag.HaveEducation == false)
+        {//Doesn't have Educations
+            <div class="caution-alert">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
+                    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                </svg>
+                يتوجب عليك ادخال التحصيل العلمي لتتمكن من التقدم الى فرصة التشغيل / التدريب! اضغط هنا لاضافة <a asp-action="ProfDetails" asp-controller="Members" asp-area="">المؤهلات العلمية</a>...
+            </div>
+        }
+        else if(ViewBag.JobExpired!=null && ViewBag.JobExpired == true)
+        {
+            <div class="caution-alert">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
+                    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                </svg>
+                !انتهى وقت التقدم الى فرصة التشغيل
+            </div>
+        }
+        else if(ViewBag.ShowBtn==null || ViewBag.ShowBtn == true)
+        {
+            <div class="caution-alert" >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
+                    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                  </svg>
+                عزيزي <b>@User.Identity?.Name</b> نعتذر منك لا تستطيع التقدم لهذه الوظيفة بسبب عدم مطابقة الشروط
+            </div>
+        }
+    }
+
+    <div class="card" id="leftside_card">
+        <div class="card-title" style="padding:15px 15px 0 0;">
+            <h4>نظرة عامة على الفرصة</h3>
+        </div>
+        <div class="card-body">
+            @{
+                if (Model.Salary != null)
+                {
+                    <div class="jop_property">
+                        <div class="row mb-1">
+                            <div class="col-1 col-md-1 pt-3">
+                                <i class="fa-solid fa-money-bill card_icon"></i>
+                            </div>
+                            <div class="col-11 col-md-6">
+                                <h5>الراتب</h5>
+                                <p class="para"> @(Model.Salary + " ") <span>@Html.Raw(Model.Currency?.IconHtml)</span></p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+
+            @{
+                if (Model.City != null)
+                {
+                    <div class="jop_property">
+                        <div class="row mb-1">
+                            <div class="col-1 col-md-1 pt-3">
+                                <i class="fa-solid fa-location-dot card_icon"></i>
+                            </div>
+                            <div class="col-11 col-md-6">
+                                <h5>المدينة</h5>
+                                <p class="para" >@Model.City.ArName</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+
+            @{
+                if (Model.SelGender != null) //If value is 0(both) then there is no need to specify the gender
+                {
+                    <div class="jop_property">
+                        <div class="row mb-1">
+                            <div class="col-1 col-md-1 pt-3">
+                                <i class="fa-solid fa-venus-mars card_icon"></i>
+                            </div>
+                            <div class="col-11 col-md-6">
+                                <h5>الجنس</h5>
+                                @{
+                                    if (Model.SelGender == 1)
+                                    {
+                                        <p class="para">ذكر</p>
+                                    }
+                                    else if(Model.SelGender==2)
+                                    {
+                                        <p class="para">أنثى</p>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            @{
+                if (Model.SelFromAge != null || Model.SelToAge != null)
+                {
+                    <div class="jop_property">
+                        <div class="row mb-1">
+                            <div class="col-1 col-md-1 pt-3">
+                                <i class="fa-solid fa-person-walking-luggage card_icon"></i>
+                            </div>
+                            <div class="col-11 col-md-6">
+                                <h5>العمر</h5>
+                                <p class="para">@Model.SelFromAge - @Model.SelToAge</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            @{
+                if (Model.SelCityId != null)
+                {
+                    <div class="jop_property">
+                        <div class="row mb-1">
+                            <div class="col-1 col-md-1 pt-3">
+                                <i class="fa-solid fa-globe card_icon"></i>
+                            </div>
+                            <div class="col-11 col-md-6">
+                                <h5>المدينة</h5>
+                                <p class="para">@Model.SelCity?.ArName</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+
+            @{
+                if (ViewBag.JobFields != null)
+                {
+                    <div class="jop_property">
+                        <div class="row mb-1">
+                            <div class="col-1 col-md-1 pt-3">
+                                <i class="fa-brands fa-slack card_icon"></i>
+                            </div>
+                            <div class="col-11 col-md-11">
+                                <h5>مجال العمل</h5>
+                                @{
+                                    foreach (JobsFields field in ViewBag.JobFields)
+                                    {
+                                        <div class="tag">@field.Field?.ArName</div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+
+
+            @{
+                if (Model.SelSocialId != null)
+                {
+                    <div class="jop_property">
+                        <div class="row mb-1">
+                            <div class="col-1 col-md-1 pt-3">
+                                <i class="fa-solid fa-user-group card_icon"></i>
+                            </div>
+                            <div class="col-11 col-md-6">
+                                <h5>الحالة الإجتماعية</h5>
+                                <p class="para">@Model.SocialStatus?.ArName</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            @{
+                if (Model.ExpireDate != null)
+                {
+                    
+                    <div class="jop_property">
+                        <div class="row mb-1">
+                            <div class="col-1 col-md-1 pt-3">
+                                <i class="fa-solid fa-clock card_icon"></i>
+                            </div>
+                            <div class="col-11 col-md-6">
+                                <h5>آخر موعد للتقديم</h5>
+                                <p class="para">@Model.ExpireDate?.ToString("yyyy/MM/dd")</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+</div>

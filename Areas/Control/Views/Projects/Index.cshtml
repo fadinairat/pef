@@ -1,0 +1,400 @@
+﻿@model IEnumerable<PEF.Models.Projects>
+@using PEF.Models
+@inject IHttpContextAccessor HttpContextAccessor
+@using PEF.Areas.Control.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<HomeController> Localizer
+@{
+    var currentCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
+    ViewData["Title"] = Localizer["Home"];
+}
+<partial name="_validationMsg" />
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">@Localizer["Home"]</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-@Localizer["Float Rev"]">
+                    <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">@Localizer["Home"]</a></li>
+                    <li class="breadcrumb-item active">@Localizer["Projects"]</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<section class="content">
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-6 text-start"><h1 class="form-title">@Localizer["List All Projects"]</h1></div>
+            @{
+                if (@HttpContextAccessor.HttpContext.Session.GetString("type") != "Employer" && @HttpContextAccessor.HttpContext.Session.GetString("type")!="Donor" && @HttpContextAccessor.HttpContext.Session.GetString("type") != "Trainer")
+                {
+                    <div class="col-6 text-@Localizer["Float Rev"] mt-3 sm-link"><a asp-action="Create"><i class="bi bi-plus-circle"></i> @Localizer["Add New Project"]</a></div>                    
+                }
+            }            
+        </div>
+        <form asp-action="Index">
+            <div class="row mb-3">
+                <div class="col-6 col-md-3">
+                    <label for="keyword">@Localizer["Keyword"]:</label>
+                    <input type="text" placeholder="Keyword" class="form-control" name="keyword" id="keyword" value="@ViewBag.keyword" />
+                </div>               
+                <div class="col-6 col-md-2">
+                    <label for="slang">@Localizer["City"]:</label>
+                    <select name="city" id="city" class="form-control">
+                        <option value="">:: @Localizer["Select City"] ::</option>
+                        @{
+                            List<City> cities = ViewBag.Cities;
+                            foreach (City temp in cities)
+                            {
+                                <!option value="@temp.Id" @(ViewBag.City!=null && ViewBag.City == temp.Id ? "SELECTED" : "")>@(currentCulture == "ar-AE" ? temp.ArName : temp.Name)</!option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-6 col-md-2">
+                    <label for="slang">@Localizer["Program"]:</label>
+                    <select name="program" id="program" class="form-control">
+                        <option value="">:: @Localizer["Select Program"] ::</option>
+                        @{
+                            List<LookupProjectsProgs> programs = ViewBag.Programs;
+                            foreach (LookupProjectsProgs temp in programs)
+                            {
+                                <!option value="@temp.Id" @(ViewBag.Program!=null && ViewBag.Program == temp.Id ? "SELECTED" : "")>@(currentCulture == "ar-AE" ? temp.ArName : temp.Name)</!option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-6 col-md-3">
+                    <label for="slang">@Localizer["Donor"]:</label>
+                    <select name="donor" id="donor" class="form-control">
+                        <option value="">:: @Localizer["Select Donor"] ::</option>
+                        @{
+                            List<Donors> donors = ViewBag.Donors;
+                            foreach (Donors temp in donors)
+                            {
+                                <!option value="@temp.Id" @(ViewBag.Donor!=null && ViewBag.Donor == temp.Id ? "SELECTED" : "")>@(currentCulture == "ar-AE" ? temp.ArName : temp.Name)</!option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-6 col-md-2"><br /><button type="submit" asp-action="Index" class="btn btn-primary mt-2">@Localizer["Search"]</button></div>
+            </div>
+        </form>
+        <table class="table table-bordered table-secondary">
+
+            <tbody>
+                <tr>
+                    <td style="width:33%;"><b>@Localizer["Total Projects"]:</b> @ViewBag.TotalProjects</td>
+                    <td style="width:33%;"><b>@Localizer["Active Projects"]: </b> @ViewBag.ActiveProjects</td>
+                    <td style="width:33%;"><b>@Localizer["Finished Projects"]: </b> @ViewBag.FinishedProjects</td>
+                </tr>
+            </tbody>
+        </table>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProgramType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProjectType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DonorId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CurrencyId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BeneficiaryNumbers)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.District)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Duration)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StartDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EndDate)
+            </th>         
+             @{
+                if (@HttpContextAccessor.HttpContext.Session.GetString("type") != "Employer" && @HttpContextAccessor.HttpContext.Session.GetString("type")!="Donor" && @HttpContextAccessor.HttpContext.Session.GetString("type") != "Trainer")
+                {
+                    <th>
+                        @Html.DisplayNameFor(model => model.AddedBy)
+                    </th>
+                }
+              }
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @(currentCulture == "ar-AE" ? item.ArName: item.Name)
+            </td>
+            <td>
+                @(currentCulture == "ar-AE" ? item.Program?.ArName : item.Program?.Name)
+            </td>
+            <td>
+            @{
+                if (item.ProjectType == 1)
+                {
+                    <span>@Localizer["Grants"]</span>
+                }
+                else if(item.ProjectType == 2)
+                {
+                    <span>@Localizer["Loan"]</span>
+                }
+            }
+            </td>
+            <td>
+            @(item.Donor!=null? item.Donor.Name: "")
+            </td>
+            <td>
+                @(currentCulture == "ar-AE" ? item.Currency?.ArName : item.Currency?.Name)
+            </td>           
+            <td>
+                @Html.DisplayFor(modelItem => item.BeneficiaryNumbers)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.District)
+            </td>
+            <td>
+            @{
+                var durationUnit  = Localizer["Days"];
+                if (item.DurationUnit == 1) durationUnit = Localizer["Days"];
+                else if (item.DurationUnit == 2) durationUnit = Localizer["Months"];
+                else if (item.DurationUnit == 3) durationUnit = Localizer["Years"];
+                <span >@(item.Duration+" "+durationUnit)</span>
+            }                
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndDate)
+            </td>
+           
+            @{
+                if (@HttpContextAccessor.HttpContext.Session.GetString("type") != "Employer" && @HttpContextAccessor.HttpContext.Session.GetString("type")!="Donor" && @HttpContextAccessor.HttpContext.Session.GetString("type") != "Trainer")
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.User.Fullname)
+                    </td>
+                }
+            }
+            
+            
+            <td>     
+                @{
+                    if (@HttpContextAccessor.HttpContext.Session.GetString("type") != "Employer" && @HttpContextAccessor.HttpContext.Session.GetString("type")!="Donor" && @HttpContextAccessor.HttpContext.Session.GetString("type") != "Trainer")
+                    {
+                        <span class="btn btn-info btn-sm show_employers" data-id="@item.Id" data-name="@item.Name"><i class="fas fa-clipboard-list"></i></span>
+                        @if (Functions.CheckAccess("Edit", "Projects", "Control", HttpContextAccessor.HttpContext))
+                        {
+                        <a class="btn btn-primary btn-sm" title="Edit" asp-action="Edit" asp-route-id="@item.Id"><i class="fas fa-pencil-alt"></i> </a>
+                        }
+                        @if (Functions.CheckAccess("Delete", "Projects", "Control", HttpContextAccessor.HttpContext))
+                        {
+                        <a asp-route-id="@item.Id" title="Delete" class="btn btn-danger btn-sm" asp-action="Delete"><i class="fas fa-trash"></i> </a>
+                        }
+                    }
+                }
+
+                @if (Functions.CheckAccess("Index", "Jobs", "Control", HttpContextAccessor.HttpContext))
+                {
+                <a class="btn btn-primary btn-sm" target="_blank" asp-controller="Jobs" asp-action="Index" asp-area="Control" asp-route-project="@item.Id" target="_blank" title="Applied Jobs" alt="Applied Jobs"> <i class="fas fa-chalkboard-teacher"></i></a>
+                }
+                @if (Functions.CheckAccess("ExportToExcel", "Jobs", "Control", HttpContextAccessor.HttpContext))
+                {
+                <a class="btn btn-warning btn-sm" target="_blank" asp-controller="Jobs" asp-action="ExportToExcel" asp-area="Control" asp-route-project="@item.Id" target="_blank" title="Export Applications" alt="Export Applications"> <i class="far fa-file-excel"></i></a>
+                }
+                @if (Functions.CheckAccess("Details", "Projects", "Control", HttpContextAccessor.HttpContext))
+                {
+                <a class="btn btn-info btn-sm" title="Details" asp-action="Details" asp-route-id="@item.Id"><i class="fas fa-folder"></i> </a>
+                }
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+
+@if (ViewBag.PagesCount != null && ViewBag.PagesCount > 0)
+{
+    <div class="text-center">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item"><a class="page-link" asp-action="Index" asp-route-PageNumber="1">@Localizer["First"]</a></li>
+                @for (int i = 1; i <= ViewBag.PagesCount; i++)
+                {
+                    <li class="page-item"><a class="page-link" asp-action="Index" asp-route-PageNumber="@i">@i</a></li>
+                }
+                <li class="page-item"><a class="page-link" asp-action="Index" asp-route-PageNumber="@ViewBag.PagesCount">@Localizer["Last"]</a></li>
+            </ul>
+        </nav>
+    </div>
+}
+
+</div>
+</section>
+
+
+<!-- Modal -->
+<div class="modal fade" id="empsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="empModalLabel"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-6"><b><h4>@Localizer["Employers List"]:</h4></b><br /><Br /></div>
+                    <div class="col-6 text-@Localizer["Float Rev"]"><span class="btn btn-primary btn-sm addEmp"><i class="fas fa-user-plus"></i></span></div>
+                </div>
+                <div id="msg_cont" ></div>
+                <div id="addEmpCont" >
+                    <form method="get" asp-action="createEmployer" asp-controller="Projects" >
+                        <input type="hidden" name="Project" id="Project" value="" />
+                        <div class="row mb-2" ><div class="col-12">
+                            <b>@Localizer["Select the Employer"]</b><br>
+                            <select name="Employer" id="Employer" class="form-control" >
+                                    <option value="">:: @Localizer["Select Employer"] ::</option>
+                            @{
+                                if(ViewBag.Employers != null)
+                                {
+                                    foreach(Employers item in ViewBag.Employers)
+                                    {
+                                        <option value="@item.Id" >@(currentCulture == "ar-AE" ?item.ArName : item.Name)</option>
+                                    }
+                                        
+                                }
+                            }
+                            </select>
+                        </div></div>
+                        <div class="row mb-2"><div class="col-12 text-center">
+                            <button type="button" id="addEmpBtn" class="btn btn-primary">@Localizer["Add Employer"]</button>
+                        </div></div>
+                    </form>
+                </div>
+                <div id="empsCont" ></div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Close"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript" >
+        $(document).ready(function(){
+            $(document).on("click",".addEmp",function(){
+                $("#addEmpCont").slideToggle();
+            });
+
+            $(document).on("click","#addEmpBtn",function(){
+                var project = $("#Project").val();
+                var employer = $("#Employer").val();
+                if(project !="" && employer !=""){
+                    var url = "@Url.Action("addProjectEmployer", "Projects")?EmployerId=" + employer +"&ProjectId="+project;
+                    
+                    $.ajax({
+                        url: url,
+                        dataType: "json"
+
+                    }).done(function (data) {
+                        if (data.result) {
+                            $("#msg_cont").html('<div class="alert alert-success" >Employer has been assigned to project!<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+                            reloadEmployers(project);
+                        }
+                        else {
+                            $("#msg_cont").html("<div class='alert alert-danger' >@Localizer["Failed Assing Employer"]</div>");
+                        }
+                    });
+                    
+                }
+                else{
+                    alert("@Localizer["Select Employer Msg"]");
+                }
+            });
+
+            $(document).on("click",".show_employers",function(){
+                $("#empsModal").modal("show");
+                var project = $(this).data("id");
+                var projectName = $(this).data("name");
+                $("#addEmpCont").hide();
+                $("#Project").val(project);
+                $("#empModalLabel").html(projectName);
+                $("#empsCont").html('<div class="text-center mt-4" ><i class="fas fa-spinner fa-spin"></i></div>');
+
+                reloadEmployers(project);
+            })
+
+            $(document).on("click", ".remEmp",function(){
+                var item = $(this).data("id");
+                var project = $(this).data("project");
+                var url = "@Url.Action("removeProjectEmployer", "Projects")?item=" + item;
+                if(confirm("@Localizer["Delete Employer Msg"]")){
+                    $.ajax({
+                        url: url,
+                        dataType: "json"
+
+                    }).done(function (data) {
+                        if (data.result) {
+                            reloadEmployers(project);
+                        }
+                        else {
+                            $("#msg_cont").html("<div class='alert alert-danger' >@Localizer["Failed To Delete"]</div>");
+                        }
+                    });
+                }               
+            });
+        });
+
+        function reloadEmployers(project){
+            var url = "@Url.Action("loadEmployers", "Projects")?project=" + project;
+            $.ajax({
+                url: url,
+                dataType: "json"
+
+            }).done(function (data) {
+                var html_result = "<table class='table table-bordered table-striped' ><thead><tr><th>Name</th><th>@Localizer["Email"]</th><th>@Localizer["Mobile"]</th><th></th></tr></thead><tbody>";
+                if (data.result) {
+                    $("#empsCont").html("");
+                    for (var i = 0; i < data.employers.length; i++) {
+                        var row = data.employers[i];
+                        html_result += "<tr><td>" + row.employer.name + "</td><td>" + row.employer.email + "</td><td>" + row.employer.mobile + "</td>";
+                        html_result += "<td><span class='btn btn-danger btn-sm remEmp' data-project='" + row.projectId + "' data-id='" + row.id + "' data-name='" + row.employer.name + "' ><i class='fas fa-trash-alt'></i></span></td>";
+                        html_result += "</tR>";
+                    }
+                }
+                else {
+                    $("#msg_cont").html("<div class='alert alert-danger' >" + data.msg + "</div>");
+                }
+                html_result += "</tbody></table>";
+                $("#empsCont").html(html_result);
+            });
+        }
+    </script>
+    
+}

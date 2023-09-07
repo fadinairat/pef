@@ -1,0 +1,1095 @@
+﻿@model PEF.Models.Employers
+@using PEF.Models
+@{
+    ViewData["Title"] = "حساب مشغل جديد";
+}
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+
+<div class="container">
+<div class="row d-flex justify-content-center mt-4 mb-5">
+    <div class="text-center mb-3" ><h2>تسجيل الجهات المشغلة</h2></div>
+    <div class="col-12 col-md-9 form-box">
+            <form asp-action="CreateEmployer" id="EmployersForm" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row required mt-3"><div class="col-12 text-right">العلامة (*) تعبر عن الحقول الاجبارية</div></div>
+            <div class="row mt-3">
+                <div class="form-group col-sm-6 mb-3">
+                    <label for="ArName" class="control-label">الاسم بالعربي <span class="required" >*</span></label>
+                    <input asp-for="ArName" class="form-control" data-val-required="الاسم العربي مطلوب" />
+                    <span asp-validation-for="ArName" class="text-danger"></span>
+                </div>
+                 
+                    <div class="form-group col-sm-6 mb-3">
+                    <label for="Name" class="control-label">الاسم بالانجليزي</label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                    <div class="form-group col-sm-6 mb-3">
+                    <label for="Shortcut" class="control-label">الاختصار <span class="required" >*</span></label>
+                    <input asp-for="Shortcut" class="form-control" data-val-length="الحقل يجب ان يكون نص بطول لا يتعدى 20 حرف" data-val-length-max="20" maxlength="20" data-val-required="حقل الاختصار مطلوب" />
+                    <span asp-validation-for="Shortcut" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-6"></div>
+
+                <div class="form-group col-sm-6 mb-3">
+                    <label for="Type" class="control-label">نوع الحساب <span class="required" >*</span></label>
+                        <select asp-for="Type" id="Type" data-val-required="الحقل مطلوب ***" class="form-control">
+                            <option value="">:: حدد النوع ::</option>
+                            <option value="1">شركة</option>
+                            <option value="2">مؤسسة</option>
+                        </select>
+                        <span asp-validation-for="Type" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-sm-6 mb-3">
+                    <label for="Sector" class="control-label">نوع المؤسسة/الشركة <span class="required" >*</span></label>
+                        <select asp-for="Sector" data-val-required="الحقل مطلوب ***" class="form-control">
+                        <option value="">:: حدد نوع المؤسسة / الشركة ::</option>
+                        @{
+                            if (ViewBag.Sectors != null)
+                            {
+                                foreach(LookupEmployersSectors item in ViewBag.Sectors)
+                                {
+                                    <!option value="@item.Id" @(Model!=null && Model.Sector == item.Id ? "SELECTED" :"") >@item.ArName</!option>
+                                }
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="Sector" class="text-danger"></span>
+                    <div id="secOtherCont" style="display:none;margin-top:10px;" >
+                        <label for="SectorOther" class="control-label">حدد نوع المؤسسة أو الشركة  <span class="required" >*</span></label>
+                            <input asp-for="SectorOther" class="form-control" />
+                        <span asp-validation-for="SectorOther" class="text-danger"></span>
+                    </div>
+                </div>
+
+                    <div class="form-group col-sm-6 mb-3 operatedCont">
+                    <label for="WorkSectorId" class="control-label">القطاعات الاقتصادية  <span class="required" >*</span></label>
+                    
+                    <select asp-for="WorkSectorId" class="form-control" data-val-required="الحقل مطلوب ***">
+                        <option value="" >:: حدد القطاع الاقتصادي ::</option>
+                            @{
+                                if (ViewBag.WorkSectorId != null)
+                                {
+                                    foreach(LookupWorkSectors item in ViewBag.WorkSectorId)
+                                    {
+                                        <!option value="@item.Id" @(Model!=null && Model.WorkSectorId == item.Id? "SELECTED":"")>@item.ArName</!option>
+                                    }
+                                }
+                            }
+                    </select>
+                    <div id="secWorkOtherCont" style="display:none;margin-top:10px;">
+                        <label for="WorkSectorOther" class="control-label">حدد القطاع الاقتصادي  <span class="required" >*</span></label>
+                        <input asp-for="WorkSectorOther" class="form-control" />
+                        <span asp-validation-for="WorkSectorOther" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group col-sm-6 mb-3">
+                    <label for="EstablishYear" class="control-label">سنة التأسيس <span class="required">*</span></label>
+                    <input asp-for="EstablishYear" class="form-control" data-val-required="الحقل مطلوب ***" />
+                    <span asp-validation-for="EstablishYear" class="text-danger"></span>
+                </div>
+
+
+                <div class="form-group col-sm-6 mb-3">
+                    <label for="RegNumber" class="control-label">رقم التسجيل <span class="required">*</span></label>
+                    <input asp-for="RegNumber" class="form-control" data-val-required="!الحقل مطلوب ***" />
+                    <span asp-validation-for="RegNumber" class="text-danger"></span>
+                </div>
+
+                    <div class="form-group col-sm-6 mb-3 operatedCont" style="@(Model!=null && Model.Type==1 ? "display:block;": "display:none;")">
+                    <label for="OperationNumber" class="control-label">المشتغل المرخص <span class="required">*</span></label>
+                    <input asp-for="OperationNumber" class="form-control" data-val-required="الحقل مطلوب ***" />
+                    <span asp-validation-for="OperationNumber" class="text-danger"></span>
+                </div>
+
+                <div class="form-group form-check col-12 mb-3">
+                    <label for="AcceptTrainers" class="control-label" style="width:80%;max-width:500px;">هل المؤسسة/ الشركة على استعداد لاستضافة متدربين على رأس العمل   <span class="required">*</span></label>
+                    نعم <input type="radio" name="AcceptTrainers" value="true" />
+                    لا <input type="radio" name="AcceptTrainers"  value="false" CHECKED="checked" />
+                </div>
+
+            </div>
+
+            <!--#############  Contact Information ###############-->
+            <div class="row">
+                <div class="col-12"><h5 class="text-danger">بيانات الدخول</h5></div>
+                    <div class="form-group mb-3">
+                    <label for="Email" class="control-label">البريد الالكتروني <span class="required" >*</span></label>
+                        <input asp-for="Email" type="email" class="form-control" data-val-length="طول المحتوى الحقل يجب ان يكون نص بطول لا يتعدى 50 حرفان لا يتعدى الحقل يجب ان يكون نص بطول لا يتعدى 20 حرف50 حرف" data-val-length-max="50" maxlength="50" data-val-required="حقل البريد الالكتروني مطلوب" />
+                        <label id="EmailExist-error" class="error" for="Email" style="display: none;"></label>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-sm-6 mb-3">
+                    <label for="Password" class="control-label">كلمة المرور <span class="required" >*</span></label>
+                    <input asp-for="Password" type="password" data-val-required="الحقل مطلوب ***" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-sm-6 mb-3">
+                    <label for="ConfirmPassword" class="control-label">تأكيد كلمة المرور <span class="required" >*</span></label>
+                    <input asp-for="ConfirmPassword" type="password" data-val-required="الحقل مطلوب ***" class="form-control" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+            </div>
+
+
+            <!--#############  Contact Information ###############-->
+            <div class="row">
+                <div class="col-12"><h5 class="text-danger">بيانات الاتصال</h5></div>
+
+                <div class="form-group col-sm-6 mb-3">
+                    <label for="CityId" class="control-label">المحافظة <span class="required" >*</span></label>
+                    <select asp-for="CityId" class="form-control">
+                        <option value="">:: حدد المحافظة ::</option>
+                        @{
+                            if (ViewBag.CityId != null)
+                            {
+                                foreach (City item in ViewBag.CityId)
+                                {
+                                    <!option value="@item.Id">@item.ArName</!option>
+                                }
+                            }
+                        }
+                    </select>
+                </div>
+                    <div class="form-group col-sm-6 mb-3">
+                        <label for="AreaId" class="control-label">المدينة / المنطقة <span class="required" >*</span></label>
+                    <select asp-for="AreaId" class="form-control">
+                        <option value="">:: حدد المنطقة / المدينة ::</option>
+                    </select>
+                    <span asp-validation-for="AreaId" class="text-danger"></span>
+                </div>
+                    <div class="form-group col-sm-6 mb-3">
+                    <label for="Village" class="control-label">الحي/ القرية <span class="required">*</span></label>
+                    <input asp-for="Village" class="form-control" />
+                    <span asp-validation-for="Village" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-6 mb-3">
+                        <label for="Mobile" class="control-label">الهاتف الخلوي <span class="required">*</span></label>
+                    <input asp-for="Mobile" class="form-control" />
+                    <span asp-validation-for="Mobile" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-6 mb-3">
+                    <label for="Tel" class="control-label">الهاتف</label>
+                    <input asp-for="Tel" class="form-control" />
+                    <span asp-validation-for="Tel" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="Address" class="control-label">العنوان</label>
+                    <input asp-for="Address" class="form-control" />
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!--#############  Contact Person ###############-->
+            <div class="row">
+                <div class="col-12"><h5 class="text-danger">شخص للتواصل</h5></div>
+                <div class="form-group col-6 mb-3">
+                    <label for="ContactName" class="control-label">اسم الشخص <span class="required" >*</span></label>
+                    <input asp-for="ContactName" class="form-control" />
+                    <span asp-validation-for="ContactName" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 mb-3">
+                    <label for="contactJobTitle" class="control-label">المسمى الوظيفي <span class="required" >*</span></label>
+                    <input asp-for="contactJobTitle" class="form-control" />
+                        <span asp-validation-for="contactJobTitle" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 mb-3">
+                    <label for="ContactMobile" class="control-label">رقم الموبايل <span class="required" >*</span></label>
+                    <input asp-for="ContactMobile" class="form-control" />
+                    <span asp-validation-for="ContactMobile" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 mb-3">
+                    <label for="ContactMobile2" class="control-label">رقم الموبايل 2</label>
+                    <input asp-for="ContactMobile2" class="form-control" />
+                    <span asp-validation-for="ContactMobile2" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 mb-3">
+                        <label for="ContactEmail" class="control-label">البريد الالكتروني <span class="required">*</span></label>
+                    <input asp-for="ContactEmail" type="email" class="form-control" />
+                    <span asp-validation-for="ContactEmail" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!--#############  Field ###############-->
+            <div class="row">
+                <div class="col-12"><h5 class="text-danger">مجال عمل الشركة/المؤسسة</h5></div>
+                <div class="form-group mb-3">
+                        <label for="ArDescription" class="control-label">مجال العمل بالعربي <span class="required">*</span></label>
+                        <textarea asp-for="ArDescription" data-val="true" data-val-required="الحقل مطلوب ***" rows="3" class="form-control tinymce" required="required" dir="rtl"></textarea>
+                    <span asp-validation-for="ArDescription" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="Description" class="control-label">مجال العمل بالانجليزي </label>
+                    <textarea asp-for="Description" rows="3" class="form-control tinymce" dir="ltr"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- ##### Extra Data (Others) ########-->
+            <div class="row">
+                <div class="form-group mb-3">
+                        <label for="ArExtraData" class="control-label">بيانات اضافية بالعربي</label>
+                        <textarea asp-for="ArExtraData" rows="3" class="form-control tinymce" dir="rtl"></textarea>
+                    <span asp-validation-for="ArExtraData" class="text-danger"></span>
+                </div>
+                <div class="col-12"><h5 class="text-danger">بيانات اضافية</h5></div>
+                    <div class="form-group mb-3">
+                    <label for="ExtraData" class="control-label">بيانات اضافية بالانجليزي</label>
+                        <textarea asp-for="ExtraData" rows="3" class="form-control tinymce" dir="ltr"></textarea>
+                    <span asp-validation-for="ExtraData" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- #########  Capabilities  ##########-->
+            <div class="row">
+                <div class="col-12"><h5 class="text-danger">قدرات الشركة/المؤسسة</h5></div>
+
+                <div class="form-group col-6 mb-3">
+                    <label for="PermanentEmpCount" class="control-label">عدد الموظفين الدائمين - ذكور <span class="required" >*</span></label>
+                    <input asp-for="PermanentEmpCount" data-val-required="الحقل مطلوب ***" class="form-control" />
+                    <span asp-validation-for="PermanentEmpCount" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 mb-3">
+                    <label for="PermanentFemaleEmpCount" class="control-label">عدد الموظفين الدائمين - اناث <span class="required">*</span></label>
+                    <input asp-for="PermanentFemaleEmpCount" data-val-required="الحقل مطلوب ***" class="form-control" />
+                    <span asp-validation-for="PermanentFemaleEmpCount" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 mb-3">
+                    <label for="FulltimeEmpCount" class="control-label"> عدد الموظفين بدوام كامل - ذكور <span class="required" >*</span></label>
+                    <input asp-for="FulltimeEmpCount" data-val-required="الحقل مطلوب ***" class="form-control" />
+                    <span asp-validation-for="FulltimeEmpCount" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 mb-3">
+                    <label for="FulltimeFemaleEmpCount" class="control-label">عدد الموظفين بدوام كامل - اناث <span class="required" >*</span></label>
+                    <input asp-for="FulltimeFemaleEmpCount" data-val-required="الحقل مطلوب ***" class="form-control" />
+                    <span asp-validation-for="FulltimeFemaleEmpCount" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 mb-3">
+                    <label for="ParttimeEmpCount" class="control-label"> عدد الموظفين بدوام جزئي - ذكور <span class="required" >*</span></label>
+                    <input asp-for="ParttimeEmpCount" data-val-required="الحقل مطلوب ***" class="form-control" />
+                    <span asp-validation-for="ParttimeEmpCount" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 mb-3">
+                    <label for="ParttimeFemaleEmpCount" class="control-label">عدد الموظفين بدوام جزئي - اناث <span class="required" >*</span></label>
+                    <input asp-for="ParttimeFemaleEmpCount" data-val-required="الحقل مطلوب ***" class="form-control" />
+                    <span asp-validation-for="ParttimeFemaleEmpCount" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-6 mb-3">
+                        <label for="WeekWorkDays" class="control-label">عدد أيام الدوام في الأسبوع <span class="required" >*</span></label>
+                        <input asp-for="WeekWorkDays" data-val-required="الحقل مطلوب ***" class="form-control" />
+                    <span asp-validation-for="WeekWorkDays" class="text-danger"></span>
+                </div>
+                    <div class="form-group col-6 mb-3">
+                    <label for="DayWorkHours" class="control-label">ساعات العمل اليومية <span class="required" >*</span></label>
+                        <input asp-for="DayWorkHours" data-val-required="الحقل مطلوب ***" class="form-control" />
+                    <span asp-validation-for="DayWorkHours" class="text-danger"></span>
+                </div>
+                <div class="form-group form-check col-6 mb-3">
+                    <label for="InjuredInsurance" class="control-label" style="width:80%;">هل يوجد لدى المشغل / تامين إصابات عمل  <span class="required" >*</span></label>
+                    <input asp-for="InjuredInsurance" type="checkbox" data-bootstrap-switch data-off-color="danger" data-on-color="success" />
+                </div>
+                <div class="form-group form-check col-6 mb-3">
+                    <label for="HealthInsurance" class="control-label" style="width:80%;">هل يوجد لدى المشغل تامين صحي للموظفين <span class="required" >*</span></label>
+                    <input asp-for="HealthInsurance" type="checkbox" data-bootstrap-switch data-off-color="danger" data-on-color="success" />
+                </div>
+
+                
+                <div class="form-group mb-3">
+                        <label for="Branches" class="control-label"> عدد الفروع للمؤسسة / الشركة <span class="required">*</span></label>
+                        <input asp-for="Branches" type="number" data-val-required="الحقل مطلوب ***" style="width:120px;" class="form-control">
+                    <span asp-validation-for="Branches" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="BranchesLocation" class="control-label">موقع الفروع للمؤسسة / الشركة</label>
+                    <textarea asp-for="BranchesLocation" rows="3" class="form-control tinymce" required="required" dir="rtl"></textarea>
+                    <span asp-validation-for="BranchesLocation" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group mb-3">
+                    <label for="SafetyProcedures" class="control-label">إجراءات السلامة والصحة المهنية بالانجليزية</label>
+                    <textarea asp-for="SafetyProcedures" rows="3" class="form-control tinymce" dir="ltr"></textarea>
+                    <span asp-validation-for="SafetyProcedures" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-3">
+                        <label asp-for="ArSafetyProcedures" class="control-label">إجراءات السلامة والصحة المهنية بالعربية</label>
+                        <textarea asp-for="ArSafetyProcedures" rows="3" class="form-control tinymce" dir="rtl"></textarea>
+                    <span asp-validation-for="ArSafetyProcedures" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- ##### Extra Data (Others) ########-->
+            <div class="row">
+                <div class=""><h5 class="text-danger">مرفقات</h5></div>
+                <div class="form-group col-6 mb-3">
+                    <label for="FinancialReport" class="control-label">تقارير مالية</label>
+                    <input asp-for="FinancialReport" type="file" accept=".pdf,.doc" data-value="true" data-val-accept="" data-val-accept-allowed="jpg,jpeg,png,doc,pdf" class="form-control" />
+                    <span asp-validation-for="FinancialReport" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 mb-3">
+                    <label for="AnnualReport" class="control-label">تقارير ادارية</label>
+                    <input asp-for="AnnualReport" type="file" accept=".pdf,.doc" data-value="true" data-val-accept="" data-val-accept-allowed="jpg,jpeg,png,doc,pdf" class="form-control" />
+                    <span asp-validation-for="AnnualReport" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 mb-3">
+                        <label for="RegistrationDocument" class="control-label">شهادة ترخيص المؤسسة / الشركة <span class="required">*</span></label>
+                        <input asp-for="RegistrationDocument" type="file" accept=".pdf,.doc" data-value="true" data-val-accept="" data-val-accept-allowed="jpg,jpeg,png,doc,pdf" class="form-control" />
+                    <span asp-validation-for="RegistrationDocument" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 mb-3" id="commDocCont">
+                    <label for="CommercialRegister" class="control-label">السجل التجاري</label>
+                    <input asp-for="CommercialRegister" type="file" accept=".pdf,.doc" data-value="true" data-val-accept="" data-val-accept-allowed="jpg,jpeg,png,doc,pdf" class="form-control" />
+                    <span asp-validation-for="CommercialRegister" class="text-danger"></span>
+                </div>
+                    <div class="form-group col-6 mb-3">
+                    <label for="OtherAttachments" class="control-label">مرفقات اخرى</label>
+                    <input asp-for="OtherAttachments" type="file" accept=".pdf,.doc" data-value="true" data-val-accept="" data-val-accept-allowed="jpg,jpeg,png,doc,pdf" class="form-control" />
+                    <span asp-validation-for="OtherAttachments" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group mb-3">
+                    <label for="Logo" class="control-label">شعار المؤسسة / الشركة <span class="required">*</span></label>
+                    <input asp-for="Logo" type="file" accept=".jpg" data-value="true" data-val-accept="" data-val-accept-allowed="jpg,jpeg,png" class="form-control" />
+                    <span asp-validation-for="Logo" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row mt-5"><div class="form-group">
+                <input type="checkbox" id=" `" name="Agreement" />
+                <label for="Agreement" class="control-label">اقر بصحة البيانات المسجلة في البوابة الفلسطينية للتشغيل واوافق على استخدام البيانات ومشاركتها مع الجهات ذات الاختصاص ضمن الإطار القانوني <span class="required">*</span></label>
+            </div></div>
+            <div class="row">
+                <div class="form-group mb-3 text-center">
+                        <button type="submit" id="RegBtn" id="registerBtn" class="btn subscribe_btn">تسجيل الحساب</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+@section Scripts{
+    {
+        <partial name="_ValidationScriptsPartial" >
+        <partial name="_validationMsg" />
+    }
+    <script src="https://cdn.tiny.cloud/1/2c5w0wmw9nov8zgkagrjpr94l8e4ryuo598sm3y8shic3c8z/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        tinymce.init({
+          selector: '.tinymce',
+          setup: function (editor) {
+                // Set the directionality based on the direction of the replaced textarea
+                editor.on('init', function () {
+                  var textareaDirection = editor.getElement().dir;
+                  editor.getBody().dir = textareaDirection;
+                  editor.settings.directionality = textareaDirection;
+                });
+          },
+          height: 220, 
+          menubar: false,
+          plugins: ['advlist','lists'],
+          advlist_bullet_styles: 'square',  // only include square bullets in list
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | bullist numlist outdent indent | forecolor backcolor | link image media table mergetags | align lineheight | removeformat | cut copy paste | addcomment showcomments ',
+                //toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+          tinycomments_mode: 'embedded',
+          tinycomments_author: 'Author name',
+          
+          mergetags_list: [
+            { value: 'First.Name', title: 'First Name' },
+            { value: 'Email', title: 'Email' },
+          ]
+        });
+
+        $(document).ready(function(){
+            $(document).on("blur","#Email",function(){
+                var email = $("#Email").val();
+                url = "@Url.Action("CheckEmployer")"+"?email="+email;
+
+                $.ajax({
+                    url: url,
+                    dataType: "json",
+                    beforeSend: function () {
+                    
+                    },
+                    success: function (data) {
+                        if(data.result){//Success
+                            $("#RegBtn").removeAttr("disabled");
+                        }
+                        else{
+                            if(!data.email && email!="") {
+                                console.log("Email Wrong");
+                                $("#EmailExist-error").css("display","inline-block");
+                                $("#EmailExist-error").html("البريد الالكتروني مستخدم مسبقا!");
+                            }
+                            
+                            $("#RegBtn").attr("disabled","disabled");
+                        }
+                    
+                    },
+                    error: function (jqXhr, json, errorThrown) {
+                        try {
+                            var errors = jqXhr.responseJSON.errors;
+                            console.log(errors);
+                        }
+                        catch (eee) {
+                            console.log(eee.message);
+                        }
+                    },
+                    complete: function () {
+                        
+                    }
+                });
+            });
+
+
+            $(document).on("change","#Type",function(){
+                var val = $(this).val();
+                var url = "@Url.Action("getSectors", "Home")?type=" + val
+                $("#Sector").empty();
+                $.ajax({
+                    url: url,
+                    dataType: "json",
+                    beforeSend: function () {
+                        $("#Sector").hide();
+                        $("#Sector").before($('<i class="fa fa-spinner fa-spin fa-3x fa-fw" style="font-size:15px;" id="loader"></i> '));
+                    },
+                    success: function (data) {
+                        var sectors = data.sectors;
+                        $("#Sector").append($('<option></option>').val("").html(":: حدد نوع المؤسسة/الشركة::"));
+                        for (var i = 0; i < sectors.length; i++) {
+                            $("#Sector").append($('<option></option>').val(sectors[i].id).html(sectors[i].arName));
+                        }
+                    },
+                    error: function (jqXhr, json, errorThrown) {
+                        try {
+                            var errors = jqXhr.responseJSON.errors;
+                            console.log(errors);
+                        }
+                        catch (eee) {
+                            console.log(eee.message);
+                        }
+                    },
+                    complete: function () {
+                        //alert("complete");
+                        $("#loader").remove();
+                        $("#Sector").show();
+                    }
+                });
+
+                if(val=="1"){//Company
+                    $(".operatedCont").show();
+                    $("#commDocCont").show();
+                }
+                else{//Institution
+                    $("#commDocCont").hide();
+                    $(".operatedCont").hide();
+                }
+
+                //if(val=="1"){
+                //    //Companies
+                //    $("#Sector").html('<option value="" >:: حدد نوع الشركة ::</option><option value="5">الشركة العادية العامة</option>'+
+                //        '<option value="6">الشركة العادية المحدودة</option>'+
+                //        '<option value="7">الشركة ذات المسؤولية المحدودة</option>'+
+                //        '<option value="8">الشركة المساهمة الخصوصية</option>'+
+                //        '<option value="9">الشركة المساهمة العامة</option>');
+                //    $(".operatedCont").show();
+                //}
+                //else{
+                //    //Institutions
+                //    $("#Sector").html('<option value="" >:: حدد نوع المؤسسة ::</option><option value="1">قطاع خاص</option>'+
+                //        '<option value="2">قطاع عام</option>'+
+                //        '<option value="3">اهلي</option>'+
+                //        '<option value="4">مؤسسات دولية</option>');
+                //    $(".operatedCont").hide();
+                //}
+            });
+
+
+            $("#CityId").change(function () {
+                var city = $("#CityId").val();
+
+                var url = "@Url.Action("getAreas", "Home")?cityId=" + city
+                $("#AreaId").empty();
+                $.ajax({
+                    url: url,
+                    dataType: "json",
+                    beforeSend: function () {
+                        $("#AreaId").hide();
+                        $("#AreaId").before($('<i class="fa fa-spinner fa-spin fa-3x fa-fw" style="font-size:15px;" id="loader"></i> '));
+                    },
+                    success: function (data) {
+                        var areas = data.areas;
+                        $("#AreaId").append($('<option></option>').val("").html(":: حدد المنطقة / المدينة ::"));
+                        for (var i = 0; i < areas.length; i++) {
+                            $("#AreaId").append($('<option></option>').val(areas[i].id).html(areas[i].arName));
+                        }
+                    },
+                    error: function (jqXhr, json, errorThrown) {
+                        try {
+                            var errors = jqXhr.responseJSON.errors;
+                            console.log(errors);
+                        }
+                        catch (eee) {
+                            console.log(eee.message);
+                        }
+                    },
+                    complete: function () {
+                        //alert("complete");
+                        $("#loader").remove();
+                        $("#AreaId").show();
+                    }
+                });
+
+            });
+        });
+    </script>
+
+    <script type="text/javascript">    
+        
+        //$(document).ready(function(){
+            $("#EmployersForm").validate({
+                rules: {
+                    ArName: {
+                        required: true,
+                        arabicOnly: true
+                    },
+                    Name: {
+                        required: false,
+                        englishLettersOnly: true
+                    },
+                    Shortcut: {
+                        required: true,
+                        maxlength: 20,
+                    },
+                    Type:{
+                        required: true,
+                    },
+                    Sector: {
+                        required: true,
+                    },
+                    SectorOther: {
+                        required: {
+                            depends: function() {
+                                return $("#Sector").val() == "9999";
+                            }
+                        },
+                    },
+                    WorkSectorId: {
+                        required: {
+                            depends: function () {
+                                return $("#Type").val() == "1"; //Company
+                            }
+                        },
+                    },
+                    WorkSectorOther:{
+                        required: {
+                            depends: function () {
+                                return $("#WorkSectorId").val() == "9999";
+                            }
+                        },
+                    },
+                    EstablishYear: {
+                        required: true,
+                        number:true,
+                        correctYear: true,
+                    },
+                    RegNumber: {
+                        required: true,
+                    },
+                    OperationNumber: {
+                        required: {
+                            depends: function() {
+                                return $("#Type").val() == "1";
+                            }
+                        }
+                    },
+                    Email : {
+                        required: true,
+                        email: true,
+                    },
+                    Password: {
+                        required: true,
+                        minlength: 6
+                    },
+                    ConfirmPassword: {
+                        required: true,
+                        minlength: 6,
+                        equalTo: "#Password"
+                    },
+                    CityId: {
+                        required: true
+                    },
+                    AreaId: {
+                        required: true
+                    },
+                    Village: {
+                        required: true
+                    },
+                    Mobile:{
+                        required: true,
+                        digits: true,
+                        minlength: 10,
+                        maxlength: 10,
+                        pattern: /^05\d{8}$/
+                    },
+                    Tel:{
+                        digits: true,
+                        minlength: 9,
+                        maxlength: 9,
+                        pattern: /^0\d{8}$/
+                    },
+                    Address:{
+                        required: true,
+                    },
+                    ContactName:{
+                        required: true,
+                        arabicEnglishLettersOnly: true,
+                    },
+                    contactJobTitle:{
+                        required: true,
+                        arabicEnglishLettersOnly: true,
+                    },
+                    ContactMobile:{
+                        required: true,
+                        digits: true,
+                        minlength: 10,
+                        maxlength: 10,
+                        pattern: /^05\d{8}$/
+                    },
+                    ContactMobile2:{
+                        digits: true,
+                        minlength: 10,
+                        maxlength: 10,
+                        pattern: /^05\d{8}$/
+                    },
+                    ContactEmail:{
+                        required: true,
+                        email: true
+                    },
+                    Description:{
+                        tinymceRequired: true,
+                        minlength: 50,
+                        maxlength: 50,
+                        tinymceLength : 50
+                    },
+                    ArDescription:{
+                        tinymceRequired: true,
+                        minlength: 50,
+                        maxlength: 50,
+                        tinymceLength : 50
+                    },
+                    ExtraData: {
+                        maxlength: 500,
+                    },
+                    ArExtraData: {
+                        maxlength: 500,
+                    },
+                    BranchesLocation: {
+                        maxlength: 500,
+                    },
+                    SafetyProcedures: {
+                        maxlength: 500,
+                    },
+                    ArSafetyProcedures: {
+                        maxlength: 500,
+                    },
+                    PermanentEmpCount: {
+                        required: true,
+                        number: true,
+                        min: 0
+                    },
+                    PermanentFemaleEmpCount: {
+                        required: true,
+                        number: true,
+                        min: 0
+                    },
+                    FulltimeEmpCount: {
+                        required: true,
+                        number: true,
+                        min: 0
+                    },
+                    FulltimeFemaleEmpCount: {
+                        required: true,
+                        number: true,
+                        min: 0
+                    },
+                    ParttimeEmpCount: {
+                        required: true,
+                        number: true,
+                        min: 0
+                    },
+                    ParttimeFemaleEmpCount: {
+                        required: true,
+                        number: true,
+                        min: 0
+                    },
+                    WeekWorkDays: {
+                        required: true,
+                        number:true,
+                        min:0,
+                        max: 7
+                    },
+                    DayWorkHours:{
+                        required: true,
+                        number: true,
+                        min: 0,
+                        max: 24,
+                    },
+                    InjuredInsurance: {
+                        //required: true,
+                    },
+                    HealthInsurance: {
+                        //required: true,
+                    },
+                    Branches: {
+                        required: true,
+                        number:true,
+                        min:0
+                    },
+                    FinancialReport: {
+                        required: {
+                            depends: function() {
+                                return ($("#Type").val() != "" && $("#Type").val() == "1");
+                            }
+                        },
+                        accept: {
+                            allowed: "jpg,png,jpeg,pdf,doc,docx"
+                        }
+                    },
+                    AnnualReport: {
+                        required: {
+                            depends: function () {
+                                return ($("#Type").val() != "" && $("#Type").val() == "1");
+                            }
+                        },
+                        accept: {
+                        allowed: "jpg,png,jpeg,pdf,doc,docx"
+                    }
+                    },
+                    RegistrationDocument: {
+                        required: true,
+                        accept: {
+                            allowed: "jpg,png,jpeg,pdf,doc,docx"
+                        }
+                    },                    
+                    CommercialRegister: {
+                        accept: {
+                            allowed: "jpg,png,jpeg,pdf,doc,docx"
+                        }
+                    },
+                    OtherAttachments: {
+                        accept: {
+                            allowed: "jpg,png,jpeg,pdf,doc,docx"
+                        }
+                    },
+                    Logo: {
+                        required: true,
+                        accept: {
+                            allowed: "jpg,png,jpeg"
+                        }
+                    },
+                    Agreement:{
+                        required: true
+                    },
+                },
+                messages: {
+                    ArName: {
+                        required: "الاسم اجباري *",
+                        arabicOnly: "الاسم يجب ان يكون باللغة العربية!"
+                    },
+                    Name: {
+                        required: "",
+                        englishLettersOnly: "الاسم يجب ان يكون باللغة الانجليزية!"
+                    },
+                    Shortcut: {
+                        required: "الحقل اجباري *",
+                        maxlength: "يجب ان لا يتعدى الحقل ال 20 حرف",
+                    },
+                    Type:{
+                        required: "الحقل اجباري *",
+                    },
+                    Sector: {
+                        required: "الحقل اجباري *",
+                    },
+                    SectorOther: {
+                        required: "الحقل اجباري *",
+                    },
+                    WorkSectorId: {
+                        required: "الحقل اجباري *",
+                    },
+                    WorkSectorOther: {
+                        required: "الحقل اجباري *",
+                    },
+                    EstablishYear: {
+                        required: "الحقل اجباري *",
+                        number: "رقم خاطئ!",
+                        correctYear: "سنة خاطئة",
+                    },
+                    RegNumber: {
+                        required: "الحقل اجباري *",
+                    },
+                    OperationNumber: {
+                        required: "الحقل اجباري *",
+                    },
+                    Email : {
+                        required: "الحقل اجباري *",
+                        email: "بريد الكتروني خاطئ!",
+                    },
+                    Password: {
+                        required: "الحقل اجباري *",
+                        minlength: "كلمة المرور يجب ان تتكون من 6 خانات على الاقل"
+                    },
+                    ConfirmPassword: {
+                        required: "الحقل اجباري *",
+                        minlength: "كلمة المرور يجب ان تتكون من 6 خانات على الاقل",
+                        equalTo:  "كلمة المرور وتأكيد كلمة المرور غير متطابقتين!",
+                    },
+                    CityId: {
+                        required: "الحقل اجباري *",
+                    },
+                    AreaId: {
+                        required: "الحقل اجباري *",
+                    },
+                    Village: {
+                        required: "الحقل اجباري *",
+                    },
+                    Mobile:{
+                        required: "الحقل اجباري *",
+                        digits: "رقم خاطئ!",
+                        minlength: "رقم الهاتف الخلوي يجب ان يتكون من 10 خانات",
+                        maxlength: "رقم الهاتف الخلوي يجب ان يتكون من 10 خانات",
+                        pattern: "رقم الهاتف الخلوي يجب ان يتكون من 10 خانات ويبدأ ب 05",
+                    },
+                    Tel:{
+                        digits: "رقم خاطئ!",
+                        minlength: "رقم الهاتف يجب ان يتكون من 9 خانات",
+                        maxlength:"رقم الهاتف يجب ان يتكون من 9 خانات",
+                        pattern: "خطأ في رقم الهاتف!",
+                    },
+                    Address:{
+                        required: "الحقل اجباري *",
+                    },
+                    ContactName:{
+                        required: "الحقل اجباري *",
+                        arabicOnly: "الاسم يجب ان يتكون من أحرف باللغة العربية!",
+                    },
+                    contactJobTitle: {
+                        required: "الحقل اجباري *",
+                        arabicEnglishLettersOnly: "الاسم يجب ان يتكون من أحرف باللغة العربية والانجليزية!",
+                    },
+                    ContactMobile:{
+                        required: "الحقل اجباري *",
+                        digits: "رقم الهاتف الخلوي يجب ان يتكون من 10 خانات",
+                        minlength: "رقم الهاتف الخلوي يجب ان يتكون من 10 خانات",
+                        maxlength: "رقم الهاتف الخلوي يجب ان يتكون من 10 خانات",
+                        pattern: "رقم الهاتف الخلوي يجب ان يتكون من 10 خانات ويبدأ ب 05",
+                    },
+                    
+                    ContactMobile2:{
+                        digits: "رقم الهاتف الخلوي يجب ان يتكون من 10 خانات",
+                        minlength: "رقم الهاتف الخلوي يجب ان يتكون من 10 خانات",
+                        maxlength: "رقم الهاتف الخلوي يجب ان يتكون من 10 خانات",
+                        pattern: "رقم الهاتف الخلوي يجب ان يتكون من 10 خانات ويبدأ ب 05",
+                    },
+                    ContactEmail:{
+                        required: "الحقل اجباري *",
+                        email: "بريد الكتروني خاطئ",
+                    },
+                    Description:{
+                        tinymceRequired: "الحقل النص اجباري",
+                        minlength: "يجب ان لا يتعدى الحقل ال 500 حرف",
+                        maxlength: "يجب ان لا يتعدى الحقل ال 500 حرف",
+                        tinymceLength: "يجب ان لا يتعدى طول النص اكثر من 500 حرف",
+                    },
+                    ArDescription:{
+                        tinymceRequired: "الحقل النص اجباري",
+                        minlength: "يجب ان لا يتعدى الحقل ال 500 حرف",
+                        maxlength: "يجب ان لا يتعدى الحقل ال 500 حرف",
+                        tinymceLength: "يجب ان لا يتعدى طول النص اكثر من 500 حرف",
+                    },
+                    ExtraData: {
+                        maxlength: "يجب ان لا يتعدى الحقل ال 500 حرف",
+                    },
+                    ArExtraData: {
+                        maxlength: "يجب ان لا يتعدى الحقل ال 500 حرف",
+                    },
+                    BranchesLocation: {
+                        maxlength: "يجب ان لا يتعدى الحقل ال 500 حرف",
+                    },
+                    SafetyProcedures: {
+                        maxlength: "يجب ان لا يتعدى الحقل ال 500 حرف",
+                    },
+                    ArSafetyProcedures: {
+                        maxlength: "يجب ان لا يتعدى الحقل ال 500 حرف",
+                    },
+                    PermanentEmpCount: {
+                        required: "الحقل اجباري *",
+                        number: "!رقم خاطئ",
+                        min: "رقم خاطئ!",
+                    },
+                    PermanentFemaleEmpCount: {
+                        required: "الحقل اجباري *",
+                        number: "!رقم خاطئ",
+                        min: "رقم خاطئ!",
+                    },
+                    FulltimeEmpCount: {
+                        required: "الحقل اجباري *",
+                        number: "!رقم خاطئ",
+                        min: "رقم خاطئ!",
+                    },
+                    FulltimeFemaleEmpCount: {
+                        required: "الحقل اجباري *",
+                        number: "!رقم خاطئ",
+                        min: "رقم خاطئ!",
+                    },
+                    ParttimeEmpCount: {
+                        required: "الحقل اجباري *",
+                        number: "!رقم خاطئ",
+                        min: "رقم خاطئ!",
+                    },
+                    ParttimeFemaleEmpCount: {
+                        required: "الحقل اجباري *",
+                        number: "!رقم خاطئ",
+                        min: "رقم خاطئ!",
+                    },
+                    WeekWorkDays: {
+                        required: "الحقل اجباري *",
+                        number:"!رقم خاطئ",
+                        min:"!رقم خاطئ",
+                        max:"عدد الايام يجب ان لا يتعدى 7",
+                    },
+                    DayWorkHours:{
+                        required: "الحقل اجباري *",
+                        number: "!رقم خاطئ",
+                        min: "!رقم خاطئ",
+                        max:"عدد ساعات العمل يجب ان لا يتعدى 24 ساعة",
+                    },
+                    InjuredInsurance: {
+                        //required: "الحقل اجباري *",
+                    },
+                    HealthInsurance: {
+                        //required: "الحقل اجباري *",
+                    },
+                    Branches: {
+                        required: "الحقل اجباري *",
+                        number:"!رقم خاطئ",
+                        min: "!رقم خاطئ",
+                    },
+                    FinancialReport: {
+                        required: "الحقل اجباري *",
+                        accept: "امتداد غير صحيح! (يجب ان تكون بصيغة .jpg, .doc, .docx., .pdf)"
+                    },
+                    AnnualReport: {
+                        required: "الحقل اجباري *",
+                        accept: "امتداد غير صحيح! (يجب ان تكون بصيغة .jpg, .doc, .docx., .pdf)"
+                    },
+                    RegistrationDocument: {
+                        required: "الحقل اجباري *",
+                        accept: "امتداد غير صحيح! (يجب ان تكون بصيغة .jpg, .doc, .docx., .pdf)"
+                    },
+                    CommercialRegister: {
+                        accept: "امتداد غير صحيح! (يجب ان تكون بصيغة .jpg, .doc, .docx., .pdf)"
+                    },
+                    OtherAttachments: {
+                        accept: "امتداد غير صحيح! (يجب ان تكون بصيغة .jpg, .doc, .docx., .pdf)"
+                    },
+                    Logo: {
+                        required: "الحقل اجباري *",
+                        accept: "امتداد اللوجو غير صحيح! (يجب ان تكون بصيغة .jpg, .png, .jpeg)"
+                    },
+                    Agreement:{
+                        required: " يتوجب عليك التأكيد على صحة البيانات المدخلة! "
+                    },
+                }
+            });
+        //});
+
+        //$("#registerBtn").click(function() {
+        //    tinyMCE.triggerSave();
+        //    var status;
+        //    status = $("#EmployersForm").valid(); //Validate again
+        //    if(status==true) { 
+        //        //Carry on
+        //    }
+        //    else { 
+        //        alert("TinyMCE length error");
+        //    }
+        //});
+
+        $(document).ready(function(){   
+            $(document).on("change","#Sector",function(){
+                var sec = $(this).val();
+                if(sec == "9999"){
+                    $("#secOtherCont").show();
+                }
+                else{
+                    $("#secOtherCont").hide();
+                }
+            });
+             $(document).on("change","#WorkSectorId",function(){
+                var sec = $(this).val();
+                if(sec == "9999"){
+                    $("#secWorkOtherCont").show();
+                }
+                else{
+                    $("#secWorkOtherCont").hide();
+                }
+            });
+                $("#EmployersForm").submit(function (e) {
+                    var valid = true;
+                    $(".tinymce[required='required']").each(function () {
+                        var id = $(this).attr("id");
+                        var editorContent = tinyMCE.get(id).getContent();
+                        if (editorContent.trim() === '') {
+                            // Editor is empty
+                            var element = $('[data-valmsg-for="'+id+'"]');
+                            valid = false;
+                            element.append('<label id="'+id+'-error" class="error" for="'+id+'" style="display: inline-block;">الحقل اجباري *</label>');
+                            tinymce.execCommand('mceFocus', false, tinyMCE.get(id));
+                            //console.log('Editor ' + $(this).attr('id') + ' is empty');
+                        } 
+                        else {
+                            $(id+"-error").remove();
+                            // Editor is not empty
+                            console.log('Editor ' + $(this).attr('id') + ' is not empty');
+                        }
+                    });
+
+                    if(!valid){
+                        e.preventDefault();
+                        return false;
+                    }
+                    //alert("INSDIE SUBMIT");
+                    //var editorContent = tinyMCE.get("Description").getContent();
+                    //if (editorContent.trim() === '') {
+                    //  // Editor is empty
+                    //  console.log('Editor is empty');
+                    //} else {
+                    //  // Editor is not empty
+                    //  console.log('Editor is not empty');
+                    //}
+                    //if(!tinyMCE.get("Description").isEmpty()) alert("Have content");
+                    //else alert("NO Content");
+
+                    if ($('#EmployersForm').valid()) {
+                        $("#RegBtn").attr("disabled","disabled");
+                        $("#RegBtn").append(' <i class="fa-solid fa-spinner fa-spin"></i>');
+                    }
+                    else{
+                        //alert("Error in form validation");
+                        e.preventDefault();
+                    }
+                });
+        });
+    </script>
+}

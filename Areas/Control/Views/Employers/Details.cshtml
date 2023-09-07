@@ -1,0 +1,429 @@
+﻿@model PEF.Models.Employers
+@using Microsoft.Extensions.Localization
+@using PEF.Areas.Control.Controllers
+@inject IStringLocalizer<HomeController> Localizer
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var currentCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
+    ViewData["Title"] = Localizer["Details"];
+}
+<partial name="_validationMsg" />
+
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">@Localizer["Employers/Associations"]</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-@Localizer["Float Rev"]" >
+                    <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">@Localizer["Home"]</a></li>
+                    <li class="breadcrumb-item active">@Localizer["Employers/Associations"]</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+
+<!-- /.content-header -->
+<section class="content">
+    <div class="container-fluid">
+        <h1 class="form-title">@Localizer["Employers/Associations Details"]</h1>
+    <hr />
+    <dl class="row">
+        <dt class = "col-6 col-sm-2 col-md-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-6 col-sm-4 col-md-2">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt class = "col-6 col-sm-2 col-md-2">
+            @Html.DisplayNameFor(model => model.ArName)
+        </dt>
+        <dd class = "col-6 col-sm-4 col-md-2">
+            @Html.DisplayFor(model => model.ArName)
+        </dd>
+
+        <dt class = "col-6 col-sm-2 col-md-2">
+            @Html.DisplayNameFor(model => model.Shortcut)
+        </dt>
+        <dd class = "col-6 col-sm-4 col-md-2">
+            @Html.DisplayFor(model => model.Shortcut)
+        </dd>
+
+        <dt class = "col-6 col-sm-2 col-md-2">
+            @Html.DisplayNameFor(model => model.Type)
+        </dt>
+        <dd class = "col-6 col-sm-4 col-md-2">
+        @{
+            if(Model.Type == 1)
+            {
+                <span>@Localizer["Employer"]</span>
+            }
+            else
+            {
+                <span>@Localizer["Association"]</span>
+            }
+        }
+        </dd>
+        <dt class = " col-sm-2 col-md-2">
+            @Html.DisplayNameFor(model => model.Sector)
+        </dt>
+        <dd class = "col-6 col-sm-4 col-md-2">
+            @{
+                if (Model.Sector == 9999)
+                {
+                    <span>@Localizer["Other"] (@Model.SectorOther)</span>
+                }
+                else
+                {
+                    <span>@(currentCulture == "ar-AE" ? Model.EmployerSector?.ArName : Model.EmployerSector?.Name)</span>
+                }
+            }
+        </dd>
+        <dt class = " col-sm-2 col-md-2">
+                @Html.DisplayNameFor(model => model.WorkSectorId)
+        </dt>
+        <dd class = "col-6 col-sm-4 col-md-2">
+            @{
+                if (Model.WorkSectorId == 9999)
+                {
+                    <span>@Localizer["Other"] (@Model.WorkSectorOther)</span>
+                }
+                else
+                {
+                    <span>@(currentCulture == "ar-AE" ? Model.WorkSector?.ArName : Model.WorkSector?.Name)</span>
+                }
+            }
+        </dd>
+        <dt class = " col-sm-2 col-md-2">
+            @Html.DisplayNameFor(model => model.EstablishYear)
+        </dt>
+        <dd class = "col-6 col-sm-4 col-md-2">
+            @Html.DisplayFor(model => model.EstablishYear)
+        </dd>
+        <dt class = " col-sm-2 col-md-2">
+            @Html.DisplayNameFor(model => model.RegNumber)
+        </dt>
+        <dd class = "col-6 col-sm-4 col-md-2">
+            @Html.DisplayFor(model => model.RegNumber)
+        </dd>
+        <dt class = " col-sm-2 col-md-2">
+            @Html.DisplayNameFor(model => model.OperationNumber)
+        </dt>
+        <dd class = "col-6 col-sm-4 col-md-2">
+            @Html.DisplayFor(model => model.OperationNumber)
+        </dd>
+        <dt class=" col-sm-2 col-md-2">
+            @Html.DisplayNameFor(model => model.AcceptTrainers)
+        </dt>
+        <dd class="col-6 col-sm-4 col-md-4">
+            @{
+                if (Model.AcceptTrainers == true)
+                {
+                    <span>@Localizer["Yes"]</span>
+                }
+                else
+                {
+                    <span>@Localizer["No"]</span>
+                }
+            }
+        </dd>
+
+        <dt class="col-sm-2 col-md-12" ><h5 class="text-danger">@Localizer["Address Details"]</h5></dt>
+        <dt class = " col-sm-2 col-md-2">
+            @Html.DisplayNameFor(model => model.City)
+        </dt>
+        <dd class = "col-6 col-sm-4 col-md-2">
+            @(currentCulture == "ar-AE" ? Model.City?.ArName: Model.City?.Name)
+        </dd>
+        <dt class = " col-sm-2 col-md-2">
+            @Html.DisplayNameFor(model => model.AreaId)
+        </dt>
+        <dd class = "col-6 col-sm-4 col-md-2">
+            @(currentCulture == "ar-AE" ? Model.Area?.ArName: Model.Area?.Name)
+        </dd>
+        <dt class = " col-sm-2 col-md-2">
+            @Html.DisplayNameFor(model => model.Village)
+        </dt>
+        <dd class = "col-6 col-sm-4 col-md-2">
+            @Html.DisplayFor(model => model.Village)
+        </dd>
+        <dt class="col-sm-2 col-md-12" ><h5 class="text-danger">@Localizer["Contact Details"]</h5></dt>
+        <dt class = " col-sm-2 col-md-2">
+            @Html.DisplayNameFor(model => model.Mobile)
+        </dt>
+        <dd class = "col-6 col-sm-4 col-md-2">
+            @Html.DisplayFor(model => model.Mobile)
+        </dd>
+        <dt class = " col-sm-2 col-md-2">
+            @Html.DisplayNameFor(model => model.Tel)
+        </dt>
+        <dd class = "col-6 col-sm-4 col-md-2">
+            @Html.DisplayFor(model => model.Tel)
+        </dd>
+        <dt class = " col-sm-2 col-md-2">
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd class = "col-6 col-sm-4 col-md-2">
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt class = " col-sm-2 col-md-2">
+            @Html.DisplayNameFor(model => model.Address)
+        </dt>
+        <dd class = "col-6 col-sm-4 col-md-2">
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+            <dt class="col-sm-2 col-md-12"><h5 class="text-danger">@Localizer["Contact Person Details"]</h5></dt>
+        <dt class = " col-sm-2 col-md-2">
+            @Html.DisplayNameFor(model => model.ContactName)
+        </dt>
+        <dd class = "col-6 col-sm-4 col-md-2">
+            @Html.DisplayFor(model => model.ContactName)
+        </dd>
+        <dt class = " col-sm-2 col-md-2">
+            @Html.DisplayNameFor(model => model.contactJobTitle)
+        </dt>
+        <dd class = "col-6 col-sm-4 col-md-2">
+            @Html.DisplayFor(model => model.contactJobTitle)
+        </dd>
+        <dt class = " col-sm-2 col-md-2">
+            @Html.DisplayNameFor(model => model.ContactMobile)
+        </dt>
+        <dd class = "col-6 col-sm-4 col-md-2">
+            @Html.DisplayFor(model => model.ContactMobile)
+        </dd>
+        <dt class = " col-sm-2 col-md-2">
+            @Html.DisplayNameFor(model => model.ContactMobile2)
+        </dt>
+        <dd class = "col-6 col-sm-4 col-md-2">
+            @Html.DisplayFor(model => model.ContactMobile2)
+        </dd>
+        <dt class = " col-sm-2 col-md-1">
+            @Html.DisplayNameFor(model => model.ContactEmail)
+        </dt>
+        <dd class = "col-6 col-sm-4 col-md-3">
+            @Html.DisplayFor(model => model.ContactEmail)
+        </dd>
+            <dt class="col-sm-2 col-md-12"><h5 class="text-danger">@Localizer["Employer Description"]</h5></dt>
+        <dt class = "col-sm-2 col-md-12">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class = "col-6 col-sm-4 col-md-12">
+            @Html.Raw(Model.Description)
+        </dd>
+        <dt class = " col-sm-2 col-md-12">
+            @Html.DisplayNameFor(model => model.ArDescription)
+        </dt>
+        <dd class = "col-6 col-sm-4 col-md-12">
+            @Html.Raw(Model.ArDescription)
+        </dd>
+        <dt class = " col-sm-2 col-md-12">
+            @Html.DisplayNameFor(model => model.ExtraData)
+        </dt>
+        <dd class = "col-6 col-sm-4 col-md-12">
+            @Html.Raw(Model.ExtraData)
+        </dd>
+        <dt class = " col-sm-2 col-md-12">
+            @Html.DisplayNameFor(model => model.ArExtraData)
+        </dt>
+        <dd class = "col-6 col-sm-4 col-md-12">
+            @Html.Raw(Model.ArExtraData)
+        </dd>
+           
+        <dt class = " col-sm-2 col-md-12">
+            @Html.DisplayNameFor(model => model.SafetyProcedures)
+        </dt>
+        <dd class = "col-6 col-sm-4 col-md-12">
+            @Html.Raw(Model.SafetyProcedures)
+        </dd>
+        <dt class = " col-sm-2 col-md-12">
+            @Html.DisplayNameFor(model => model.ArSafetyProcedures)
+        </dt>
+        <dd class = "col-6 col-sm-4 col-md-12">
+            @Html.Raw(Model.ArSafetyProcedures)
+        </dd>
+
+        <dt class="col-sm-2 col-md-12"><h5 class="text-danger">@Localizer["Employer/Association Capabilities"]</h5></dt>
+        <dt class = "col-sm-2 col-md-2">
+            @Html.DisplayNameFor(model => model.PermanentEmpCount)
+        </dt>
+        <dd class = "col-6 col-sm-2 col-md-2">
+            @Html.DisplayFor(model => model.PermanentEmpCount)
+        </dd>
+        <dt class="col-sm-2 col-md-2">
+            @Html.DisplayNameFor(model => model.PermanentFemaleEmpCount)
+        </dt>
+        <dd class="col-6 col-sm-2 col-md-2">
+            @Html.DisplayFor(model => model.PermanentFemaleEmpCount)
+        </dd>
+        <dt class=" col-sm-2 col-md-2">
+            @Html.DisplayNameFor(model => model.FulltimeEmpCount)
+        </dt>
+        <dd class="col-6 col-sm-2 col-md-2">
+            @Html.DisplayFor(model => model.FulltimeEmpCount)
+        </dd>
+        <dt class=" col-sm-2 col-md-2">
+            @Html.DisplayNameFor(model => model.FulltimeFemaleEmpCount)
+        </dt>
+        <dd class="col-6 col-sm-2 col-md-2">
+                @Html.DisplayFor(model => model.FulltimeFemaleEmpCount)
+        </dd>
+        <dt class = " col-sm-2 col-md-2">
+            @Html.DisplayNameFor(model => model.ParttimeEmpCount)
+        </dt>
+        <dd class = "col-6 col-sm-2 col-md-2">
+            @Html.DisplayFor(model => model.ParttimeEmpCount)
+        </dd>
+        <dt class = " col-sm-2 col-md-2">
+            @Html.DisplayNameFor(model => model.ParttimeFemaleEmpCount)
+        </dt>
+        <dd class = "col-6 col-sm-2 col-md-2">
+            @Html.DisplayFor(model => model.ParttimeFemaleEmpCount)
+        </dd>
+        <dt class = "col-sm-2 col-md-2">
+            @Html.DisplayNameFor(model => model.WeekWorkDays)
+        </dt>
+        <dd class = "col-6 col-sm-2 col-md-2">
+            @Html.DisplayFor(model => model.WeekWorkDays)
+        </dd>
+        <dt class = " col-sm-2 col-md-2">
+            @Html.DisplayNameFor(model => model.DayWorkHours)
+        </dt>
+        <dd class = "col-6 col-sm-2 col-md-2">
+            @Html.DisplayFor(model => model.DayWorkHours)
+        </dd>
+
+        <dt class=" col-sm-2 col-md-2">
+            @Html.DisplayNameFor(model => model.InjuredInsurance)
+        </dt>
+        <dd class="col-6 col-sm-4 col-md-2">
+            @{
+                if (Model.InjuredInsurance == true)
+                {
+                    <span>@Localizer["Yes"]</span>
+                }
+                else
+                {
+                    <span>@Localizer["No"]</span>
+                }
+            }
+        </dd>
+        <dt class=" col-sm-2 col-md-2">
+            @Html.DisplayNameFor(model => model.HealthInsurance)
+        </dt>
+        <dd class="col-6 col-sm-4 col-md-2">
+            @{
+                if(Model.HealthInsurance == true)
+                {
+                    <span>@Localizer["Yes"]</span>
+                }
+                else
+                {
+                    <span>@Localizer["No"]</span>
+                }
+            }
+        </dd>
+        
+
+        </dl>
+        <dl class="row">
+            <dt class=" col-sm-2 col-md-2">
+                @Html.DisplayNameFor(model => model.Branches)
+            </dt>
+            <dd class="col-6 col-sm-4 col-md-4">
+                @Html.Raw(Model.Branches)
+            </dd>
+           
+            <dd class="col-12">
+                @Html.DisplayNameFor(model => model.BranchesLocation)
+                @Html.Raw(Model.BranchesLocation)
+            </dd>
+        </dl>
+        <dl class="row" >
+
+            <dt class="col-sm-2 col-md-12"><h5 class="text-danger">@Localizer["Attachments"]</h5></dt>
+            <dt class = " col-sm-2 col-md-2">
+                @Html.DisplayNameFor(model => model.FinancialReport)
+            </dt>
+            <dd class = "col-6 col-sm-4 col-md-2">
+                @if (Model.FinancialReport != null)
+                {
+                    <a href="@Url.Content(Model.FinancialReport)" target="_blank" class="btn btn-danger mt-2"><i class="bi bi-cloud-arrow-down-fill"></i> @Localizer["Download"]</a>
+                }
+            </dd>
+            <dt class = " col-sm-2 col-md-2">
+                @Html.DisplayNameFor(model => model.AnnualReport)
+            </dt>
+            <dd class = "col-6 col-sm-4 col-md-2">
+                    @if (Model.AnnualReport != null)
+                    {
+                        <a href="@Url.Content(Model.AnnualReport)" target="_blank" class="btn btn-danger mt-2"><i class="bi bi-cloud-arrow-down-fill"></i> @Localizer["Download"]</a>
+                    }
+            </dd>
+
+            <dt class = "col-sm-2 col-md-2">
+                @Html.DisplayNameFor(model => model.RegistrationDocument)
+            </dt>
+            <dd class = "col-6 col-sm-4 col-md-2">
+                @if (Model.RegistrationDocument != null)
+                {
+                    <a href="@Url.Content(Model.RegistrationDocument)" target="_blank" class="btn btn-danger mt-2"><i class="bi bi-cloud-arrow-down-fill"></i> @Localizer["Download"]</a>
+                }
+            </dd>
+            <dt class = "col-sm-2 col-md-2">
+                @Html.DisplayNameFor(model => model.CommercialRegister)
+            </dt>
+            <dd class = "col-6 col-sm-4 col-md-2">
+                @if (Model.CommercialRegister != null)
+                {
+                    <a href="@Url.Content(Model.CommercialRegister)" target="_blank" class="btn btn-danger mt-2"><i class="bi bi-cloud-arrow-down-fill"></i> @Localizer["Download"]</a>
+                }
+            </dd>
+            <dt class="col-sm-2 col-md-2">
+                @Html.DisplayNameFor(model => model.OtherAttachments)
+            </dt>
+            <dd class="col-6 col-sm-4 col-md-2">
+                @if (Model.OtherAttachments != null)
+                {
+                    <a href="@Url.Content(Model.OtherAttachments)" target="_blank" class="btn btn-danger mt-2"><i class="bi bi-cloud-arrow-down-fill"></i> @Localizer["Download"]</a>
+                }
+            </dd>
+            <dt class = " col-sm-2 col-md-2">
+                @Html.DisplayNameFor(model => model.Logo)
+            </dt>
+            <dd class = "col-6 col-sm-4 col-md-10">
+                @if (Model.Logo != null)
+                {
+                    <img src="@Url.Content(Model.Logo)" style="width:120px;">
+                }
+            </dd>
+    </dl>
+</div>
+<div class="text-@Localizer["Float Rev"]">
+<a asp-action="Edit" asp-route-id="@Model?.Id">@Localizer["Edit"]</a>
+@{
+    if (@HttpContextAccessor.HttpContext.Session.GetString("type") != "Employer"){
+        <span>| <a asp-action="Index">@Localizer["Back To List"]</a></span>
+    }
+}
+</div>
+</section>
+@section Scripts{
+    <script src="https://cdn.tiny.cloud/1/2c5w0wmw9nov8zgkagrjpr94l8e4ryuo598sm3y8shic3c8z/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script type="text/javascript">
+        tinymce.init({
+            selector: 'textarea',
+            height: 220,
+            menubar: false,
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments  | align lineheight | removeformat',
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name',
+            mergetags_list: [
+                { value: 'First.Name', title: 'First Name' },
+                { value: 'Email', title: 'Email' },
+            ]
+        });
+    </script>
+}

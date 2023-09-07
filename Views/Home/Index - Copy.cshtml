@@ -1,0 +1,513 @@
+﻿@using PEF.Models
+@inject IConfiguration _config
+
+
+@{
+    string myKey = _config["GoogleReCaptcha:key"];
+}
+@{
+    //ViewData["Title"] = @Localizer["page.title"];
+}
+
+<div class="">
+	<div class=" servicesList">
+		<div class="mainSld">
+			<div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel">
+				<div class="carousel-indicators">
+					<button type="button" data-bs-target="#carouselExampleSlidesOnly" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+					<button type="button" data-bs-target="#carouselExampleSlidesOnly" data-bs-slide-to="1" aria-label="Slide 2"></button>
+					<button type="button" data-bs-target="#carouselExampleSlidesOnly" data-bs-slide-to="2" aria-label="Slide 3"></button>
+				</div>
+				<div class="carousel-inner">
+					@if(ViewBag.Slider != null){
+						foreach(PageCategory item in ViewBag.Slider)
+						{
+							<div class="carousel-item active">
+								<img src="@Url.Content(item.Page.Thumb)" class="d-block w-100" alt="">
+								<div class="carousel-caption">
+									<h1>@item.Page.Title</h1>
+								</div>
+							</div>
+						}
+					}
+					@*<div class="carousel-item active">
+						<img src="~/frontend/images/slider2.jpg" class="d-block w-100" alt="">
+						<div class="carousel-caption">
+							<h1>1900 وخشبة</h1>
+						</div>
+					</div>
+					<div class="carousel-item ">
+						<img src="~/frontend/images/slider2.jpg" class="d-block w-100" alt="">
+						<div class="carousel-caption">
+							<h1>1900 وخشبة</h1>
+						</div>
+					</div>
+					<div class="carousel-item ">
+						<img src="~/frontend/images/slider2.jpg" class="d-block w-100" alt="">
+						<div class="carousel-caption">
+							<h1>1900 وخشبة</h1>
+						</div>
+					</div>*@
+				</div>
+				<div class="d-none">
+					<a class="carousel-control-prev" href="#carouselExampleSlidesOnly" role="button" data-slide="prev">
+						<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+						<span class="sr-only">Previous</span>
+					</a>
+					<a class="carousel-control-next" href="#carouselExampleSlidesOnly" role="button" data-slide="next">
+						<span class="carousel-control-next-icon" aria-hidden="true"></span>
+						<span class="sr-only">Next</span>
+					</a>
+				</div>
+			</div>
+		</div>
+		<div class="servlists">
+			<div class="servlist serv1">
+				<a asp-action="Signup" asp-controller="Home" >إنضم الى اي سوق</a>
+			</div>
+			<div class="servlist serv2">
+				<a asp-action="Details" asp-controller="Categories" asp-route-id="4" asp-route-title="صندوق المنح">صندوق المنح</a>
+			</div>
+			<div class="servlist serv3">
+				<a  asp-action="Details" asp-controller="Categories" asp-route-id="5" asp-route-title="إعلانات">إعلانات</a>
+			</div>
+			<div class="servlist serv4">
+				<a  asp-action="Details" asp-controller="Categories" asp-route-id="6" asp-route-title="الجهات والمشاريع الداعمة">الجهات والمشاريع الداعمة</a>
+			</div>
+		</div>
+	</div>
+</div>
+	
+<section class="sec1">
+	<div class="container">
+		<div class="searchArea">
+			<form asp-action="Index" asp-controller="Projects" method="get" class="row align-items-center">
+				<div class="col-6 col-lg-2">
+				<label class="visually-hidden" for="year">المحافظة</label>
+				<select class=" my-select" id="city" name="city">
+					<option selected value="">المحافظة</option>
+					@{
+						if (ViewBag.Cities != null)
+						{
+							foreach (City item in ViewBag.Cities)
+							{
+								<option value="@item.Id">@item.ArName</option>
+							}
+						}	
+					}
+				</select>
+				</div>
+				   
+				<div class="col-6 col-lg-2">
+				<label class="visually-hidden" for="address">العنوان (الموقع)</label>
+				<div class="input-group">
+					<input type="text" class="form-control" id="address" name="address" placeholder="العنوان (الموقع)">
+				</div>
+				</div>
+
+				
+				<div class="col-6 col-lg-2">
+				<label class="visually-hidden" for="name">اسم المشروع</label>
+				<div class="input-group">
+					<input type="text" class="form-control" name="name" id="name" placeholder="اسم المشروع">
+				</div>
+				</div>
+				<div class="col-8 col-lg-3">
+				<label class="visually-hidden" for="name">اسم صاحب المشروع</label>
+				<div class="input-group">
+					<input type="text" class="form-control" name="owner" id="owner" placeholder="اسم صاحب المشروع">
+				</div>
+				</div>
+				  
+				<div class="col-4 col-lg-1">
+				<button type="submit" class="btn btn-light secBtn p-3">بحث <i class="fa-solid fa-magnifying-glass"></i></button>
+				</div>
+			</form>
+		</div>
+	</div>
+</section>
+<section class="sec sec2 container-fluid">
+	<div class="row align-items-center">
+		<div class="col-12 col-md-6 p-0">
+			<div class="h-100">
+				<div class="h-sec">
+					<img src="~/frontend/images/projects.jpg" class="img-fluid w-100">
+				</div>
+			</div>
+		</div>
+		<div class="col-12 col-md-6 bg-th" id="circs">
+			<div class="h-100">
+				<div class="h-sec justify-content-start">
+					<div class="container ms-auto">
+						<div class="mainTitle">
+							<h1 class="">أحدث مشاريع إي سوق</h1>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<section class="sec sec3">
+	<div class="container position-relative" >
+		<div class="mainTitle justify-content-center">
+			<h3 class="">تأثيرنا</h3>
+		</div>
+		<div class="row" id="numbers">
+			<div class="col-6 col-md-3" >
+				<div class="effect">
+					<div class="eff-ico">
+						<img src="~/frontend/images/icon1.png" title="">
+					</div>
+					<div class="eff-num counter" data-number="300">
+						300
+					</div>
+					<div class="eff-txt">
+						مشروع متقدم للمنح
+					</div>
+				</div>
+			</div>
+			<div class="col-6 col-md-3" id="">
+				<div class="effect">
+					<div class="eff-ico">
+						<img src="~/frontend/images/icon4.png" title="">
+					</div>
+					<div class="eff-num counter" data-number="90">
+						90
+					</div>
+					<div class="eff-txt">
+						منحة مقدمة
+					</div>
+				</div>
+			</div>
+			<div class="col-6 col-md-3" id="">
+				<div class="effect">
+					<div class="eff-ico">
+						<img src="~/frontend/images/icon2.png" title="">
+					</div>
+					<div class="eff-num counter" data-number="80">
+						80
+					</div>
+					<div class="eff-txt">
+						إمرأة منتفعة
+					</div>
+				</div>
+			</div>
+			<div class="col-6 col-md-3" id="">
+				<div class="effect">
+					<div class="eff-ico">
+						<img src="~/frontend/images/icon3.png" title="">
+					</div>
+					<div class="eff-num counter" data-number="15">
+						15
+					</div>
+					<div class="eff-txt">
+						دورة
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<section class="sec" >
+	<div class="container position-relative" >
+		<div class="mainTitle justify-content-between">
+			<h1 class="">مشاريع إي سوق</h1>
+			<h6 class="align-self-end"><a asp-action="Index" asp-controller="Projects">شاهد كل المشاريع</a></h6>
+		</div>
+	</div>
+	<hr>
+	<div class="container-fluid" >
+		<div class="owl-carousel1 owl-carousel" >
+			
+		</div>
+	</div>
+</section>
+
+<section class="sec sec4" >
+	<div class="container">
+		<div class="mainTitle">
+			<h1 class="">إي سوق فيديو</h1>
+		</div>
+		<div class="row">
+			<div class="col-md-12 col-lg-8" >
+				<div class="tab-content" id="v-pills-tabContent">
+				<div class="homevid tab-pane fade show active ratio ratio-16x9" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab" tabindex="0">
+						@{
+							if(ViewBag.Videos != null){
+								List<Files> videos = ViewBag.Videos;
+								
+								foreach(Files video in videos)
+								{
+									<iframe id="videoGal" width="560" height="315" src="https://www.youtube.com/embed/@Html.Raw(video.Source)" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+									break;
+								}
+							}
+						}
+						<!--<iframe id="videoGal" width="560" height="315" src="https://www.youtube.com/embed/d0brEQ0mGws" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>-->
+					</div>
+				</div>
+			</div>
+			<div class="col-md-12 col-lg-4">
+				<div class="d-flex align-items-start">
+					<div class="nav flex-column nav-pills " id="v-pills-tab" role="tablist" aria-orientation="vertical">
+					@{
+						if (ViewBag.Videos != null)
+						{
+							var count = 1;
+							List<Files> videos = ViewBag.Videos;
+							
+							foreach (Files video in videos)
+							{
+								
+								<button class="nav-link @(count == 1 ? "active":"")" id="v-pills-home-tab" data-vid="@Html.Raw(video.Source)" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">
+								<img class="img-fluid" src="@Url.Content(video.Thumb)">
+								</button>
+								count++;
+							}
+						}
+					}
+					<!--
+					<button class="nav-link active" id="v-pills-home-tab" data-vid="rMw1W0V-s1o" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">
+						<img class="img-fluid" src="https://img.youtube.com/vi/KGSHGw8CCK4/mq2.jpg">
+					</button>
+					<button class="nav-link " id="v-pills-home-tab" data-vid="rMw1W0V-s1o" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">
+						<img class="img-fluid" src="https://img.youtube.com/vi/rMw1W0V-s1o/mq2.jpg">
+					</button>
+					<button class="nav-link " id="v-pills-home-tab" data-vid="BoDrCxSyt98" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">
+						<img class="img-fluid" src="https://img.youtube.com/vi/BoDrCxSyt98/mq2.jpg">
+							
+					</button>
+					-->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<section class="sec sec5">
+	<div class="container">
+		<div class="row">
+			<div class="col-12 col-lg-6">
+				<div class="addComm">
+					<div class="mainTitle d-block">
+						<h1 class="">أضف تعليقك</h1>
+						<h6 class=""><div>بإمكانك إضافة تعليقك على منتجات أي سوق</div></h6>
+					</div>
+					<form class="mb-5 mt-5" method="post" id="formComm" name="formComm">
+						<div class="row">
+							<div class="col-md-6 form-group mb-4">
+								<label for="" class="col-form-label d-none">الإسم *</label>
+								<input type="text" class="form-control valid" name="Name" id="Name" placeholder="الإسم" aria-required="true" required="required" aria-invalid="false"><label id="name-error" class="error" for="Name" style="display: none;"></label>
+							</div>
+							<div class="col-md-6 form-group mb-4">
+								<label for="" class="col-form-label  d-none">Email *</label>
+								<input type="text" class="form-control" required="required" name="Email" id="Email" placeholder="البريد الالكتروني">
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6 form-group mb-4">
+								<label for="" class="col-form-label  d-none">Location</label>
+								<input type="text" class="form-control" required="required" name="Location" id="Location" placeholder="الموقع">
+							</div>
+							<div class="col-md-6 form-group mb-4">
+								<label for="" class="col-form-label  d-none">Subject</label>
+								<input type="text" class="form-control" required="required" name="Subject" id="Subject" placeholder="الموضوع">
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12 form-group mb-4">
+								<label for="message" class="col-form-label  d-none">Body *</label>
+								<textarea class="form-control" name="Body" required="required" id="Body" cols="30" rows="4" placeholder="التعليق"></textarea>
+							</div>
+						</div>
+						<div class="row mb-4">
+							<div class="col-md-12"><div class="g-recaptcha" lang="ar" data-sitekey="@myKey"></div></div>
+						</div>
+						<div class="row">
+							<div class="col-md-12 form-group">
+								<button type="submit" id="sendCommentBtn" class="btn mainBtn btn-md rounded-0 py-2 px-5">أرسل</button>
+								<span class="submitting"></span>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="col-12 col-lg-6 mt-4">
+				<div class="mainTitle d-block">
+					<h1 class="">أسئلة شائعة</h1>
+					<h6 class="">بإمكانك الاطلاع على إجابات الاسئلة الشائعة قبل التقدم بطلبك ل أي سوق</h6>
+				</div>
+				<div class="accordion" id="accordionExample">
+					@if(ViewBag.Questions != null){
+						var counter =1;
+						foreach(PageCategory item in ViewBag.Questions)
+						{
+
+							<h2 class="accordion-header" id="headingOne">
+								<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+								@item.Page.Title
+								</button>
+							</h2>
+							<div id="collapseOne" class="accordion-collapse collapse @(counter > 1 ? "" : "show")" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+								<div class="accordion-body">
+									@Html.Raw(item.Page.Body)
+								</div>
+							</div>
+							counter = counter + 1;
+						}
+					}
+					@*<div class="accordion-item">
+						<h2 class="accordion-header" id="headingOne">
+							<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+							كيف يمكنك التقدم لمشروع اي سوق
+							</button>
+						</h2>
+						<div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+							<div class="accordion-body">
+							كيف يمكنك التقدم لمشروع اي سوق كيف يمكنك التقدم لمشروع اي سوق كيف يمكنك التقدم لمشروع اي سوق كيف يمكنك التقدم لمشروع اي سوق كيف يمكنك التقدم لمشروع اي سوق
+							</div>
+						</div>
+					</div>
+					<div class="accordion-item">
+					<h2 class="accordion-header" id="headingTwo">
+						<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+						كيف يمكنك التقدم لمشروع اي سوق
+						</button>
+					</h2>
+					<div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+						<div class="accordion-body">
+						كيف يمكنك التقدم لمشروع اي سوق كيف يمكنك التقدم لمشروع اي سوق كيف يمكنك التقدم لمشروع اي سوق 
+						</div>
+					</div>
+					</div>
+					<div class="accordion-item">
+					<h2 class="accordion-header" id="headingThree">
+						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+						كيف يمكنك التقدم لمشروع اي سوق
+						</button>
+					</h2>
+					<div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+						<div class="accordion-body">
+						كيف يمكنك التقدم لمشروع اي سوق كيف يمكنك التقدم لمشروع اي سوق كيف يمكنك التقدم لمشروع اي سوق كيف يمكنك التقدم لمشروع اي سوق كيف يمكنك التقدم لمشروع اي سوق كيف يمكنك التقدم لمشروع اي سوق كيف يمكنك التقدم لمشروع اي سوقكيف يمكنك التقدم لمشروع اي سوق
+						</div>
+					</div>
+					</div>
+					<div class="accordion-item">
+					<h2 class="accordion-header" id="heading4">
+						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#cheading4" aria-expanded="false" aria-controls="cheading4">
+						كيف يمكنك التقدم لمشروع اي سوق
+						</button>
+					</h2>
+					<div id="cheading4" class="accordion-collapse collapse" aria-labelledby="heading4" data-bs-parent="#accordionExample">
+						<div class="accordion-body">
+						كيف يمكنك التقدم لمشروع اي سوق كيف يمكنك التقدم لمشروع اي سوق كيف يمكنك التقدم لمشروع اي سوق كيف يمكنك التقدم لمشروع اي سوق كيف يمكنك التقدم لمشروع اي سوق كيف يمكنك التقدم لمشروع اي سوق كيف يمكنك التقدم لمشروع اي سوقكيف يمكنك التقدم لمشروع اي سوق
+						</div>
+					</div>
+					</div>
+					<div class="accordion-item">
+					<h2 class="accordion-header" id="heading5">
+						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#cheading5" aria-expanded="false" aria-controls="cheading5">
+						كيف يمكنك التقدم لمشروع اي سوق
+						</button>
+					</h2>
+					<div id="cheading5" class="accordion-collapse collapse" aria-labelledby="heading5" data-bs-parent="#accordionExample">
+						<div class="accordion-body">
+						كيف يمكنك التقدم لمشروع اي سوق كيف يمكنك التقدم لمشروع اي سوق كيف يمكنك التقدم لمشروع اي سوق كيف يمكنك التقدم لمشروع اي سوق كيف يمكنك التقدم لمشروع اي سوق كيف يمكنك التقدم لمشروع اي سوق كيف يمكنك التقدم لمشروع اي سوقكيف يمكنك التقدم لمشروع اي سوق
+						</div>
+					</div>
+					</div>*@
+				</div>
+
+			</div>
+		</div>
+	</div>
+</section>
+
+@section Scripts {
+	<script src='https://www.google.com/recaptcha/api.js'></script>
+	<script type="text/javascript" >
+	$(document).ready(function(){
+        $(document).on("submit", "#formComm", function(e) {
+            e.preventDefault();
+            //alert("submitted");
+			if($("#Email").val()!="" && $("#Name").val()!="" && $("#Location").val()!="" && $("#Subject").val()!="" && $("#Body").val()!=""){
+                
+				var url = "@Url.Action("CreateComment", "Home")";        
+				var formValues= $(this).serialize();
+				$.ajax({
+					type: 'POST',
+                    data: $(this).serialize(),
+					url: url,      
+					dataType: "json",
+					beforeSend: function() {
+						$("#sendCommentBtn").append(" <i class='fa-solid fa-spinner fa-spin-pulse' id='m_loader'></i> ");
+                        $("#sendCommentBtn").addClass("disabled");
+					},    
+					success: function (data) {                            
+                        if (data.success) {//Comment added
+                            $("#m_loader").remove();
+                            $("#sendCommentBtn").after("<div class='me-3' style='display:inline-block;color:green;' >تم اضافة التعليق بنجاح...</div>");
+						}                                          
+						else{//Failed to add comment
+							$("#m_loader").remove();
+                            $("#sendCommentBtn").after("<div class='me-3' style='display:inline-block;color:red;' >فشلت عملية اضافة التعليق...</div>");
+						}
+					},
+					error: function (jqXhr, json, errorThrown) {
+						try{
+							var errors = jqXhr.responseJSON.errors;                       
+							console.log(errors);
+							$("#m_loader").remove();
+                            $("#sendCommentBtn").after("<div class='mr-3' style='display:inline-block;color:red;' >فشلت عملية اضافة التعليق...</div>");
+						}
+						catch(eee){
+							console.log(eee.message);
+						}
+					},
+					complete: function () {
+						//alert("complete");
+						$("#m_loader").remove();   
+					}
+				});
+			}
+			else{
+                alert("Some fields is empty!");
+			}
+        });
+    });    	
+	</script>
+
+	<script>
+	window.onload = function() {
+		var $recaptcha = document.querySelector('#g-recaptcha-response');
+		if ($recaptcha) {
+			$recaptcha.setAttribute("required", "required");
+		};
+
+		$(document).ready(function() {
+			$(document).on('submit', '#contForm', function(e) {
+				if (grecaptcha.getResponse() == "") {
+					e.preventDefault();
+					alert("يجب عليك التأكيد عن انك لست روبوت!");
+				} else {
+
+				}
+			});
+		});
+	}
+    </script>
+
+	<style>
+        #g-recaptcha-response {
+            display: block !important;
+            position: absolute;
+            margin: -78px 0 0 0 !important;
+            width: 302px !important;
+            height: 76px !important;
+            z-index: -999999;
+            opacity: 0;
+        }
+    </style>
+}

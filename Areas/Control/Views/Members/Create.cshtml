@@ -1,0 +1,438 @@
+﻿@model PEF.Models.Members
+@using PEF.Models
+@{
+    ViewData["Title"] = "Create";
+}
+<link rel="stylesheet" href="~/LTE-Admin/plugins/select2/css/select2.min.css">
+<link rel="stylesheet" href="~/LTE-Admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+<partial name="_validationMsg" />
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Members</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home</a></li>
+                    <li class="breadcrumb-item active">Members</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-6 text-left"><h1 class="form-title">Add New Job Seeker</h1></div>
+            <div class="col-6 text-right mt-3 sm-link"><a asp-action="Index"><i class="bi bi-list-ul"></i> List All Members</a></div>
+        </div>
+        <div class="row">
+    <div class="col-md-12">
+            <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="row" >
+                <div class="form-group col-6">
+                    <label asp-for="FirstName" class="control-label"></label>
+                    <input asp-for="FirstName" class="form-control" />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="FatherName" class="control-label"></label>
+                    <input asp-for="FatherName" class="form-control" />
+                    <span asp-validation-for="FatherName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row" >
+                <div class="form-group col-6">
+                    <label asp-for="GrandName" class="control-label"></label>
+                    <input asp-for="GrandName" class="form-control" />
+                    <span asp-validation-for="GrandName" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="FamilyName" class="control-label"></label>
+                    <input asp-for="FamilyName" class="form-control" />
+                    <span asp-validation-for="FamilyName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row" >
+                <div class="form-group col-6">
+                    <label asp-for="SocialId" class="control-label"></label>
+                    <select asp-for="SocialId" class="form-control">
+                        <option value="">:: SELECT SOCIAL STATUS ::</option>
+                        @{
+                            if (ViewBag.SocialId != null)
+                            {
+                                foreach (LookupSocialStatus item in ViewBag.SocialId)
+                                {
+                                    <!option value="@item.Id" @(Model!=null && Model.SocialId == item.Id ? "SELECTED":"")  >@item.Name</!option>
+                                }
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="Gender" class="control-label"></label>
+                    <select asp-for="Gender" class="form-control">
+                        <option value="">:: SELECT GENDER ::</option>
+                        <!option value="1" @(Model!=null && Model.Gender == 1 ? "SELECTED" : "")  >Male</!option>
+                        <!option value="2" @(Model!=null && Model.Gender == 2 ? "SELECTED" : "")  >Female</!option>
+                    </select>
+                    <span asp-validation-for="Gender" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row" >
+                <div class="form-group col-6">
+                    <label asp-for="IdNum" class="control-label"></label>
+                    <input asp-for="IdNum" maxlength="9" minlength="9" class="form-control" />
+                    <span asp-validation-for="IdNum" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="BirthDate" class="control-label"></label>
+                    <input type="date" asp-for="BirthDate" class="form-control" />
+                    <span asp-validation-for="BirthDate" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row" >
+                <div class="form-group col-6">
+                    <label asp-for="FamilyMembersCount" class="control-label"></label>
+                    <input asp-for="FamilyMembersCount" class="form-control" />
+                    <span asp-validation-for="FamilyMembersCount" class="text-danger"></span>
+                </div>
+               
+            </div>
+
+            <div class="row">
+            <div class="form-group col-6 col-md-3 mb-3">
+                <label asp-for="FatherIdNum" class="control-label"></label>
+                <input asp-for="FatherIdNum" maxlength="9" minlength="9" class="form-control" />
+                <span asp-validation-for="FatherIdNum" class="text-danger"></span>
+            </div>
+            <div class="form-group col-6 col-md-3 mb-3">
+                <label asp-for="MotherIdNum" class="control-label"></label>
+                <input asp-for="MotherIdNum" maxlength="9" minlength="9" class="form-control" />
+                <span asp-validation-for="MotherIdNum" class="text-danger"></span>
+            </div>
+            <div class="form-group col-6 col-md-3 mb-3" id="partnerIdCont" style="@(Model!=null && Model.SocialId == 2 ? "display:block;" : "display:none;")">
+                <label asp-for="PartnerIdNum" class="control-label"></label>
+                <input asp-for="PartnerIdNum" maxlength="9" minlength="9" class="form-control" />
+                <span asp-validation-for="PartnerIdNum" class="text-danger"></span>
+            </div>
+        </div>
+
+            <div class="row" >
+                <div class="form-group col-6">
+                    <label asp-for="CityId" class="control-label"></label>
+                    <select asp-for="CityId" class="form-control">
+                    <option value="">:: SELECT GOVERNORATE ::</option>
+                    @{
+                        if (ViewBag.CityId != null)
+                        {
+                            foreach (City item in ViewBag.CityId)
+                            {
+                                 <!option value="@item.Id" @(Model!=null && Model.CityId == item.Id ? "SELECTED" : "") >@item.Name</!option>
+                            }
+                        }
+                    }
+                    </select>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="Area" class="control-label"></label>
+                    <input asp-for="Area" class="form-control" />
+                    <span asp-validation-for="Area" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="District" class="control-label"></label>
+                    <input asp-for="District" class="form-control" />
+                    <span asp-validation-for="District" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row" >
+                 <div class="form-group col-6">
+                    <label asp-for="Street" class="control-label"></label>
+                    <input asp-for="Street" class="form-control" />
+                    <span asp-validation-for="Street" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="NearTo" class="control-label"></label>
+                    <input asp-for="NearTo" class="form-control" />
+                    <span asp-validation-for="NearTo" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-6">
+                    <label asp-for="Mobile" class="control-label"></label>
+                    <input asp-for="Mobile" class="form-control" required="required" />
+                    <span asp-validation-for="Mobile" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="Mobile2" class="control-label"></label>
+                    <input asp-for="Mobile2" class="form-control" />
+                    <span asp-validation-for="Mobile2" class="text-danger"></span>
+                </div>
+            </div>
+
+             <div class="row">
+                <div class="form-group col-6">
+                    <label asp-for="Tel" class="control-label"></label>
+                    <input asp-for="Tel" class="form-control" />
+                    <span asp-validation-for="Tel" class="text-danger"></span>
+                </div>
+                
+            </div>
+             <div class="row">
+                <div class="form-group col-6">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input asp-for="Email" class="form-control" required="required" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6"></div>
+
+                <div class="form-group col-6">
+                    <label asp-for="Password" class="control-label"></label>
+                    <input type="password" asp-for="Password" value="@(Model!=null ? Model.Password: "")" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="ConfirmPassword" class="control-label"></label>
+                    <input type="password" asp-for="ConfirmPassword" value="@(Model!=null ? Model.ConfirmPassword: "")" class="form-control" required="required" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-6  mb-3">
+                    <label for="Interest" class="control-label">Interest Type</label>
+                    <select class="multipleSelect" multiple name="Interest[]" id="Interest" required="required">
+                        <!option value="1" @(Model!=null && Model.Interest.Contains("1") ? "SELECTED":"")>Employment</!option>
+                        <!option value="2" @(Model!=null && Model.Interest.Contains("2") ? "SELECTED":"")>Paid Training</!option>
+                        <!option value="3" @(Model!=null && Model.Interest.Contains("3") ? "SELECTED":"")>Un-Paid Training</!option>
+                        <!option value="4" @(Model!=null && Model.Interest.Contains("4") ? "SELECTED":"")>Funding Small Business</!option>
+                    </select>
+                    <span asp-validation-for="Interest" class="text-danger"></span>
+                </div>
+            </div>
+             <div class="row">
+                <div class="form-group col-6">
+                    <label asp-for="HealthStatus" class="control-label"></label>
+                    <select asp-for="HealthStatus" class="form-control" required="required">
+                        <option value="">:: Select Health Type ::</option>
+                        <!option value="1" @(Model!=null && Model.HealthStatus == 1 ? "SELECTED" : "") >Healthy</!option>
+                        <!option value="2" @(Model!=null && Model.HealthStatus ==2 ? "SELECTED" : "") >Sick</!option>
+                        <!option value="3" @(Model!=null && Model.HealthStatus == 3 ? "SELECTED" : "") >Handicapped</!option>
+                    </select>
+                    <span asp-validation-for="HealthStatus" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row">
+                 <div class="form-group col-6 disFormCont" style="@(Model!=null && Model.HealthStatus == 3 ? "display:block;":"display:none;" )" >
+                    <label for="DisabilityType" class="control-label" >Disability Type</label>
+                    <select asp-for="DisabilityType" class="form-control" required="required">
+                        <option value="">:: Select Disability Type ::</option>
+                        <!option value="1" @(Model!=null && Model.DisabilityType == 1 ? "SELECTED" : "") >Impaired Mobility</!option>
+                        <!option value="2" @(Model!=null && Model.DisabilityType == 2 ? "SELECTED" : "") >Impaired Hearing</!option>
+                        <!option value="3" @(Model!=null && Model.DisabilityType == 3 ? "SELECTED" : "") >Visual Impairment</!option>
+                        <!option value="4" @(Model!=null && Model.DisabilityType == 4 ? "SELECTED" : "") >Mental Retardation</!option>
+                        <!option value="5" @(Model!=null && Model.DisabilityType == 5 ? "SELECTED" : "") >Speech Impediment</!option>
+                    </select>
+                 </div>
+
+                        <div class="form-group col-6 disFormCont" style="@(Model!=null && Model.HealthStatus == 3 ? "display:block;":"display:none;" )">
+                    <label for="DisabilitySize" class="control-label">Disability Size</label>
+                    <select asp-for="DisabilitySize" class="form-control" required="required">
+                        <option value="">:: Select Disability Size ::</option>
+                        <!option value="1" @(Model!=null && Model.DisabilitySize == 1 ? "SELECTED" : "") >Partial</!option>
+                        <!option value="2" @(Model!=null && Model.DisabilitySize == 2 ? "SELECTED" : "") >Totally</!option>
+                    </select>
+                </div>
+
+                <div class="form-group col-6" id="healthAttCont" style="@(Model!=null && (Model.HealthStatus == 3 || Model.HealthStatus==2) ? "display:block;":"display:none;" )">
+                    <label asp-for="HealthAtt1" class="control-label"></label>
+                    <input asp-for="HealthAtt1" type="file" accept=".jpg,.pdf,.doc,.docx" class="form-control" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-6">
+                    <label asp-for="PropertyType" class="control-label"></label>
+                    <select asp-for="PropertyType" class="form-control" required="required">
+                        <option value="">:: Select Property Type ::</option>
+                        <!option value="0" @(Model!=null && Model.PropertyType == 0 ? "SELECTED" : "") >Rent</!option>
+                        <!option value="1" @(Model!=null && Model.PropertyType == 1 ? "SELECTED" : "") >Owner</!option>
+                        <!option value="2" @(Model!=null && Model.PropertyType == 2 ? "SELECTED" : "") >Use</!option>
+                    </select>
+                    <span asp-validation-for="PropertyType" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="HouseNature" class="control-label"></label>
+                    <select asp-for="HouseNature" class="form-control" required="required">
+                        <option value="">:: Select House Nature ::</option>
+                        <!option value="0" @(Model!=null && Model.HouseNature == 0 ? "SELECTED" : "") >Flat</!option>
+                    <!option value="1" @(Model!=null && Model.HouseNature == 1 ? "SELECTED" : "") >Detached House</!option>
+                    <!option value="2" @(Model!=null && Model.HouseNature == 2 ? "SELECTED" : "") >Other</!option>
+                    </select>
+                    <span asp-validation-for="HouseNature" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="HouseSize" class="control-label"></label>
+                    <input asp-for="HouseSize" type="number" class="form-control" />
+                    <span asp-validation-for="HouseSize" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-12">
+                    <label asp-for="IncomeExist" class="control-label"></label>
+                    <select asp-for="IncomeExist" class="form-control" style="width:120px;" >
+                        <!option value="false" @(Model!=null && Model.IncomeExist == false ? "SELECTED" : "")>No</!option>
+                        <!option value="true" @(Model!=null && Model.IncomeExist == true ? "SELECTED" : "")>Yes</!option>
+                    </select>
+                </div>
+                <div class="form-group col-6 IncomeDet" style="@(Model!=null && Model.IncomeExist == true ? "display:block;":"display:none;" )">
+                    <label asp-for="BreedWinnder" class="control-label"></label>
+                    <input asp-for="BreedWinnder" class="form-control" />
+                    <span asp-validation-for="BreedWinnder" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 mb-3 IncomeDet" style="@(Model!=null && Model.IncomeExist == true ? "display:block;":"display:none;" )">
+                <label for="BreedWinnderType" class="control-label">Breadwinner Adjective</label>
+                <select asp-for="BreedWinnderType" class="form-control" >
+                    <option value="" >:: Select The Adjective ::</option>
+                    <!option @(Model!=null && Model.BreedWinnderType!=null && Model.BreedWinnderType == 0 ? "SELECTED":"") value="0">Himself/Herself</!option>
+                    <!option @(Model!=null && Model.BreedWinnderType!=null && Model.BreedWinnderType == 1 ? "SELECTED":"") value="1">Husband / Wife</!option>
+                    <!option @(Model!=null && Model.BreedWinnderType!=null && Model.BreedWinnderType == 2 ? "SELECTED":"") value="2">Borther / Sister</!option>
+                    <!option @(Model!=null && Model.BreedWinnderType!=null && Model.BreedWinnderType == 3 ? "SELECTED":"") value="3">Son</!option>
+                    <!option @(Model!=null && Model.BreedWinnderType!=null && Model.BreedWinnderType == 4 ? "SELECTED":"") value="4">Father</!option>
+                    <!option @(Model!=null && Model.BreedWinnderType!=null && Model.BreedWinnderType == 5 ? "SELECTED":"") value="5">Mother</!option>
+                    <!option @(Model!=null && Model.BreedWinnderType!=null && Model.BreedWinnderType == 6 ? "SELECTED":"") value="6">Other</!option>
+                </select>
+                <span asp-validation-for="BreedWinnderType" class="text-danger"></span>
+            </div>
+
+                        <div class="form-group col-6 IncomeDet" style="@(Model!=null && Model.IncomeExist == true ? "display:block;":"display:none;" )">
+                    <label asp-for="IncomeSource" class="control-label"></label>
+                    <input asp-for="IncomeSource" class="form-control" />
+                    <span asp-validation-for="IncomeSource" class="text-danger"></span>
+                </div>
+                        <div class="form-group col-6 IncomeDet" style="@(Model!=null && Model.IncomeExist == true ? "display:block;":"display:none;" )">
+                    <label asp-for="IncomeIdNumber" class="control-label"></label>
+                    <input asp-for="IncomeIdNumber" class="form-control" />
+                    <span asp-validation-for="IncomeIdNumber" class="text-danger"></span>
+                </div>
+                        <div class="form-group col-6 IncomeDet" style="@(Model!=null && Model.IncomeExist == true ? "display:block;":"display:none;" )">
+                    <label asp-for="IncomeValue" class="control-label"></label>
+                    <input asp-for="IncomeValue" class="form-control" />
+                    <span asp-validation-for="IncomeValue" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-6">
+                    <label asp-for="AttachTitle1" class="control-label"></label>
+                    <input asp-for="AttachTitle1" class="form-control" />
+                    <span asp-validation-for="AttachTitle1" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="Attach1" class="control-label"></label>
+                            <input asp-for="Attach1" type="file" accept=".jpg,.pdf,.doc,.docx" class="form-control" />
+                    <span asp-validation-for="Attach1" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-6">
+                    <label asp-for="AttachTitle2" class="control-label"></label>
+                    <input asp-for="AttachTitle2" class="form-control" />
+                    <span asp-validation-for="AttachTitle2" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-6">
+                    <label asp-for="Attach2" class="control-label"></label>
+                    <input asp-for="Attach2" type="file" accept=".jpg,.pdf,.doc,.docx" class="form-control" />
+                    <span asp-validation-for="Attach2" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-6">
+                    <label asp-for="AttachTitle3" class="control-label"></label>
+                    <input asp-for="AttachTitle3" class="form-control" />
+                    <span asp-validation-for="AttachTitle3" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-6">
+                    <label asp-for="Attach3" class="control-label"></label>
+                    <input asp-for="Attach3" type="file" accept=".jpg,.pdf,.doc,.docx" class="form-control" />
+                    <span asp-validation-for="Attach3" class="text-danger"></span>
+                </div>    
+                
+            </div>
+
+            <div class="row">
+                 <div class="form-group" >
+                    <label asp-for="Photo" class="control-label"></label>
+                    <input asp-for="Photo" type="file" accept=".jpg" class="form-control" />
+                    <span asp-validation-for="Photo" class="text-danger"></span>
+                 </div>
+            </div>
+                        
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+    </div>
+</section>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <!-- Select2 -->
+    <script src="~/LTE-Admin/plugins/select2/js/select2.full.min.js"></script>
+    <script type="text/javascript" >
+    $('.multipleSelect').fastselect();
+    $(function(){   
+        $('#tags_list').select2();        
+        $("#cats_list").select2();
+
+        $("input[data-bootstrap-switch]").each(function(){
+          $(this).bootstrapSwitch('state', $(this).prop('checked'));
+        });
+    });
+    </script>
+    <script type="text/javascript">
+    $(document).ready(function(){
+            $("#SocialId").change(function () {
+                var status = $(this).val();
+                if (status == "2") {
+                    $("#partnerIdCont").show();
+                }
+                else {
+                    $("#partnerIdCont").hide();
+                }
+            });
+        $("#HealthStatus").change(function(){
+                var val = $(this).val();
+                if(val==2){//Sick
+                   $("#healthAttCont").show();
+                   $(".disFormCont").hide();
+                }
+                else if(val == 3){//Handicapped
+                    $("#healthAttCont").show();
+                    $(".disFormCont").show();
+                }
+                else{
+                    $("#healthAttCont").hide();
+                    $(".disFormCont").hide();
+                }
+        });
+
+        $(document).on("change","#IncomeExist",function(){
+            if($(this).val()=="true"){
+                $(".IncomeDet").show();
+            }
+            else{
+                $(".IncomeDet").hide();
+            }
+        });
+    });
+    </script>
+}

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\.Net Core Sites\\PEF\\PEF\\PEF.csproj": {}
+    "C:\\Users\\97059\\Documents\\GitHub\\pef\\PEF.csproj": {}
   },
   "projects": {
-    "D:\\.Net Core Sites\\PEF\\PEF\\PEF.csproj": {
+    "C:\\Users\\97059\\Documents\\GitHub\\pef\\PEF.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\.Net Core Sites\\PEF\\PEF\\PEF.csproj",
+        "projectUniqueName": "C:\\Users\\97059\\Documents\\GitHub\\pef\\PEF.csproj",
         "projectName": "PEF",
-        "projectPath": "D:\\.Net Core Sites\\PEF\\PEF\\PEF.csproj",
+        "projectPath": "C:\\Users\\97059\\Documents\\GitHub\\pef\\PEF.csproj",
         "packagesPath": "C:\\Users\\97059\\.nuget\\packages\\",
-        "outputPath": "D:\\.Net Core Sites\\PEF\\PEF\\obj\\",
+        "outputPath": "C:\\Users\\97059\\Documents\\GitHub\\pef\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\97059\\AppData\\Roaming\\NuGet\\NuGet.Config",

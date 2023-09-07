@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "1vTyTETRenRp8YP9aCz4npB5y9VEDEeImMpcMLRtPAD8Fr3dNsBG1PSDgRpCJe8E2d+EiYCu3Yxp+54ZUSfZUQ==",
+  "dgSpecHash": "npY22yxuDMAWiNC+rgH9wST8OF5bzhbfXQhaZLd8LsOOKLpMqd2yHsXosMd/alVJxOjNAbdt1B1APMnPCfDxkw==",
   "success": true,
-  "projectFilePath": "D:\\.Net Core Sites\\PEF\\PEF\\PEF.csproj",
+  "projectFilePath": "C:\\Users\\97059\\Documents\\GitHub\\pef\\PEF.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\97059\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\97059\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
